@@ -1,0 +1,317 @@
+SQL> set autocommit off
+SQL> set feedback on
+SQL> set time on
+19:29:09 SQL> set timing on
+19:29:09 SQL> set trimspool on
+19:29:09 SQL> set pagesize 32767
+19:29:09 SQL> set linesize 1000
+19:29:09 SQL> set long 1000
+19:29:09 SQL> set longchunksize 1000
+19:29:09 SQL> set define on
+19:29:09 SQL> ttitle off
+19:29:09 SQL> btitle off
+19:29:09 SQL> alter session set nls_date_format = 'YYYY-MM-DD HH24:MI:SS';
+
+Session altered.
+
+Elapsed: 00:00:00.02
+19:29:09 SQL> whenever oserror EXIT failure ROLLBACK
+19:29:09 SQL> whenever sqlerror EXIT failure ROLLBACK
+19:29:09 SQL> 
+19:29:09 SQL> select instance_name from v$instance;
+
+INSTANCE_NAME
+----------------
+TELODX1
+
+1 row selected.
+
+Elapsed: 00:00:00.03
+19:29:09 SQL> 
+19:29:09 SQL> -- **********************************************************************
+19:29:09 SQL> -- SQL Script File Name: exp_del_val_TE.SQL
+19:29:09 SQL> -- **********************************************************************
+19:29:09 SQL> -- Confidential - Allegis Group, Inc.
+19:29:09 SQL> -- **********************************************************************
+19:29:09 SQL> -- KEYWORD: ~XX
+19:29:09 SQL> -- **********************************************************************
+19:29:09 SQL> --
+19:29:09 SQL> --	       Confidentiality Information:
+19:29:09 SQL> --
+19:29:09 SQL> -- This module is the confidential and proprietary information of
+19:29:09 SQL> -- Allegis Group, Inc.; it is not to be copied, reproduced, or transmitted
+19:29:09 SQL> -- in any form, by any means, in whole or in part, nor is it to be used
+19:29:09 SQL> -- for any purpose other than that for which it is expressly provided
+19:29:09 SQL> -- without the written permission of Allegis Group, Inc.
+19:29:09 SQL> --
+19:29:09 SQL> -- Copyright (c) 2002 Allegis Group, Inc. All Rights Reserved
+19:29:09 SQL> --
+19:29:09 SQL> -- **********************************************************************
+19:29:09 SQL> -- Description:
+19:29:09 SQL> --   Purges PS_* history rows matched via PSARCH tables within a date window.
+19:29:09 SQL> --   COMMIT if SELECT count = DELETE rowcount
+19:29:09 SQL> -- **********************************************************************
+19:29:09 SQL> -- Note: RUN AS SYSADM
+19:29:09 SQL> -- HISTORY:
+19:29:09 SQL> -- 2025-12-25  Anandmohan Singh  SQL*Plus refactor; test-mode rollbacks
+19:29:09 SQL> -- 2026-01-06  Linux-friendly; runtime prompts; no default target DB
+19:29:09 SQL> -- **********************************************************************
+19:29:09 SQL> 
+19:29:09 SQL> -- =========[ Runtime Parameters via command line ]=========
+19:29:09 SQL> -- Usage:
+19:29:09 SQL> --   sqlplus sysadm/*******@SERVICE @exp_del_val_TE.SQL <DB_NAME> <START_DATE> <END_DATE>
+19:29:09 SQL> -- Example:
+19:29:09 SQL> --   sqlplus sysadm/*******@FSSNDX    @exp_del_val_TE.SQL TESNDX 2025-12-01 2025-12-31
+19:29:09 SQL> -- Notes:
+19:29:09 SQL> --   Dates must be YYYY-MM-DD. End date is inclusive.
+19:29:09 SQL> --   Parameter positions: &1=DB_NAME, &2=START_DATE, &3=END_DATE
+19:29:09 SQL> 
+19:29:09 SQL> define p_target_db = '&1'
+Enter value for 1: TELODX
+19:29:13 SQL> define p_start_date = '&2'
+Enter value for 2: 2023-05-01
+19:29:26 SQL> define p_end_date   = '&3'
+Enter value for 3: 2024-03-01
+19:29:35 SQL> 
+19:29:35 SQL> -- =========[ Variable Block ]=========
+19:29:35 SQL> declare
+19:29:35   2  	v_current_db   varchar2(30);
+19:29:35   3  	v_target_db    varchar2(30) := '&p_target_db';
+19:29:35   4  
+19:29:35   5  	v_start_ts     timestamp := to_timestamp('&p_start_date','YYYY-MM-DD');
+19:29:35   6  	v_end_ts       timestamp := to_timestamp('&p_end_date','YYYY-MM-DD') + interval '1' day;
+19:29:35   7  
+19:29:35   8  	v_sql	       varchar2(2000);
+19:29:35   9  	v_rows	       pls_integer;
+19:29:35  10  	v_row_select   pls_integer;
+19:29:35  11  	v_total_rows   pls_integer := 0;
+19:29:35  12  
+19:29:35  13  	-- Stop on first error? (kept TRUE as in your test mode)
+19:29:35  14  	c_stop_on_first_error constant boolean := TRUE;
+19:29:35  15  
+19:29:35  16  	function safe_tbl(rec_name in varchar2) return varchar2 is
+19:29:35  17  	begin
+19:29:35  18  	  return 'PS_' || dbms_assert.simple_sql_name(rec_name);
+19:29:35  19  	end;
+19:29:35  20  
+19:29:35  21  	procedure log_error(p_tbl in varchar2, p_id in varchar2, p_batch in number) is
+19:29:35  22  	begin
+19:29:35  23  	  dbms_output.put_line(
+19:29:35  24  	    'ERROR on '||p_tbl||
+19:29:35  25  	    ' (PSARCH_ID='||p_id||', PSARCH_BATCHNUM='||p_batch||'):'||
+19:29:35  26  	    chr(10)||'	SQLERRM: '||sqlerrm||
+19:29:35  27  	    chr(10)||'	BACKTRACE: '||dbms_utility.format_error_backtrace
+19:29:35  28  	  );
+19:29:35  29  	end;
+19:29:35  30  
+19:29:35  31  begin
+19:29:35  32  	select sys_context('USERENV','DB_NAME')
+19:29:35  33  	  into v_current_db
+19:29:35  34  	  from dual;
+19:29:35  35  
+19:29:35  36  	if v_current_db <> v_target_db then
+19:29:35  37  	  raise_application_error(
+19:29:35  38  	    -20001,
+19:29:35  39  	    'ABORT: Connected to '||v_current_db||' but target is '||v_target_db
+19:29:35  40  	  );
+19:29:35  41  	end if;
+19:29:35  42  
+19:29:35  43  	if v_end_ts <= v_start_ts then
+19:29:35  44  	  raise_application_error(-20002,'Invalid date window');
+19:29:35  45  	end if;
+19:29:35  46  
+19:29:35  47  	dbms_output.put_line('Execution DB	: '||v_current_db);
+19:29:35  48  	dbms_output.put_line('Date range	: '||
+19:29:35  49  			     to_char(v_start_ts,'YYYY-MM-DD')||' .. '||
+19:29:35  50  			     to_char(v_end_ts - interval '1' day,'YYYY-MM-DD'));
+19:29:35  51  
+19:29:35  52  	-- Optional cache flush (requires privileges). Comment out if not granted.
+19:29:35  53  	begin
+19:29:35  54  	  execute immediate 'alter system flush buffer_cache';
+19:29:35  55  	  execute immediate 'alter system flush shared_pool';
+19:29:35  56  	exception
+19:29:35  57  	  when others then
+19:29:35  58  	    dbms_output.put_line('Note: alter system flush skipped: '||sqlerrm);
+19:29:35  59  	end;
+19:29:35  60  
+19:29:35  61  	for r in (
+19:29:35  62  	  select distinct
+19:29:35  63  		 a.hist_recname,
+19:29:35  64  		 b.psarch_id,
+19:29:35  65  		 b.psarch_batchnum
+19:29:35  66  	    from psarchbatch b
+19:29:35  67  	    join psarchtempobj t on b.psarch_id = t.psarch_id
+19:29:35  68  	    join psarchobjrec  a on t.psarch_object = a.psarch_object
+19:29:35  69  	   where b.psarch_dttm >= v_start_ts
+19:29:35  70  	     and b.psarch_dttm <  v_end_ts
+19:29:35  71  	)
+19:29:35  72  	loop
+19:29:35  73  	  declare
+19:29:35  74  	    v_tbl varchar2(128) := safe_tbl(r.hist_recname);
+19:29:35  75  	  begin
+19:29:35  76  	    savepoint one_row;
+19:29:35  77  
+19:29:35  78  	    ----------------------------------------------------------
+19:29:35  79  	    -- SELECT COUNT VALIDATION
+19:29:35  80  	    ----------------------------------------------------------
+19:29:35  81  	    v_sql := 'select count(*) from '||v_tbl||
+19:29:35  82  		     ' where psarch_id = :1 and psarch_batchnum = :2';
+19:29:35  83  
+19:29:35  84  	    execute immediate v_sql
+19:29:35  85  	      into v_row_select
+19:29:35  86  	      using r.psarch_id, r.psarch_batchnum;
+19:29:35  87  
+19:29:35  88  	    ----------------------------------------------------------
+19:29:35  89  	    -- DELETE
+19:29:35  90  	    ----------------------------------------------------------
+19:29:35  91  	    v_sql := 'delete from '||v_tbl||
+19:29:35  92  		     ' where psarch_id = :1 and psarch_batchnum = :2';
+19:29:35  93  
+19:29:35  94  	    execute immediate v_sql
+19:29:35  95  	      using r.psarch_id, r.psarch_batchnum;
+19:29:35  96  
+19:29:35  97  	    v_rows := sql%rowcount;
+19:29:35  98  	    v_total_rows := v_total_rows + nvl(v_rows,0);
+19:29:35  99  
+19:29:35 100  	    ----------------------------------------------------------
+19:29:35 101  	    -- COMMIT / ROLLBACK DECISION
+19:29:35 102  	    ----------------------------------------------------------
+19:29:35 103  	    if v_row_select = v_rows then
+19:29:35 104  	      dbms_output.put_line(
+19:29:35 105  		'COMMIT | table='||v_tbl||
+19:29:35 106  		' | deleted='||v_rows||
+19:29:35 107  		' | PSARCH_ID='||r.psarch_id||
+19:29:35 108  		' | BATCH='||r.psarch_batchnum
+19:29:35 109  	      );
+19:29:35 110  	      rollback to savepoint one_row;
+19:29:35 111  	    else
+19:29:35 112  	      dbms_output.put_line(
+19:29:35 113  		'ROLLBACK | MISMATCH | table='||v_tbl||
+19:29:35 114  		' | expected='||v_row_select||
+19:29:35 115  		' | deleted='||v_rows||
+19:29:35 116  		' | PSARCH_ID='||r.psarch_id||
+19:29:35 117  		' | BATCH='||r.psarch_batchnum
+19:29:35 118  	      );
+19:29:35 119  	      rollback to savepoint one_row;
+19:29:35 120  
+19:29:35 121  	      if c_stop_on_first_error then
+19:29:35 122  		raise_application_error(
+19:29:35 123  		  -20003,
+19:29:35 124  		  'Row count validation failed for '||v_tbl
+19:29:35 125  		);
+19:29:35 126  	      end if;
+19:29:35 127  	    end if;
+19:29:35 128  
+19:29:35 129  	  exception
+19:29:35 130  	    when others then
+19:29:35 131  	      rollback to savepoint one_row;
+19:29:35 132  	      log_error(v_tbl, r.psarch_id, r.psarch_batchnum);
+19:29:35 133  	      if c_stop_on_first_error then
+19:29:35 134  		raise;
+19:29:35 135  	      end if;
+19:29:35 136  	  end;
+19:29:35 137  	end loop;
+19:29:35 138  
+19:29:35 139  	dbms_output.put_line('TOTAL deleted rows committed: '||v_total_rows);
+19:29:35 140  
+19:29:35 141  end;
+19:29:35 142  /
+old   3:   v_target_db    varchar2(30) := '&p_target_db';
+new   3:   v_target_db    varchar2(30) := 'TELODX';
+old   5:   v_start_ts     timestamp := to_timestamp('&p_start_date','YYYY-MM-DD');
+new   5:   v_start_ts     timestamp := to_timestamp('2023-05-01','YYYY-MM-DD');
+old   6:   v_end_ts       timestamp := to_timestamp('&p_end_date','YYYY-MM-DD') + interval '1' day;
+new   6:   v_end_ts       timestamp := to_timestamp('2024-03-01','YYYY-MM-DD') + interval '1' day;
+Execution DB      : TELODX
+Date range        : 2023-05-01 .. 2024-03-01
+COMMIT | table=PS_TECOUDFHDRX_HXX | deleted=0 | PSARCH_ID=COUDF_XX | BATCH=28
+COMMIT | table=PS_AHRJBRQDPT_H_XX | deleted=8706 | PSARCH_ID=DPTRQ_XX | BATCH=2
+COMMIT | table=PS_JOBREQ_H_XX | deleted=0 | PSARCH_ID=JOBRQ_XX | BATCH=26
+COMMIT | table=PS_PRCQUEHIST_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_AHRPSBILPY_H_XX | deleted=5664102 | PSARCH_ID=PSBPY_XX | BATCH=9
+COMMIT | table=PS_TEPOSCOMPX_H_XX | deleted=1733 | PSARCH_ID=PSCMP_XX | BATCH=11
+COMMIT | table=PS_TE_EMP_OBU_H_XX | deleted=0 | PSARCH_ID=PSHDR_XX | BATCH=23
+COMMIT | table=PS_JPMPROFILE_H_XX | deleted=0 | PSARCH_ID=PSJPM_XX | BATCH=24
+COMMIT | table=PS_ABICSTINVSP_HXX | deleted=0 | PSARCH_ID=SRVHD_XX | BATCH=27
+COMMIT | table=PS_APYCOMMSUM_H_XX | deleted=481505 | PSARCH_ID=CMSUM_XX | BATCH=1
+COMMIT | table=PS_TECOUDFVALX_HXX | deleted=0 | PSARCH_ID=COUDF_XX | BATCH=28
+COMMIT | table=PS_TEJRTCHSTX_H_XX | deleted=0 | PSARCH_ID=JOBRQ_XX | BATCH=26
+COMMIT | table=PS_AHRJOBRQPS_H_XX | deleted=1932752 | PSARCH_ID=POSRQ_XX | BATCH=3
+COMMIT | table=PS_AHRPSPCTCM_H_XX | deleted=3490352 | PSARCH_ID=PSCOM_XX | BATCH=12
+COMMIT | table=PS_JRPOSDISCX_H_XX | deleted=0 | PSARCH_ID=PSDSC_XX | BATCH=13
+COMMIT | table=PS_CANTAXDATA_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_JOB_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_PERSONALDA_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_PERS_NID_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_ABICSTINVT_H_XX | deleted=0 | PSARCH_ID=SRVHD_XX | BATCH=27
+COMMIT | table=PS_AHRPSPCTDCM_HXX | deleted=17823 | PSARCH_ID=DPTRQ_XX | BATCH=2
+COMMIT | table=PS_TEJRPOSHDX_H_XX | deleted=657246 | PSARCH_ID=POSRQ_XX | BATCH=3
+COMMIT | table=PS_PRCPARMHIS_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_CDMAUTHIST_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_PRCRQSTFLE_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_PRCTEXTHIS_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_TE_EMP_UP_H_XX | deleted=0 | PSARCH_ID=PSHDR_XX | BATCH=23
+COMMIT | table=PS_TEPSNCTEX_H_XX | deleted=61 | PSARCH_ID=PSNCT_XX | BATCH=14
+COMMIT | table=PS_EMAILADRS_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_APYSPREAD_H_XX | deleted=18577010 | PSARCH_ID=SPRD_XX | BATCH=4
+COMMIT | table=PS_AHRSRVDISX_H_XX | deleted=0 | PSARCH_ID=SRVHD_XX | BATCH=27
+COMMIT | table=PS_TECOMSBILX_H_XX | deleted=0 | PSARCH_ID=SRVHD_XX | BATCH=27
+COMMIT | table=PS_PMOASISTEC_H_XX | deleted=0 | PSARCH_ID=TEPOS_XX | BATCH=16
+COMMIT | table=PS_CA_CNTRHDR_H_XX | deleted=2 | PSARCH_ID=CONTRCTS | BATCH=21
+COMMIT | table=PS_TECOUDFX_H_XX | deleted=0 | PSARCH_ID=COUDF_XX | BATCH=28
+COMMIT | table=PS_PRCDISTHIS_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_HREXTEMP_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_PERSONALPH_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_PURGEDATA_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_AHRSRVDSX_H_XX | deleted=0 | PSARCH_ID=SRVHD_XX | BATCH=27
+COMMIT | table=PS_APYTMBILL_H_XX | deleted=6673676 | PSARCH_ID=TMBID_XX | BATCH=17
+COMMIT | table=PS_TEJOBREQX_H_XX | deleted=0 | PSARCH_ID=JOBRQ_XX | BATCH=26
+COMMIT | table=PS_PROJ_STAT_H_XX | deleted=18178 | PSARCH_ID=PRJCSTNG | BATCH=20
+COMMIT | table=PS_PROJ_ACT_H_XX | deleted=9771 | PSARCH_ID=PRJCSTNG | BATCH=20
+COMMIT | table=PS_TEPSASTDTX_H_XX | deleted=17 | PSARCH_ID=PSAST_XX | BATCH=8
+COMMIT | table=PS_TEPSASTNMX_H_XX | deleted=8 | PSARCH_ID=PSAST_XX | BATCH=8
+COMMIT | table=PS_TEBURDENX_H_XX | deleted=2328246 | PSARCH_ID=PSBUR_XX | BATCH=10
+COMMIT | table=PS_TE_EMP_REG_H_XX | deleted=0 | PSARCH_ID=PSHDR_XX | BATCH=23
+COMMIT | table=PS_TECOMMISDR_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_AHRSRVNTX_H_XX | deleted=0 | PSARCH_ID=SRVHD_XX | BATCH=27
+COMMIT | table=PS_TEJRPESMX_H_XX | deleted=0 | PSARCH_ID=TEPOS_XX | BATCH=16
+COMMIT | table=PS_APYTMBINEG_H_XX | deleted=9 | PSARCH_ID=TMBID_XX | BATCH=17
+COMMIT | table=PS_TLHRTESTGX_H_XX | deleted=0 | PSARCH_ID=TLHR_XX | BATCH=19
+COMMIT | table=PS_APYTMSUMM_H_XX | deleted=9739782 | PSARCH_ID=TMSUM_XX | BATCH=18
+COMMIT | table=PS_COMSCHHDRX_H_XX | deleted=14 | PSARCH_ID=CMSCH_XX | BATCH=7
+COMMIT | table=PS_CDMLISTHIS_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_PRCRQSTHIS_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_TEJOBRPTXX_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_APYTMBIDET_H_XX | deleted=10695168 | PSARCH_ID=TMBID_XX | BATCH=17
+COMMIT | table=PS_APYTMSUMADJ_HXX | deleted=542088 | PSARCH_ID=TMSUM_XX | BATCH=18
+COMMIT | table=PS_AHRSRVJBRT_H_XX | deleted=0 | PSARCH_ID=AJBRQ_XX | BATCH=25
+COMMIT | table=PS_COMSCHDTLX_H_XX | deleted=42 | PSARCH_ID=CMSCH_XX | BATCH=7
+COMMIT | table=PS_CA_DETAIL_H_XX | deleted=0 | PSARCH_ID=CONTRCTS | BATCH=21
+COMMIT | table=PS_TEPSTERPTX_H_XX | deleted=1932723 | PSARCH_ID=POSRQ_XX | BATCH=3
+COMMIT | table=PS_PRCRQSTSTR_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_JRPOSDSX_H_XX | deleted=0 | PSARCH_ID=PSDSC_XX | BATCH=13
+COMMIT | table=PS_TE_EMP_CO_H_XX | deleted=0 | PSARCH_ID=PSHDR_XX | BATCH=23
+COMMIT | table=PS_JOB_XX_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_PERSDATAEF_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_TEJBRQDPTX_H_XX | deleted=0 | PSARCH_ID=TEDPT_XX | BATCH=15
+COMMIT | table=PS_APYTMBILL2_H_XX | deleted=6757145 | PSARCH_ID=TMBID_XX | BATCH=17
+COMMIT | table=PS_CA_DT_PROJ_H_XX | deleted=4 | PSARCH_ID=CONTRCTS | BATCH=21
+COMMIT | table=PS_CDMFILELIS_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_PRCTXFRHIS_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=6
+COMMIT | table=PS_PROJECT_H_XX | deleted=8919 | PSARCH_ID=PRJCSTNG | BATCH=20
+COMMIT | table=PS_PROJ_ACTST_H_XX | deleted=10125 | PSARCH_ID=PRJCSTNG | BATCH=20
+COMMIT | table=PS_TEPOSASTX_H_XX | deleted=2 | PSARCH_ID=PSAST_XX | BATCH=8
+COMMIT | table=PS_AHRCMHLDT_H_XX | deleted=664 | PSARCH_ID=PSCOM_XX | BATCH=12
+COMMIT | table=PS_TE_EMP_PRD_H_XX | deleted=0 | PSARCH_ID=PSHDR_XX | BATCH=23
+COMMIT | table=PS_TE_EMP_HDR_H_XX | deleted=0 | PSARCH_ID=PSHDR_XX | BATCH=23
+COMMIT | table=PS_JOB_JR_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_STATETAXDA_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=22
+COMMIT | table=PS_AHRSRVHDRT_H_XX | deleted=0 | PSARCH_ID=SRVHD_XX | BATCH=27
+COMMIT | table=PS_TEJOBRQPSX_H_XX | deleted=369 | PSARCH_ID=TEPOS_XX | BATCH=16
+COMMIT | table=PS_TESPRDSUMX_H_XX | deleted=0 | PSARCH_ID=TESPD_XX | BATCH=5
+TOTAL deleted rows committed: 69548242
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:50:21.87
+20:19:57 SQL> spool off

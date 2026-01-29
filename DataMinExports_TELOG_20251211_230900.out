@@ -1,0 +1,2834 @@
+oracle Database name       :  TEPRD
+Oracle SID                 :  TEPRD4
+Archive Execution-From Date:  01-May-2023
+Archive Execution-To Date  :  01-Mar-2024
+Archive Year               :  1995_2000
+Archive Environment        :  TE
+ 
+=> Batch Numbers check.
+
+28 rows created.
+
+
+Commit complete.
+
+=> NLS DataBase Parameters Check.
+
+3 rows created.
+
+
+Commit complete.
+
+=> TimeZone Check.
+
+1 row created.
+
+
+Commit complete.
+
+ 
+Templates executed in Date Range 01-May-2023 and 01-Mar-2024 belongs to 1995_2000 Archival Year
+0 0 0 AJBRQ_XX AHRSRVJBRT_H_XX
+1 1 0 CMSCH_XX COMSCHDTLX_H_XX
+2 1 1 CMSCH_XX COMSCHHDRX_H_XX
+3 2 0 CMSUM_XX APYCOMMSUM_H_XX
+4 3 0 CONTRCTS CA_CNTRHDR_H_XX
+5 3 1 CONTRCTS CA_DETAIL_H_XX
+6 3 2 CONTRCTS CA_DT_PROJ_H_XX
+7 4 0 COUDF_XX TECOUDFHDRX_HXX
+8 4 1 COUDF_XX TECOUDFVALX_HXX
+9 4 2 COUDF_XX TECOUDFX_H_XX
+10 5 0 DPTRQ_XX AHRJBRQDPT_H_XX
+11 5 1 DPTRQ_XX AHRPSPCTDCM_HXX
+12 6 0 JOBRQ_XX JOBREQ_H_XX
+13 6 1 JOBRQ_XX TEJOBREQX_H_XX
+14 6 2 JOBRQ_XX TEJRTCHSTX_H_XX
+15 7 0 POSRQ_XX AHRJOBRQPS_H_XX
+16 7 1 POSRQ_XX TEJRPOSHDX_H_XX
+17 7 2 POSRQ_XX TEPSTERPTX_H_XX
+18 8 0 PRCS_XX CDMAUTHIST_H_XX
+19 8 1 PRCS_XX CDMFILELIS_H_XX
+20 8 2 PRCS_XX CDMLISTHIS_H_XX
+21 8 3 PRCS_XX PRCDISTHIS_H_XX
+22 8 4 PRCS_XX PRCPARMHIS_H_XX
+23 8 5 PRCS_XX PRCQUEHIST_H_XX
+24 8 6 PRCS_XX PRCRQSTFLE_H_XX
+25 8 7 PRCS_XX PRCRQSTHIS_H_XX
+26 8 8 PRCS_XX PRCRQSTSTR_H_XX
+27 8 9 PRCS_XX PRCTEXTHIS_H_XX
+28 8 10 PRCS_XX PRCTXFRHIS_H_XX
+29 9 0 PRJCSTNG PROJECT_H_XX
+30 9 1 PRJCSTNG PROJ_ACTST_H_XX
+31 9 2 PRJCSTNG PROJ_ACT_H_XX
+32 9 3 PRJCSTNG PROJ_STAT_H_XX
+33 10 0 PSAST_XX TEPOSASTX_H_XX
+34 10 1 PSAST_XX TEPSASTDTX_H_XX
+35 10 2 PSAST_XX TEPSASTNMX_H_XX
+36 11 0 PSBPY_XX AHRPSBILPY_H_XX
+37 12 0 PSBUR_XX TEBURDENX_H_XX
+38 13 0 PSCMP_XX TEPOSCOMPX_H_XX
+39 14 0 PSCOM_XX AHRCMHLDT_H_XX
+40 14 1 PSCOM_XX AHRPSPCTCM_H_XX
+41 15 0 PSDSC_XX JRPOSDISCX_H_XX
+42 15 1 PSDSC_XX JRPOSDSX_H_XX
+43 16 0 PSHDR_XX TE_EMP_CO_H_XX
+44 16 1 PSHDR_XX TE_EMP_HDR_H_XX
+45 16 2 PSHDR_XX TE_EMP_OBU_H_XX
+46 16 3 PSHDR_XX TE_EMP_PRD_H_XX
+47 16 4 PSHDR_XX TE_EMP_REG_H_XX
+48 16 5 PSHDR_XX TE_EMP_UP_H_XX
+49 17 0 PSJPM_XX JPMPROFILE_H_XX
+50 18 0 PSNCT_XX TEPSNCTEX_H_XX
+51 19 0 PSPDA_XX CANTAXDATA_H_XX
+52 19 1 PSPDA_XX EMAILADRS_H_XX
+53 19 2 PSPDA_XX HREXTEMP_H_XX
+54 19 3 PSPDA_XX JOB_H_XX
+55 19 4 PSPDA_XX JOB_JR_H_XX
+56 19 5 PSPDA_XX JOB_XX_H_XX
+57 19 6 PSPDA_XX PERSDATAEF_H_XX
+58 19 7 PSPDA_XX PERSONALDA_H_XX
+59 19 8 PSPDA_XX PERSONALPH_H_XX
+60 19 9 PSPDA_XX PERS_NID_H_XX
+61 19 10 PSPDA_XX PURGEDATA_H_XX
+62 19 11 PSPDA_XX STATETAXDA_H_XX
+63 19 12 PSPDA_XX TECOMMISDR_H_XX
+64 19 13 PSPDA_XX TEJOBRPTXX_H_XX
+65 20 0 SPRD_XX APYSPREAD_H_XX
+66 21 0 SRVHD_XX ABICSTINVSP_HXX
+67 21 1 SRVHD_XX ABICSTINVT_H_XX
+68 21 2 SRVHD_XX AHRSRVDISX_H_XX
+69 21 3 SRVHD_XX AHRSRVDSX_H_XX
+70 21 4 SRVHD_XX AHRSRVHDRT_H_XX
+71 21 5 SRVHD_XX AHRSRVNTX_H_XX
+72 21 6 SRVHD_XX TECOMSBILX_H_XX
+73 22 0 TEDPT_XX TEJBRQDPTX_H_XX
+74 23 0 TEPOS_XX PMOASISTEC_H_XX
+75 23 1 TEPOS_XX TEJOBRQPSX_H_XX
+76 23 2 TEPOS_XX TEJRPESMX_H_XX
+77 24 0 TESPD_XX TESPRDSUMX_H_XX
+78 25 0 TLHR_XX TLHRTESTGX_H_XX
+79 26 0 TMBID_XX APYTMBIDET_H_XX
+80 26 1 TMBID_XX APYTMBILL2_H_XX
+81 26 2 TMBID_XX APYTMBILL_H_XX
+82 26 3 TMBID_XX APYTMBINEG_H_XX
+83 27 0 TMSUM_XX APYTMSUMADJ_HXX
+84 27 1 TMSUM_XX APYTMSUMM_H_XX
+Completed Gathering Data. Total Templates to Export for Wave/Year - 1995_2000 in "TE": 28
+Today's Export Version Counter No: 1
+#########################################################################################
+Beginning export of Template : AJBRQ_XX
+#########################################################################################
+ 
+=> ( 1 ) AHRSRVJBRT_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:09:24 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=AJBRQ_XX_TE dumpfile=AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_AHRSRVJBRT_H_XX QUERY=SYSADM.PS_AHRSRVJBRT_H_XX:"WHERE PSARCH_ID='AJBRQ_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_AHRSRVJBRT_H_XX"               6.523 KB       0 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/AJBRQ_XX/TE/AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/AJBRQ_XX/TE/AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/AJBRQ_XX/TE/AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/AJBRQ_XX/TE/AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/AJBRQ_XX/TE/AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/AJBRQ_XX/TE/AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/AJBRQ_XX/TE/AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/AJBRQ_XX/TE/AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/AJBRQ_XX/TE/AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/AJBRQ_XX/TE/AJBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:10:10 2025 elapsed 0 00:00:44
+
+TEMPLATE_NAME:  AJBRQ_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-AJBRQ_XX successfully Exported, started at  Thu Dec 11 23:09:24 EST 2025 and finished at Thu Dec 11 23:10:16 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : AJBRQ_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : CMSCH_XX
+#########################################################################################
+ 
+=> ( 1 ) COMSCHDTLX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) COMSCHHDRX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:10:17 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=CMSCH_XX_TE dumpfile=CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_COMSCHDTLX_H_XX QUERY=SYSADM.PS_COMSCHDTLX_H_XX:"WHERE PSARCH_ID='CMSCH_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_COMSCHHDRX_H_XX QUERY=SYSADM.PS_COMSCHHDRX_H_XX:"WHERE PSARCH_ID='CMSCH_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . exported "SYSADM"."PS_COMSCHDTLX_H_XX"               7.140 KB      42 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_COMSCHHDRX_H_XX"               5.945 KB      14 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/CMSCH_XX/TE/CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/CMSCH_XX/TE/CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/CMSCH_XX/TE/CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/CMSCH_XX/TE/CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/CMSCH_XX/TE/CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/CMSCH_XX/TE/CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/CMSCH_XX/TE/CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/CMSCH_XX/TE/CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/CMSCH_XX/TE/CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/CMSCH_XX/TE/CMSCH_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:10:47 2025 elapsed 0 00:00:29
+
+TEMPLATE_NAME:  CMSCH_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-CMSCH_XX successfully Exported, started at  Thu Dec 11 23:10:17 EST 2025 and finished at Thu Dec 11 23:10:51 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : CMSCH_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : CMSUM_XX
+#########################################################################################
+ 
+=> ( 1 ) APYCOMMSUM_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:10:53 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=CMSUM_XX_TE dumpfile=CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_APYCOMMSUM_H_XX QUERY=SYSADM.PS_APYCOMMSUM_H_XX:"WHERE PSARCH_ID='CMSUM_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_APYCOMMSUM_H_XX"               5.811 MB  481505 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/CMSUM_XX/TE/CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/CMSUM_XX/TE/CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/CMSUM_XX/TE/CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/CMSUM_XX/TE/CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/CMSUM_XX/TE/CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/CMSUM_XX/TE/CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/CMSUM_XX/TE/CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/CMSUM_XX/TE/CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/CMSUM_XX/TE/CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/CMSUM_XX/TE/CMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:11:24 2025 elapsed 0 00:00:31
+
+TEMPLATE_NAME:  CMSUM_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-CMSUM_XX successfully Exported, started at  Thu Dec 11 23:10:53 EST 2025 and finished at Thu Dec 11 23:11:29 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : CMSUM_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : CONTRCTS
+#########################################################################################
+ 
+=> ( 1 ) CA_CNTRHDR_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+5 rows created.
+
+
+Commit complete.
+
+=> ( 2 ) CA_DETAIL_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+4 rows created.
+
+
+Commit complete.
+
+=> ( 3 ) CA_DT_PROJ_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:11:30 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=CONTRCTS_TE dumpfile=CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_CA_CNTRHDR_H_XX QUERY=SYSADM.PS_CA_CNTRHDR_H_XX:"WHERE PSARCH_ID='CONTRCTS' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_CA_DETAIL_H_XX QUERY=SYSADM.PS_CA_DETAIL_H_XX:"WHERE PSARCH_ID='CONTRCTS' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_CA_DT_PROJ_H_XX QUERY=SYSADM.PS_CA_DT_PROJ_H_XX:"WHERE PSARCH_ID='CONTRCTS' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . exported "SYSADM"."PS_CA_DT_PROJ_H_XX"               5.937 KB       4 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_CA_CNTRHDR_H_XX"               8.742 KB       2 rows
+. . exported "SYSADM"."PS_CA_DETAIL_H_XX"                    0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/CONTRCTS/TE/CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/CONTRCTS/TE/CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/CONTRCTS/TE/CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/CONTRCTS/TE/CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/CONTRCTS/TE/CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/CONTRCTS/TE/CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/CONTRCTS/TE/CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/CONTRCTS/TE/CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/CONTRCTS/TE/CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/CONTRCTS/TE/CONTRCTS_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:12:00 2025 elapsed 0 00:00:30
+
+TEMPLATE_NAME:  CONTRCTS
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-CONTRCTS successfully Exported, started at  Thu Dec 11 23:11:30 EST 2025 and finished at Thu Dec 11 23:12:04 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : CONTRCTS
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : COUDF_XX
+#########################################################################################
+ 
+=> ( 1 ) TECOUDFHDRX_HXX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) TECOUDFVALX_HXX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) TECOUDFX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:12:05 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=COUDF_XX_TE dumpfile=COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_TECOUDFHDRX_HXX QUERY=SYSADM.PS_TECOUDFHDRX_HXX:"WHERE PSARCH_ID='COUDF_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TECOUDFVALX_HXX QUERY=SYSADM.PS_TECOUDFVALX_HXX:"WHERE PSARCH_ID='COUDF_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TECOUDFX_H_XX QUERY=SYSADM.PS_TECOUDFX_H_XX:"WHERE PSARCH_ID='COUDF_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . exported "SYSADM"."PS_TECOUDFX_H_XX"                 5.335 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_TECOUDFHDRX_HXX"               5.585 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_TECOUDFVALX_HXX"               5.679 KB       0 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/COUDF_XX/TE/COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/COUDF_XX/TE/COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/COUDF_XX/TE/COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/COUDF_XX/TE/COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/COUDF_XX/TE/COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/COUDF_XX/TE/COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/COUDF_XX/TE/COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/COUDF_XX/TE/COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/COUDF_XX/TE/COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/COUDF_XX/TE/COUDF_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:12:36 2025 elapsed 0 00:00:31
+
+TEMPLATE_NAME:  COUDF_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-COUDF_XX successfully Exported, started at  Thu Dec 11 23:12:05 EST 2025 and finished at Thu Dec 11 23:12:41 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : COUDF_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : DPTRQ_XX
+#########################################################################################
+ 
+=> ( 1 ) AHRJBRQDPT_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 2 ) AHRPSPCTDCM_HXX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:12:42 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=DPTRQ_XX_TE dumpfile=DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_AHRJBRQDPT_H_XX QUERY=SYSADM.PS_AHRJBRQDPT_H_XX:"WHERE PSARCH_ID='DPTRQ_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AHRPSPCTDCM_HXX QUERY=SYSADM.PS_AHRPSPCTDCM_HXX:"WHERE PSARCH_ID='DPTRQ_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . exported "SYSADM"."PS_AHRPSPCTDCM_HXX"               209.5 KB   17823 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_AHRJBRQDPT_H_XX"               285.4 KB    8706 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/DPTRQ_XX/TE/DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/DPTRQ_XX/TE/DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/DPTRQ_XX/TE/DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/DPTRQ_XX/TE/DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/DPTRQ_XX/TE/DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/DPTRQ_XX/TE/DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/DPTRQ_XX/TE/DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/DPTRQ_XX/TE/DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/DPTRQ_XX/TE/DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/DPTRQ_XX/TE/DPTRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:13:14 2025 elapsed 0 00:00:32
+
+TEMPLATE_NAME:  DPTRQ_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-DPTRQ_XX successfully Exported, started at  Thu Dec 11 23:12:42 EST 2025 and finished at Thu Dec 11 23:13:19 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : DPTRQ_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : JOBRQ_XX
+#########################################################################################
+ 
+=> ( 1 ) JOBREQ_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+6 rows created.
+
+
+Commit complete.
+
+=> ( 2 ) TEJOBREQX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) TEJRTCHSTX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:13:20 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=JOBRQ_XX_TE dumpfile=JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_JOBREQ_H_XX QUERY=SYSADM.PS_JOBREQ_H_XX:"WHERE PSARCH_ID='JOBRQ_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TEJOBREQX_H_XX QUERY=SYSADM.PS_TEJOBREQX_H_XX:"WHERE PSARCH_ID='JOBRQ_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TEJRTCHSTX_H_XX QUERY=SYSADM.PS_TEJRTCHSTX_H_XX:"WHERE PSARCH_ID='JOBRQ_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_TEJRTCHSTX_H_XX"               5.601 KB       0 rows
+. . exported "SYSADM"."PS_TEJOBREQX_H_XX"                5.531 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_JOBREQ_H_XX"                   7.554 KB       0 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/JOBRQ_XX/TE/JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/JOBRQ_XX/TE/JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/JOBRQ_XX/TE/JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/JOBRQ_XX/TE/JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/JOBRQ_XX/TE/JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/JOBRQ_XX/TE/JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/JOBRQ_XX/TE/JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/JOBRQ_XX/TE/JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/JOBRQ_XX/TE/JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/JOBRQ_XX/TE/JOBRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:13:53 2025 elapsed 0 00:00:32
+
+TEMPLATE_NAME:  JOBRQ_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-JOBRQ_XX successfully Exported, started at  Thu Dec 11 23:13:20 EST 2025 and finished at Thu Dec 11 23:13:58 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : JOBRQ_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : POSRQ_XX
+#########################################################################################
+ 
+=> ( 1 ) AHRJOBRQPS_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+=> ( 2 ) TEJRPOSHDX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 3 ) TEPSTERPTX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:14:16 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=POSRQ_XX_TE dumpfile=POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_AHRJOBRQPS_H_XX QUERY=SYSADM.PS_AHRJOBRQPS_H_XX:"WHERE PSARCH_ID='POSRQ_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TEJRPOSHDX_H_XX QUERY=SYSADM.PS_TEJRPOSHDX_H_XX:"WHERE PSARCH_ID='POSRQ_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TEPSTERPTX_H_XX QUERY=SYSADM.PS_TEPSTERPTX_H_XX:"WHERE PSARCH_ID='POSRQ_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_AHRJOBRQPS_H_XX"               79.09 MB 1932752 rows
+. . exported "SYSADM"."PS_TEPSTERPTX_H_XX"               31.02 MB 1932723 rows
+. . exported "SYSADM"."PS_TEJRPOSHDX_H_XX"               5.300 MB  657246 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_11.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_12.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_13.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_14.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_15.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_16.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_17.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_18.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_19.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_20.dmp
+  /backup/data_arch/POSRQ_XX/TE/POSRQ_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_21.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:15:07 2025 elapsed 0 00:00:50
+
+TEMPLATE_NAME:  POSRQ_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-POSRQ_XX successfully Exported, started at  Thu Dec 11 23:14:16 EST 2025 and finished at Thu Dec 11 23:15:10 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : POSRQ_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PRCS_XX
+#########################################################################################
+ 
+=> ( 1 ) CDMAUTHIST_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) CDMFILELIS_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) CDMLISTHIS_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 4 ) PRCDISTHIS_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 5 ) PRCPARMHIS_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 6 ) PRCQUEHIST_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 7 ) PRCRQSTFLE_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 8 ) PRCRQSTHIS_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 9 ) PRCRQSTSTR_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 10 ) PRCTEXTHIS_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 11 ) PRCTXFRHIS_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:15:14 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PRCS_XX_TE dumpfile=PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_CDMAUTHIST_H_XX QUERY=SYSADM.PS_CDMAUTHIST_H_XX:"WHERE PSARCH_ID='PRCS_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_CDMFILELIS_H_XX QUERY=SYSADM.PS_CDMFILELIS_H_XX:"WHERE PSARCH_ID='PRCS_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_CDMLISTHIS_H_XX QUERY=SYSADM.PS_CDMLISTHIS_H_XX:"WHERE PSARCH_ID='PRCS_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_PRCDISTHIS_H_XX QUERY=SYSADM.PS_PRCDISTHIS_H_XX:"WHERE PSARCH_ID='PRCS_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_PRCPARMHIS_H_XX QUERY=SYSADM.PS_PRCPARMHIS_H_XX:"WHERE PSARCH_ID='PRCS_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_PRCQUEHIST_H_XX QUERY=SYSADM.PS_PRCQUEHIST_H_XX:"WHERE PSARCH_ID='PRCS_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_PRCRQSTFLE_H_XX QUERY=SYSADM.PS_PRCRQSTFLE_H_XX:"
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_PRCPARMHIS_H_XX"               55.23 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_PRCRQSTSTR_H_XX"               5.015 KB       0 rows
+. . exported "SYSADM"."PS_PRCRQSTHIS_H_XX"               30.34 KB       0 rows
+. . exported "SYSADM"."PS_CDMAUTHIST_H_XX"               5.109 KB       0 rows
+. . exported "SYSADM"."PS_PRCQUEHIST_H_XX"               32.21 KB       0 rows
+. . exported "SYSADM"."PS_CDMLISTHIS_H_XX"               6.046 KB       0 rows
+. . exported "SYSADM"."PS_PRCRQSTFLE_H_XX"               5.007 KB       0 rows
+. . exported "SYSADM"."PS_PRCTXFRHIS_H_XX"               5.007 KB       0 rows
+. . exported "SYSADM"."PS_CDMFILELIS_H_XX"               10.60 KB       0 rows
+. . exported "SYSADM"."PS_PRCDISTHIS_H_XX"               5.015 KB       0 rows
+. . exported "SYSADM"."PS_PRCTEXTHIS_H_XX"               5.015 KB       0 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_11.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_12.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_13.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_14.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_15.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_16.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_17.dmp
+  /backup/data_arch/PRCS_XX/TE/PRCS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_18.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:15:54 2025 elapsed 0 00:00:39
+
+TEMPLATE_NAME:  PRCS_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PRCS_XX successfully Exported, started at  Thu Dec 11 23:15:14 EST 2025 and finished at Thu Dec 11 23:15:58 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PRCS_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PRJCSTNG
+#########################################################################################
+ 
+=> ( 1 ) PROJECT_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) PROJ_ACTST_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 3 ) PROJ_ACT_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 4 ) PROJ_STAT_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:15:59 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PRJCSTNG_TE dumpfile=PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_PROJECT_H_XX QUERY=SYSADM.PS_PROJECT_H_XX:"WHERE PSARCH_ID='PRJCSTNG' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_PROJ_ACTST_H_XX QUERY=SYSADM.PS_PROJ_ACTST_H_XX:"WHERE PSARCH_ID='PRJCSTNG' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_PROJ_ACT_H_XX QUERY=SYSADM.PS_PROJ_ACT_H_XX:"WHERE PSARCH_ID='PRJCSTNG' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_PROJ_STAT_H_XX QUERY=SYSADM.PS_PROJ_STAT_H_XX:"WHERE PSARCH_ID='PRJCSTNG' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_PROJ_ACT_H_XX"                 298.3 KB    9771 rows
+. . exported "SYSADM"."PS_PROJECT_H_XX"                  463.3 KB    8919 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_PROJ_ACTST_H_XX"               69.64 KB   10125 rows
+. . exported "SYSADM"."PS_PROJ_STAT_H_XX"                112.4 KB   18178 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PRJCSTNG/TE/PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PRJCSTNG/TE/PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PRJCSTNG/TE/PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PRJCSTNG/TE/PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PRJCSTNG/TE/PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PRJCSTNG/TE/PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PRJCSTNG/TE/PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PRJCSTNG/TE/PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PRJCSTNG/TE/PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/PRJCSTNG/TE/PRJCSTNG_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:16:31 2025 elapsed 0 00:00:31
+
+TEMPLATE_NAME:  PRJCSTNG
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PRJCSTNG successfully Exported, started at  Thu Dec 11 23:15:59 EST 2025 and finished at Thu Dec 11 23:16:35 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PRJCSTNG
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PSAST_XX
+#########################################################################################
+ 
+=> ( 1 ) TEPOSASTX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) TEPSASTDTX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) TEPSASTNMX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:16:36 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PSAST_XX_TE dumpfile=PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_TEPOSASTX_H_XX QUERY=SYSADM.PS_TEPOSASTX_H_XX:"WHERE PSARCH_ID='PSAST_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TEPSASTDTX_H_XX QUERY=SYSADM.PS_TEPSASTDTX_H_XX:"WHERE PSARCH_ID='PSAST_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TEPSASTNMX_H_XX QUERY=SYSADM.PS_TEPSASTNMX_H_XX:"WHERE PSARCH_ID='PSAST_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . exported "SYSADM"."PS_TEPSASTDTX_H_XX"               7.015 KB      17 rows
+. . exported "SYSADM"."PS_TEPSASTNMX_H_XX"               5.679 KB       8 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_TEPOSASTX_H_XX"                5.281 KB       2 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PSAST_XX/TE/PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PSAST_XX/TE/PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PSAST_XX/TE/PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PSAST_XX/TE/PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PSAST_XX/TE/PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PSAST_XX/TE/PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PSAST_XX/TE/PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PSAST_XX/TE/PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PSAST_XX/TE/PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/PSAST_XX/TE/PSAST_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:17:06 2025 elapsed 0 00:00:30
+
+TEMPLATE_NAME:  PSAST_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PSAST_XX successfully Exported, started at  Thu Dec 11 23:16:36 EST 2025 and finished at Thu Dec 11 23:17:09 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PSAST_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PSBPY_XX
+#########################################################################################
+ 
+=> ( 1 ) AHRPSBILPY_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:17:36 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PSBPY_XX_TE dumpfile=PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_AHRPSBILPY_H_XX QUERY=SYSADM.PS_AHRPSBILPY_H_XX:"WHERE PSARCH_ID='PSBPY_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_AHRPSBILPY_H_XX"               85.17 MB 5664102 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_11.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_12.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_13.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_14.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_15.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_16.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_17.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_18.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_19.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_20.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_21.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_22.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_23.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_24.dmp
+  /backup/data_arch/PSBPY_XX/TE/PSBPY_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_25.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:18:08 2025 elapsed 0 00:00:32
+
+TEMPLATE_NAME:  PSBPY_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PSBPY_XX successfully Exported, started at  Thu Dec 11 23:17:36 EST 2025 and finished at Thu Dec 11 23:18:12 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PSBPY_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PSBUR_XX
+#########################################################################################
+ 
+=> ( 1 ) TEBURDENX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:18:24 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PSBUR_XX_TE dumpfile=PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_TEBURDENX_H_XX QUERY=SYSADM.PS_TEBURDENX_H_XX:"WHERE PSARCH_ID='PSBUR_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_TEBURDENX_H_XX"                20.37 MB 2328246 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_11.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_12.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_13.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_14.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_15.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_16.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_17.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_18.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_19.dmp
+  /backup/data_arch/PSBUR_XX/TE/PSBUR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_20.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:18:55 2025 elapsed 0 00:00:30
+
+TEMPLATE_NAME:  PSBUR_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PSBUR_XX successfully Exported, started at  Thu Dec 11 23:18:24 EST 2025 and finished at Thu Dec 11 23:18:57 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PSBUR_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PSCMP_XX
+#########################################################################################
+ 
+=> ( 1 ) TEPOSCOMPX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:18:57 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PSCMP_XX_TE dumpfile=PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_TEPOSCOMPX_H_XX QUERY=SYSADM.PS_TEPOSCOMPX_H_XX:"WHERE PSARCH_ID='PSCMP_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_TEPOSCOMPX_H_XX"               43.79 KB    1733 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PSCMP_XX/TE/PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PSCMP_XX/TE/PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PSCMP_XX/TE/PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PSCMP_XX/TE/PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PSCMP_XX/TE/PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PSCMP_XX/TE/PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PSCMP_XX/TE/PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PSCMP_XX/TE/PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PSCMP_XX/TE/PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/PSCMP_XX/TE/PSCMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:19:28 2025 elapsed 0 00:00:29
+
+TEMPLATE_NAME:  PSCMP_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PSCMP_XX successfully Exported, started at  Thu Dec 11 23:18:57 EST 2025 and finished at Thu Dec 11 23:19:31 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PSCMP_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PSCOM_XX
+#########################################################################################
+ 
+=> ( 1 ) AHRCMHLDT_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) AHRPSPCTCM_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:19:50 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PSCOM_XX_TE dumpfile=PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_AHRCMHLDT_H_XX QUERY=SYSADM.PS_AHRCMHLDT_H_XX:"WHERE PSARCH_ID='PSCOM_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AHRPSPCTCM_H_XX QUERY=SYSADM.PS_AHRPSPCTCM_H_XX:"WHERE PSARCH_ID='PSCOM_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . exported "SYSADM"."PS_AHRCMHLDT_H_XX"                14.53 KB     664 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_AHRPSPCTCM_H_XX"               25.21 MB 3490352 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_11.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_12.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_13.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_14.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_15.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_16.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_17.dmp
+  /backup/data_arch/PSCOM_XX/TE/PSCOM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_18.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:20:41 2025 elapsed 0 00:00:51
+
+TEMPLATE_NAME:  PSCOM_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PSCOM_XX successfully Exported, started at  Thu Dec 11 23:19:50 EST 2025 and finished at Thu Dec 11 23:20:44 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PSCOM_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PSDSC_XX
+#########################################################################################
+ 
+=> ( 1 ) JRPOSDISCX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) JRPOSDSX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:20:45 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PSDSC_XX_TE dumpfile=PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_JRPOSDISCX_H_XX QUERY=SYSADM.PS_JRPOSDISCX_H_XX:"WHERE PSARCH_ID='PSDSC_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_JRPOSDSX_H_XX QUERY=SYSADM.PS_JRPOSDSX_H_XX:"WHERE PSARCH_ID='PSDSC_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . exported "SYSADM"."PS_JRPOSDSX_H_XX"                 5.734 KB       0 rows
+. . exported "SYSADM"."PS_JRPOSDISCX_H_XX"               5.609 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PSDSC_XX/TE/PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PSDSC_XX/TE/PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PSDSC_XX/TE/PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PSDSC_XX/TE/PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PSDSC_XX/TE/PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PSDSC_XX/TE/PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PSDSC_XX/TE/PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PSDSC_XX/TE/PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PSDSC_XX/TE/PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/PSDSC_XX/TE/PSDSC_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:21:16 2025 elapsed 0 00:00:30
+
+TEMPLATE_NAME:  PSDSC_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PSDSC_XX successfully Exported, started at  Thu Dec 11 23:20:45 EST 2025 and finished at Thu Dec 11 23:21:18 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PSDSC_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PSHDR_XX
+#########################################################################################
+ 
+=> ( 1 ) TE_EMP_CO_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) TE_EMP_HDR_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) TE_EMP_OBU_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 4 ) TE_EMP_PRD_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 5 ) TE_EMP_REG_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 6 ) TE_EMP_UP_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:21:20 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PSHDR_XX_TE dumpfile=PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_TE_EMP_CO_H_XX QUERY=SYSADM.PS_TE_EMP_CO_H_XX:"WHERE PSARCH_ID='PSHDR_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TE_EMP_HDR_H_XX QUERY=SYSADM.PS_TE_EMP_HDR_H_XX:"WHERE PSARCH_ID='PSHDR_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TE_EMP_OBU_H_XX QUERY=SYSADM.PS_TE_EMP_OBU_H_XX:"WHERE PSARCH_ID='PSHDR_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TE_EMP_PRD_H_XX QUERY=SYSADM.PS_TE_EMP_PRD_H_XX:"WHERE PSARCH_ID='PSHDR_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TE_EMP_REG_H_XX QUERY=SYSADM.PS_TE_EMP_REG_H_XX:"WHERE PSARCH_ID='PSHDR_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TE_EMP_UP_H_XX QUERY=SYSADM.PS_TE_EMP_UP_H_XX:"WHERE PSARCH_ID='PSHDR_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+. . exported "SYSADM"."PS_TE_EMP_CO_H_XX"                    0 KB       0 rows
+. . exported "SYSADM"."PS_TE_EMP_HDR_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_TE_EMP_OBU_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_TE_EMP_PRD_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_TE_EMP_REG_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_TE_EMP_UP_H_XX"                    0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PSHDR_XX/TE/PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PSHDR_XX/TE/PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PSHDR_XX/TE/PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PSHDR_XX/TE/PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PSHDR_XX/TE/PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PSHDR_XX/TE/PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PSHDR_XX/TE/PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PSHDR_XX/TE/PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PSHDR_XX/TE/PSHDR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:21:55 2025 elapsed 0 00:00:34
+
+TEMPLATE_NAME:  PSHDR_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PSHDR_XX successfully Exported, started at  Thu Dec 11 23:21:20 EST 2025 and finished at Thu Dec 11 23:21:58 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PSHDR_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PSJPM_XX
+#########################################################################################
+ 
+=> ( 1 ) JPMPROFILE_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+8 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:21:58 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PSJPM_XX_TE dumpfile=PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_JPMPROFILE_H_XX QUERY=SYSADM.PS_JPMPROFILE_H_XX:"WHERE PSARCH_ID='PSJPM_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+. . exported "SYSADM"."PS_JPMPROFILE_H_XX"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PSJPM_XX/TE/PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PSJPM_XX/TE/PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PSJPM_XX/TE/PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PSJPM_XX/TE/PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PSJPM_XX/TE/PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PSJPM_XX/TE/PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PSJPM_XX/TE/PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PSJPM_XX/TE/PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PSJPM_XX/TE/PSJPM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:22:34 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  PSJPM_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PSJPM_XX successfully Exported, started at  Thu Dec 11 23:21:58 EST 2025 and finished at Thu Dec 11 23:22:37 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PSJPM_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PSNCT_XX
+#########################################################################################
+ 
+=> ( 1 ) TEPSNCTEX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:22:37 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PSNCT_XX_TE dumpfile=PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_TEPSNCTEX_H_XX QUERY=SYSADM.PS_TEPSNCTEX_H_XX:"WHERE PSARCH_ID='PSNCT_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_TEPSNCTEX_H_XX"                6.859 KB      61 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PSNCT_XX/TE/PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PSNCT_XX/TE/PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PSNCT_XX/TE/PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PSNCT_XX/TE/PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PSNCT_XX/TE/PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PSNCT_XX/TE/PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PSNCT_XX/TE/PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PSNCT_XX/TE/PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PSNCT_XX/TE/PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/PSNCT_XX/TE/PSNCT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:23:14 2025 elapsed 0 00:00:36
+
+TEMPLATE_NAME:  PSNCT_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PSNCT_XX successfully Exported, started at  Thu Dec 11 23:22:37 EST 2025 and finished at Thu Dec 11 23:23:18 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PSNCT_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : PSPDA_XX
+#########################################################################################
+ 
+=> ( 1 ) CANTAXDATA_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) EMAILADRS_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) HREXTEMP_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 4 ) JOB_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+6 rows created.
+
+
+Commit complete.
+
+=> ( 5 ) JOB_JR_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 6 ) JOB_XX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 7 ) PERSDATAEF_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+=> ( 8 ) PERSONALDA_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+=> ( 9 ) PERSONALPH_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 10 ) PERS_NID_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 11 ) PURGEDATA_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 12 ) STATETAXDA_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 13 ) TECOMMISDR_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 14 ) TEJOBRPTXX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:23:24 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=PSPDA_XX_TE dumpfile=PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_CANTAXDATA_H_XX QUERY=SYSADM.PS_CANTAXDATA_H_XX:"WHERE PSARCH_ID='PSPDA_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_EMAILADRS_H_XX QUERY=SYSADM.PS_EMAILADRS_H_XX:"WHERE PSARCH_ID='PSPDA_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_HREXTEMP_H_XX QUERY=SYSADM.PS_HREXTEMP_H_XX:"WHERE PSARCH_ID='PSPDA_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_JOB_H_XX QUERY=SYSADM.PS_JOB_H_XX:"WHERE PSARCH_ID='PSPDA_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_JOB_JR_H_XX QUERY=SYSADM.PS_JOB_JR_H_XX:"WHERE PSARCH_ID='PSPDA_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_JOB_XX_H_XX QUERY=SYSADM.PS_JOB_XX_H_XX:"WHERE PSARCH_ID='PSPDA_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_PERSDATAEF_H_XX QUERY=SYSADM.PS_PERSDATAEF_H_XX:"WHERE PSARCH_ID='PSPDA_XX' 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+. . exported "SYSADM"."PS_CANTAXDATA_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_EMAILADRS_H_XX"                    0 KB       0 rows
+. . exported "SYSADM"."PS_HREXTEMP_H_XX"                     0 KB       0 rows
+. . exported "SYSADM"."PS_JOB_H_XX"                          0 KB       0 rows
+. . exported "SYSADM"."PS_JOB_JR_H_XX"                       0 KB       0 rows
+. . exported "SYSADM"."PS_JOB_XX_H_XX"                       0 KB       0 rows
+. . exported "SYSADM"."PS_PERSDATAEF_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_PERSONALDA_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_PERSONALPH_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_PERS_NID_H_XX"                     0 KB       0 rows
+. . exported "SYSADM"."PS_PURGEDATA_H_XX"                    0 KB       0 rows
+. . exported "SYSADM"."PS_STATETAXDA_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_TECOMMISDR_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_TEJOBRPTXX_H_XX"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/PSPDA_XX/TE/PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/PSPDA_XX/TE/PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/PSPDA_XX/TE/PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/PSPDA_XX/TE/PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/PSPDA_XX/TE/PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/PSPDA_XX/TE/PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/PSPDA_XX/TE/PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/PSPDA_XX/TE/PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/PSPDA_XX/TE/PSPDA_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:23:56 2025 elapsed 0 00:00:32
+
+TEMPLATE_NAME:  PSPDA_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-PSPDA_XX successfully Exported, started at  Thu Dec 11 23:23:24 EST 2025 and finished at Thu Dec 11 23:24:01 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : PSPDA_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : SPRD_XX
+#########################################################################################
+ 
+=> ( 1 ) APYSPREAD_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:25:19 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=SPRD_XX_TE dumpfile=SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_APYSPREAD_H_XX QUERY=SYSADM.PS_APYSPREAD_H_XX:"WHERE PSARCH_ID='SPRD_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_APYSPREAD_H_XX"                429.4 MB 18577010 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_11.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_12.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_13.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_14.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_15.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_16.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_17.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_18.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_19.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_20.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_21.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_22.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_23.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_24.dmp
+  /backup/data_arch/SPRD_XX/TE/SPRD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_25.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:26:05 2025 elapsed 0 00:00:45
+
+TEMPLATE_NAME:  SPRD_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-SPRD_XX successfully Exported, started at  Thu Dec 11 23:25:19 EST 2025 and finished at Thu Dec 11 23:26:08 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : SPRD_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : SRVHD_XX
+#########################################################################################
+ 
+=> ( 1 ) ABICSTINVSP_HXX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) ABICSTINVT_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) AHRSRVDISX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 4 ) AHRSRVDSX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 5 ) AHRSRVHDRT_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+=> ( 6 ) AHRSRVNTX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 7 ) TECOMSBILX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:26:11 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=SRVHD_XX_TE dumpfile=SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_ABICSTINVSP_HXX QUERY=SYSADM.PS_ABICSTINVSP_HXX:"WHERE PSARCH_ID='SRVHD_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_ABICSTINVT_H_XX QUERY=SYSADM.PS_ABICSTINVT_H_XX:"WHERE PSARCH_ID='SRVHD_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AHRSRVDISX_H_XX QUERY=SYSADM.PS_AHRSRVDISX_H_XX:"WHERE PSARCH_ID='SRVHD_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AHRSRVDSX_H_XX QUERY=SYSADM.PS_AHRSRVDSX_H_XX:"WHERE PSARCH_ID='SRVHD_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AHRSRVHDRT_H_XX QUERY=SYSADM.PS_AHRSRVHDRT_H_XX:"WHERE PSARCH_ID='SRVHD_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AHRSRVNTX_H_XX QUERY=SYSADM.PS_AHRSRVNTX_H_XX:"WHERE PSARCH_ID='SRVHD_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TECOMSBILX_H_XX QUERY=SYSADM.PS_TECOMSBILX_H
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . exported "SYSADM"."PS_ABICSTINVSP_HXX"               5.210 KB       0 rows
+. . exported "SYSADM"."PS_AHRSRVHDRT_H_XX"               7.375 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_AHRSRVDSX_H_XX"                5.562 KB       0 rows
+. . exported "SYSADM"."PS_AHRSRVDISX_H_XX"               5.460 KB       0 rows
+. . exported "SYSADM"."PS_AHRSRVNTX_H_XX"                5.562 KB       0 rows
+. . exported "SYSADM"."PS_ABICSTINVT_H_XX"               5.601 KB       0 rows
+. . exported "SYSADM"."PS_TECOMSBILX_H_XX"               5.679 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/SRVHD_XX/TE/SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/SRVHD_XX/TE/SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/SRVHD_XX/TE/SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/SRVHD_XX/TE/SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/SRVHD_XX/TE/SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/SRVHD_XX/TE/SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/SRVHD_XX/TE/SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/SRVHD_XX/TE/SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/SRVHD_XX/TE/SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/SRVHD_XX/TE/SRVHD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:26:45 2025 elapsed 0 00:00:33
+
+TEMPLATE_NAME:  SRVHD_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-SRVHD_XX successfully Exported, started at  Thu Dec 11 23:26:11 EST 2025 and finished at Thu Dec 11 23:26:50 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : SRVHD_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : TEDPT_XX
+#########################################################################################
+ 
+=> ( 1 ) TEJBRQDPTX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:26:51 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=TEDPT_XX_TE dumpfile=TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_TEJBRQDPTX_H_XX QUERY=SYSADM.PS_TEJBRQDPTX_H_XX:"WHERE PSARCH_ID='TEDPT_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . exported "SYSADM"."PS_TEJBRQDPTX_H_XX"               5.875 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/TEDPT_XX/TE/TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/TEDPT_XX/TE/TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/TEDPT_XX/TE/TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/TEDPT_XX/TE/TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/TEDPT_XX/TE/TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/TEDPT_XX/TE/TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/TEDPT_XX/TE/TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/TEDPT_XX/TE/TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/TEDPT_XX/TE/TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/TEDPT_XX/TE/TEDPT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:27:21 2025 elapsed 0 00:00:30
+
+TEMPLATE_NAME:  TEDPT_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-TEDPT_XX successfully Exported, started at  Thu Dec 11 23:26:51 EST 2025 and finished at Thu Dec 11 23:27:24 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : TEDPT_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : TEPOS_XX
+#########################################################################################
+ 
+=> ( 1 ) PMOASISTEC_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) TEJOBRQPSX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) TEJRPESMX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:27:25 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=TEPOS_XX_TE dumpfile=TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_PMOASISTEC_H_XX QUERY=SYSADM.PS_PMOASISTEC_H_XX:"WHERE PSARCH_ID='TEPOS_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TEJOBRQPSX_H_XX QUERY=SYSADM.PS_TEJOBRQPSX_H_XX:"WHERE PSARCH_ID='TEPOS_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_TEJRPESMX_H_XX QUERY=SYSADM.PS_TEJRPESMX_H_XX:"WHERE PSARCH_ID='TEPOS_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+. . exported "SYSADM"."PS_TEJRPESMX_H_XX"                5.812 KB       0 rows
+. . exported "SYSADM"."PS_PMOASISTEC_H_XX"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_TEJOBRQPSX_H_XX"                  23 KB     369 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+  /backup/data_arch/TEPOS_XX/TE/TEPOS_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_11.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:27:55 2025 elapsed 0 00:00:30
+
+TEMPLATE_NAME:  TEPOS_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-TEPOS_XX successfully Exported, started at  Thu Dec 11 23:27:25 EST 2025 and finished at Thu Dec 11 23:27:58 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : TEPOS_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : TESPD_XX
+#########################################################################################
+ 
+=> ( 1 ) TESPRDSUMX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:27:59 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=TESPD_XX_TE dumpfile=TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_TESPRDSUMX_H_XX QUERY=SYSADM.PS_TESPRDSUMX_H_XX:"WHERE PSARCH_ID='TESPD_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+. . exported "SYSADM"."PS_TESPRDSUMX_H_XX"               5.281 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/TESPD_XX/TE/TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/TESPD_XX/TE/TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/TESPD_XX/TE/TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/TESPD_XX/TE/TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/TESPD_XX/TE/TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/TESPD_XX/TE/TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/TESPD_XX/TE/TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/TESPD_XX/TE/TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/TESPD_XX/TE/TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/TESPD_XX/TE/TESPD_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:28:29 2025 elapsed 0 00:00:30
+
+TEMPLATE_NAME:  TESPD_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-TESPD_XX successfully Exported, started at  Thu Dec 11 23:27:59 EST 2025 and finished at Thu Dec 11 23:28:32 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : TESPD_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : TLHR_XX
+#########################################################################################
+ 
+=> ( 1 ) TLHRTESTGX_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:28:32 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=TLHR_XX_TE dumpfile=TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_TLHRTESTGX_H_XX QUERY=SYSADM.PS_TLHRTESTGX_H_XX:"WHERE PSARCH_ID='TLHR_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+. . exported "SYSADM"."PS_TLHRTESTGX_H_XX"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/TLHR_XX/TE/TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/TLHR_XX/TE/TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/TLHR_XX/TE/TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/TLHR_XX/TE/TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/TLHR_XX/TE/TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/TLHR_XX/TE/TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/TLHR_XX/TE/TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/TLHR_XX/TE/TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/TLHR_XX/TE/TLHR_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:29:02 2025 elapsed 0 00:00:29
+
+TEMPLATE_NAME:  TLHR_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-TLHR_XX successfully Exported, started at  Thu Dec 11 23:28:32 EST 2025 and finished at Thu Dec 11 23:29:06 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : TLHR_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : TMBID_XX
+#########################################################################################
+ 
+=> ( 1 ) APYTMBIDET_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) APYTMBILL2_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) APYTMBILL_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 4 ) APYTMBINEG_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:31:02 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=TMBID_XX_TE dumpfile=TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_APYTMBIDET_H_XX QUERY=SYSADM.PS_APYTMBIDET_H_XX:"WHERE PSARCH_ID='TMBID_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_APYTMBILL2_H_XX QUERY=SYSADM.PS_APYTMBILL2_H_XX:"WHERE PSARCH_ID='TMBID_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_APYTMBILL_H_XX QUERY=SYSADM.PS_APYTMBILL_H_XX:"WHERE PSARCH_ID='TMBID_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_APYTMBINEG_H_XX QUERY=SYSADM.PS_APYTMBINEG_H_XX:"WHERE PSARCH_ID='TMBID_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_APYTMBIDET_H_XX"               412.0 MB 10695168 rows
+. . exported "SYSADM"."PS_APYTMBINEG_H_XX"               5.960 KB       9 rows
+. . exported "SYSADM"."PS_APYTMBILL_H_XX"                99.55 MB 6673676 rows
+. . exported "SYSADM"."PS_APYTMBILL2_H_XX"               30.75 MB 6757145 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_11.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_12.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_13.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_14.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_15.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_16.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_17.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_18.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_19.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_20.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_21.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_22.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_23.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_24.dmp
+  /backup/data_arch/TMBID_XX/TE/TMBID_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_25.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:36:42 2025 elapsed 0 00:05:40
+
+TEMPLATE_NAME:  TMBID_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-TMBID_XX successfully Exported, started at  Thu Dec 11 23:31:02 EST 2025 and finished at Thu Dec 11 23:36:46 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : TMBID_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : TMSUM_XX
+#########################################################################################
+ 
+=> ( 1 ) APYTMSUMADJ_HXX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) APYTMSUMM_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:37:33 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+FLASHBACK automatically enabled to preserve database integrity.
+Starting "SYS"."SYS_EXPORT_TABLE_02":  userid="/******** AS SYSDBA" directory=TMSUM_XX_TE dumpfile=TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_%U.dmp logfile=TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_APYTMSUMADJ_HXX QUERY=SYSADM.PS_APYTMSUMADJ_HXX:"WHERE PSARCH_ID='TMSUM_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_APYTMSUMM_H_XX QUERY=SYSADM.PS_APYTMSUMM_H_XX:"WHERE PSARCH_ID='TMSUM_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+Processing object type TABLE_EXPORT/TABLE/PROCACT_INSTANCE
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+. . exported "SYSADM"."PS_APYTMSUMM_H_XX"                110.4 MB 9739782 rows
+. . exported "SYSADM"."PS_APYTMSUMADJ_HXX"               8.208 MB  542088 rows
+Master table "SYS"."SYS_EXPORT_TABLE_02" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_02 is:
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_01.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_02.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_03.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_04.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_05.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_06.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_07.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_08.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_09.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_10.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_11.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_12.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_13.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_14.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_15.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_16.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_17.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_18.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_19.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_20.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_21.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_22.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_23.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_24.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_25.dmp
+  /backup/data_arch/TMSUM_XX/TE/TMSUM_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_TE_26.dmp
+Job "SYS"."SYS_EXPORT_TABLE_02" successfully completed at Thu Dec 11 23:38:27 2025 elapsed 0 00:00:54
+
+TEMPLATE_NAME:  TMSUM_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template TEPRD-TMSUM_XX successfully Exported, started at  Thu Dec 11 23:36:46 EST 2025 and finished at Thu Dec 11 23:38:31 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : TMSUM_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+# Start time : Thu Dec 11 23:09:03 EST 2025 
+# End time   : Thu Dec 11 23:38:31 EST 2025
+#########################################################################################

@@ -1,0 +1,3355 @@
+oracle Database name       :  SEPRD
+Oracle SID                 :  SEPRD3
+Archive Execution-From Date:  01-May-2023
+Archive Execution-To Date  :  01-Mar-2024
+Archive Year               :  1995_2000
+Archive Environment        :  SE
+ 
+=> Batch Numbers check.
+
+19 rows created.
+
+
+Commit complete.
+
+=> NLS DataBase Parameters Check.
+
+3 rows created.
+
+
+Commit complete.
+
+=> TimeZone Check.
+
+1 row created.
+
+
+Commit complete.
+
+ 
+Templates executed in Date Range 01-May-2023 and 01-Mar-2024 belongs to 1995_2000 Archival Year
+0 0 0 BPM1A_XX SM_BP_CSPL_XF_H
+1 0 1 BPM1A_XX SM_BP_MER_INT_H
+2 0 2 BPM1A_XX SM_BP_PRS_INS_H
+3 1 0 BPM1B_XX SM_OB_DF_XRF_H
+4 2 0 BPM2A_XX SM_BP_ACN_INT_H
+5 2 1 BPM2A_XX SM_BP_STP_INS_H
+6 3 0 BPM2B_XX SM_BP_ACY_INT_H
+7 4 0 BPM2C_XX SM_BP_RST_ACN_H
+8 4 1 BPM2C_XX SM_BP_RST_PRS_H
+9 4 2 BPM2C_XX SM_BP_RST_RSN_H
+10 5 0 BPM2E_XX SM_DF_DOC_INT_H
+11 5 1 BPM2E_XX SM_DF_STT_INT_H
+12 6 0 BPM3A_XX SM_BP_USR_INT_H
+13 7 0 BPM3B_XX SM_BP_WRK_ITM_H
+14 8 0 BPM3C_XX SM_BP_CET_XRF_H
+15 8 1 BPM3C_XX SM_BP_DOC_INT_H
+16 8 2 BPM3C_XX SM_BP_TXT_INT_H
+17 9 0 BPM3D_XX SM_BP_FOM_INT_H
+18 9 1 BPM3D_XX SM_BP_PFM_XRF_H
+19 10 0 BPM3E_XX SM_BP_SFM_XRF_H
+20 11 0 BPM3FXX SM_BP_DF_XRF_H
+21 12 0 BPM3GXX SM_BP_HLD_XRF_H
+22 13 0 BPM3HXX SM_BP_TIM_XRF_H
+23 14 0 EMP_XX ADDL_PAY_DATA_H
+24 14 1 EMP_XX ADDRESSES_H
+25 14 2 EMP_XX DISABILITY_H
+26 14 3 EMP_XX DIVERSITY_H
+27 14 4 EMP_XX DIVERS_ETHNIC_H
+28 14 5 EMP_XX EMAIL_ADDRESS_H
+29 14 6 EMP_XX EMERGENCY_PHN_H
+30 14 7 EMP_XX EMERG_CNTCT_H
+31 14 8 EMP_XX HR_E_EMPID_H_XX
+32 14 9 EMP_XX JOB_H
+33 14 10 EMP_XX JOB_H_XX
+34 14 11 EMP_XX JOB_JR_H
+35 14 12 EMP_XX NAMES_H
+36 14 13 EMP_XX PERSNAL_DATA_H
+37 14 14 EMP_XX PERSONAL_PHN_H
+38 14 15 EMP_XX PERSON_H
+39 14 16 EMP_XX PERS_DATA_USA_H
+40 14 17 EMP_XX PERS_NID_H
+41 14 18 EMP_XX PER_DAT_EFFDT_H
+42 15 0 SEAT1_XX SM_ATTACHMNT_H
+43 15 1 SEAT1_XX SM_CO_ATTACH_H
+44 16 0 SEATT_XX SM_ATT_DB_SRV_H
+45 17 0 SEOB1_XX SM_OB_XREF_H
+46 18 0 SEOB_XX AG_OB_BOA_ADD_H
+47 18 1 SEOB_XX AG_OB_BOA_HDR_H
+48 18 2 SEOB_XX AG_OB_CA_MUTA_H
+49 18 3 SEOB_XX AG_OB_CG_INVN_H
+50 18 4 SEOB_XX AG_OB_CL_INVN_H
+51 18 5 SEOB_XX AG_OB_CRML_CH_H
+52 18 6 SEOB_XX AG_OB_CRML_CN_H
+53 18 7 SEOB_XX AG_OB_CRMN_BG_H
+54 18 8 SEOB_XX AG_OB_DRG_AUT_H
+55 18 9 SEOB_XX AG_OB_DSCQ_RF_H
+56 18 10 SEOB_XX AG_OB_DSC_FIN_H
+57 18 11 SEOB_XX AG_OB_DSC_REL_H
+58 18 12 SEOB_XX AG_OB_DSQ_HDR_H
+59 18 13 SEOB_XX AG_OB_EVNTAUD_H
+60 18 14 SEOB_XX AG_OB_HEPTS_B_H
+61 18 15 SEOB_XX AG_OB_MA_FMLA_H
+62 18 16 SEOB_XX AG_OB_MLBRK_R_H
+63 18 17 SEOB_XX AG_OB_ONBSE_A_H
+64 18 18 SEOB_XX AG_OB_ONBSE_P_H
+65 18 19 SEOB_XX AG_OB_SBI9_RC_H
+66 18 20 SEOB_XX AG_OB_VX_FG_R_H
+67 18 21 SEOB_XX SM_OB_8850_RC_H
+68 18 22 SEOB_XX SM_OB_ADDRESS_H
+69 18 23 SEOB_XX SM_OB_ADD_INF_H
+70 18 24 SEOB_XX SM_OB_ADD_PAY_H
+71 18 25 SEOB_XX SM_OB_ATCH_EP_H
+72 18 26 SEOB_XX SM_OB_ATSM_LG_H
+73 18 27 SEOB_XX SM_OB_AT_SM_R_H
+74 18 28 SEOB_XX SM_OB_AUD_HIS_H
+75 18 29 SEOB_XX SM_OB_AUD_XRF_H
+76 18 30 SEOB_XX SM_OB_BCH_DIS_H
+77 18 31 SEOB_XX SM_OB_BGV_CRH_H
+78 18 32 SEOB_XX SM_OB_BGV_FDC_H
+79 18 33 SEOB_XX SM_OB_BGV_HCR_H
+80 18 34 SEOB_XX SM_OB_BGV_OTN_H
+81 18 35 SEOB_XX SM_OB_BGV_PRF_H
+82 18 36 SEOB_XX SM_OB_BGV_PRV_H
+83 18 37 SEOB_XX SM_OB_BGV_PR_H
+84 18 38 SEOB_XX SM_OB_BGV_STM_H
+85 18 39 SEOB_XX SM_OB_BGV_VCA_H
+86 18 40 SEOB_XX SM_OB_BONUS_H
+87 18 41 SEOB_XX SM_OB_BV_PRED_H
+88 18 42 SEOB_XX SM_OB_CAN_SLF_H
+89 18 43 SEOB_XX SM_OB_CAN_TAX_H
+90 18 44 SEOB_XX SM_OB_CAN_TD4_H
+91 18 45 SEOB_XX SM_OB_CAN_XHR_H
+92 18 46 SEOB_XX SM_OB_CC35_RE_H
+93 18 47 SEOB_XX SM_OB_CHK_XRF_H
+94 18 48 SEOB_XX SM_OB_CLIN_AK_H
+95 18 49 SEOB_XX SM_OB_CLNT_AD_H
+96 18 50 SEOB_XX SM_OB_CLNT_AK_H
+97 18 51 SEOB_XX SM_OB_CLT_AUD_H
+98 18 52 SEOB_XX SM_OB_CN_BENR_H
+99 18 53 SEOB_XX SM_OB_CN_F_WH_H
+100 18 54 SEOB_XX SM_OB_CN_P_WT_H
+101 18 55 SEOB_XX SM_OB_CN_STAT_H
+102 18 56 SEOB_XX SM_OB_CN_TX_P_H
+103 18 57 SEOB_XX SM_OB_COC_XRF_H
+104 18 58 SEOB_XX SM_OB_COP_ACK_H
+105 18 59 SEOB_XX SM_OB_CORP_AD_H
+106 18 60 SEOB_XX SM_OB_COR_AUD_H
+107 18 61 SEOB_XX SM_OB_DAT_TRN_H
+108 18 62 SEOB_XX SM_OB_DIR_DEP_H
+109 18 63 SEOB_XX SM_OB_EC_AUDT_H
+110 18 64 SEOB_XX SM_OB_EC_AUD_H
+111 18 65 SEOB_XX SM_OB_EC_QTN_H
+112 18 66 SEOB_XX SM_OB_EC_VER_H
+113 18 67 SEOB_XX SM_OB_EDUVER_H
+114 18 68 SEOB_XX SM_OB_EG_ATRB_H
+115 18 69 SEOB_XX SM_OB_EMAIL_H
+116 18 70 SEOB_XX SM_OB_EMPR_RE_H
+117 18 71 SEOB_XX SM_OB_EMPVERF_H
+118 18 72 SEOB_XX SM_OB_EMP_SUM_H
+119 18 73 SEOB_XX SM_OB_EMR_CNT_H
+120 18 74 SEOB_XX SM_OB_EMR_NAM_H
+121 18 75 SEOB_XX SM_OB_EMR_PHN_H
+122 18 76 SEOB_XX SM_OB_EPGP_RE_H
+123 18 77 SEOB_XX SM_OB_FED_WTH_H
+124 18 78 SEOB_XX SM_OB_HPA_TRN_H
+125 18 79 SEOB_XX SM_OB_INVED_X_H
+126 18 80 SEOB_XX SM_OB_INV_ADD_H
+127 18 81 SEOB_XX SM_OB_INV_ADL_H
+128 18 82 SEOB_XX SM_OB_INV_CRT_H
+129 18 83 SEOB_XX SM_OB_INV_DIS_H
+130 18 84 SEOB_XX SM_OB_INV_ECN_H
+131 18 85 SEOB_XX SM_OB_INV_EML_H
+132 18 86 SEOB_XX SM_OB_INV_HDR_H
+133 18 87 SEOB_XX SM_OB_INV_PHN_H
+134 18 88 SEOB_XX SM_OB_INV_PRC_H
+135 18 89 SEOB_XX SM_OB_NAMES_H
+136 18 90 SEOB_XX SM_OB_ONBS_EP_H
+137 18 91 SEOB_XX SM_OB_PAYOPTN_H
+138 18 92 SEOB_XX SM_OB_PERSON_H
+139 18 93 SEOB_XX SM_OB_PHONE_H
+140 18 94 SEOB_XX SM_OB_PRF_XRE_H
+141 18 95 SEOB_XX SM_OB_RGD_XRF_H
+142 18 96 SEOB_XX SM_OB_SELF_ID_H
+143 18 97 SEOB_XX SM_OB_STATE_W_H
+144 18 98 SEOB_XX SM_OB_TAL_ICS_H
+145 18 99 SEOB_XX SM_OB_TXTCT_X_H
+146 18 100 SEOB_XX SM_OB_UPDT_HR_H
+147 18 101 SEOB_XX SM_OB_VETSEID_H
+148 18 102 SEOB_XX SM_OB_W2_REC_H
+149 18 103 SEOB_XX SM_OB_W4FTX_H
+150 18 104 SEOB_XX SM_OB_XHR60AG_H
+151 18 105 SEOB_XX SM_OB_XHR60TK_H
+152 18 106 SEOB_XX SM_OB_XHR72AE_H
+153 18 107 SEOB_XX SM_OB_XHR72TK_H
+Completed Gathering Data. Total Templates to Export for Wave/Year - 1995_2000 in "SE": 19
+Today's Export Version Counter No: 1
+#########################################################################################
+Beginning export of Template : BPM1A_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_CSPL_XF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) SM_BP_MER_INT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) SM_BP_PRS_INS_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+4 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:05:25 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM1A_XX_SE dumpfile=BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_CSPL_XF_H QUERY=SYSADM.PS_SM_BP_CSPL_XF_H:"WHERE PSARCH_ID='BPM1A_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_SM_BP_MER_INT_H QUERY=SYSADM.PS_SM_BP_MER_INT_H:"WHERE PSARCH_ID='BPM1A_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_SM_BP_PRS_INS_H QUERY=SYSADM.PS_SM_BP_PRS_INS_H:"WHERE PSARCH_ID='BPM1A_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_CSPL_XF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_BP_MER_INT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_BP_PRS_INS_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM1A_XX/SE/BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM1A_XX/SE/BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM1A_XX/SE/BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM1A_XX/SE/BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM1A_XX/SE/BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM1A_XX/SE/BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM1A_XX/SE/BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM1A_XX/SE/BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM1A_XX/SE/BPM1A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:06:06 2025 elapsed 0 00:00:38
+
+TEMPLATE_NAME:  BPM1A_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM1A_XX successfully Exported, started at  Thu Dec 11 23:05:25 EST 2025 and finished at Thu Dec 11 23:06:12 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM1A_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM1B_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_OB_DF_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:06:12 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM1B_XX_SE dumpfile=BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_OB_DF_XRF_H QUERY=SYSADM.PS_SM_OB_DF_XRF_H:"WHERE PSARCH_ID='BPM1B_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_OB_DF_XRF_H"                    0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM1B_XX/SE/BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM1B_XX/SE/BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM1B_XX/SE/BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM1B_XX/SE/BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM1B_XX/SE/BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM1B_XX/SE/BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM1B_XX/SE/BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM1B_XX/SE/BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM1B_XX/SE/BPM1B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:06:48 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  BPM1B_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM1B_XX successfully Exported, started at  Thu Dec 11 23:06:12 EST 2025 and finished at Thu Dec 11 23:06:50 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM1B_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM2A_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_ACN_INT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 2 ) SM_BP_STP_INS_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:06:51 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM2A_XX_SE dumpfile=BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_ACN_INT_H QUERY=SYSADM.PS_SM_BP_ACN_INT_H:"WHERE PSARCH_ID='BPM2A_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_SM_BP_STP_INS_H QUERY=SYSADM.PS_SM_BP_STP_INS_H:"WHERE PSARCH_ID='BPM2A_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_ACN_INT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_BP_STP_INS_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM2A_XX/SE/BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM2A_XX/SE/BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM2A_XX/SE/BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM2A_XX/SE/BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM2A_XX/SE/BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM2A_XX/SE/BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM2A_XX/SE/BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM2A_XX/SE/BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM2A_XX/SE/BPM2A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:07:26 2025 elapsed 0 00:00:34
+
+TEMPLATE_NAME:  BPM2A_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM2A_XX successfully Exported, started at  Thu Dec 11 23:06:51 EST 2025 and finished at Thu Dec 11 23:07:32 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM2A_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM2B_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_ACY_INT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:07:32 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM2B_XX_SE dumpfile=BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_ACY_INT_H QUERY=SYSADM.PS_SM_BP_ACY_INT_H:"WHERE PSARCH_ID='BPM2B_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_ACY_INT_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM2B_XX/SE/BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM2B_XX/SE/BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM2B_XX/SE/BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM2B_XX/SE/BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM2B_XX/SE/BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM2B_XX/SE/BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM2B_XX/SE/BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM2B_XX/SE/BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM2B_XX/SE/BPM2B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:08:07 2025 elapsed 0 00:00:34
+
+TEMPLATE_NAME:  BPM2B_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM2B_XX successfully Exported, started at  Thu Dec 11 23:07:32 EST 2025 and finished at Thu Dec 11 23:08:12 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM2B_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM2C_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_RST_ACN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) SM_BP_RST_PRS_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) SM_BP_RST_RSN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:08:13 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM2C_XX_SE dumpfile=BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_RST_ACN_H QUERY=SYSADM.PS_SM_BP_RST_ACN_H:"WHERE PSARCH_ID='BPM2C_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_SM_BP_RST_PRS_H QUERY=SYSADM.PS_SM_BP_RST_PRS_H:"WHERE PSARCH_ID='BPM2C_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_SM_BP_RST_RSN_H QUERY=SYSADM.PS_SM_BP_RST_RSN_H:"WHERE PSARCH_ID='BPM2C_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_RST_ACN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_BP_RST_PRS_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_BP_RST_RSN_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM2C_XX/SE/BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM2C_XX/SE/BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM2C_XX/SE/BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM2C_XX/SE/BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM2C_XX/SE/BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM2C_XX/SE/BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM2C_XX/SE/BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM2C_XX/SE/BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM2C_XX/SE/BPM2C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:08:49 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  BPM2C_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM2C_XX successfully Exported, started at  Thu Dec 11 23:08:13 EST 2025 and finished at Thu Dec 11 23:08:52 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM2C_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM2E_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_DF_DOC_INT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 2 ) SM_DF_STT_INT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:08:52 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM2E_XX_SE dumpfile=BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_DF_DOC_INT_H QUERY=SYSADM.PS_SM_DF_DOC_INT_H:"WHERE PSARCH_ID='BPM2E_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_SM_DF_STT_INT_H QUERY=SYSADM.PS_SM_DF_STT_INT_H:"WHERE PSARCH_ID='BPM2E_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_DF_DOC_INT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_DF_STT_INT_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM2E_XX/SE/BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM2E_XX/SE/BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM2E_XX/SE/BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM2E_XX/SE/BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM2E_XX/SE/BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM2E_XX/SE/BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM2E_XX/SE/BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM2E_XX/SE/BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM2E_XX/SE/BPM2E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:09:28 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  BPM2E_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM2E_XX successfully Exported, started at  Thu Dec 11 23:08:52 EST 2025 and finished at Thu Dec 11 23:09:30 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM2E_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM3A_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_USR_INT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:09:31 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM3A_XX_SE dumpfile=BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_USR_INT_H QUERY=SYSADM.PS_SM_BP_USR_INT_H:"WHERE PSARCH_ID='BPM3A_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_USR_INT_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM3A_XX/SE/BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM3A_XX/SE/BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM3A_XX/SE/BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM3A_XX/SE/BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM3A_XX/SE/BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM3A_XX/SE/BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM3A_XX/SE/BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM3A_XX/SE/BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM3A_XX/SE/BPM3A_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:10:06 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  BPM3A_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM3A_XX successfully Exported, started at  Thu Dec 11 23:09:31 EST 2025 and finished at Thu Dec 11 23:10:08 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM3A_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM3B_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_WRK_ITM_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:10:09 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM3B_XX_SE dumpfile=BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_WRK_ITM_H QUERY=SYSADM.PS_SM_BP_WRK_ITM_H:"WHERE PSARCH_ID='BPM3B_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_WRK_ITM_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM3B_XX/SE/BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM3B_XX/SE/BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM3B_XX/SE/BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM3B_XX/SE/BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM3B_XX/SE/BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM3B_XX/SE/BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM3B_XX/SE/BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM3B_XX/SE/BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM3B_XX/SE/BPM3B_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:10:43 2025 elapsed 0 00:00:34
+
+TEMPLATE_NAME:  BPM3B_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM3B_XX successfully Exported, started at  Thu Dec 11 23:10:09 EST 2025 and finished at Thu Dec 11 23:10:47 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM3B_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM3C_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_CET_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) SM_BP_DOC_INT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) SM_BP_TXT_INT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:10:49 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM3C_XX_SE dumpfile=BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_CET_XRF_H QUERY=SYSADM.PS_SM_BP_CET_XRF_H:"WHERE PSARCH_ID='BPM3C_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_SM_BP_DOC_INT_H QUERY=SYSADM.PS_SM_BP_DOC_INT_H:"WHERE PSARCH_ID='BPM3C_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_SM_BP_TXT_INT_H QUERY=SYSADM.PS_SM_BP_TXT_INT_H:"WHERE PSARCH_ID='BPM3C_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_CET_XRF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_BP_DOC_INT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_BP_TXT_INT_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM3C_XX/SE/BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM3C_XX/SE/BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM3C_XX/SE/BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM3C_XX/SE/BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM3C_XX/SE/BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM3C_XX/SE/BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM3C_XX/SE/BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM3C_XX/SE/BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM3C_XX/SE/BPM3C_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:11:24 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  BPM3C_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM3C_XX successfully Exported, started at  Thu Dec 11 23:10:49 EST 2025 and finished at Thu Dec 11 23:11:26 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM3C_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM3D_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_FOM_INT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) SM_BP_PFM_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:11:27 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM3D_XX_SE dumpfile=BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_FOM_INT_H QUERY=SYSADM.PS_SM_BP_FOM_INT_H:"WHERE PSARCH_ID='BPM3D_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_SM_BP_PFM_XRF_H QUERY=SYSADM.PS_SM_BP_PFM_XRF_H:"WHERE PSARCH_ID='BPM3D_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_FOM_INT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_BP_PFM_XRF_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM3D_XX/SE/BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM3D_XX/SE/BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM3D_XX/SE/BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM3D_XX/SE/BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM3D_XX/SE/BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM3D_XX/SE/BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM3D_XX/SE/BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM3D_XX/SE/BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM3D_XX/SE/BPM3D_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:12:01 2025 elapsed 0 00:00:33
+
+TEMPLATE_NAME:  BPM3D_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM3D_XX successfully Exported, started at  Thu Dec 11 23:11:27 EST 2025 and finished at Thu Dec 11 23:12:05 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM3D_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM3E_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_SFM_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:12:06 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM3E_XX_SE dumpfile=BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_SFM_XRF_H QUERY=SYSADM.PS_SM_BP_SFM_XRF_H:"WHERE PSARCH_ID='BPM3E_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_SFM_XRF_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM3E_XX/SE/BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM3E_XX/SE/BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM3E_XX/SE/BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM3E_XX/SE/BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM3E_XX/SE/BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM3E_XX/SE/BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM3E_XX/SE/BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM3E_XX/SE/BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM3E_XX/SE/BPM3E_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:12:41 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  BPM3E_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM3E_XX successfully Exported, started at  Thu Dec 11 23:12:06 EST 2025 and finished at Thu Dec 11 23:12:43 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM3E_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM3FXX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_DF_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:12:44 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM3FXX_SE dumpfile=BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_DF_XRF_H QUERY=SYSADM.PS_SM_BP_DF_XRF_H:"WHERE PSARCH_ID='BPM3FXX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_DF_XRF_H"                    0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM3FXX/SE/BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM3FXX/SE/BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM3FXX/SE/BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM3FXX/SE/BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM3FXX/SE/BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM3FXX/SE/BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM3FXX/SE/BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM3FXX/SE/BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM3FXX/SE/BPM3FXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:13:19 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  BPM3FXX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM3FXX successfully Exported, started at  Thu Dec 11 23:12:44 EST 2025 and finished at Thu Dec 11 23:13:21 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM3FXX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM3GXX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_HLD_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:13:22 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM3GXX_SE dumpfile=BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_HLD_XRF_H QUERY=SYSADM.PS_SM_BP_HLD_XRF_H:"WHERE PSARCH_ID='BPM3GXX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_HLD_XRF_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM3GXX/SE/BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM3GXX/SE/BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM3GXX/SE/BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM3GXX/SE/BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM3GXX/SE/BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM3GXX/SE/BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM3GXX/SE/BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM3GXX/SE/BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM3GXX/SE/BPM3GXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:13:57 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  BPM3GXX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM3GXX successfully Exported, started at  Thu Dec 11 23:13:22 EST 2025 and finished at Thu Dec 11 23:13:59 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM3GXX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : BPM3HXX
+#########################################################################################
+ 
+=> ( 1 ) SM_BP_TIM_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:14:00 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=BPM3HXX_SE dumpfile=BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_BP_TIM_XRF_H QUERY=SYSADM.PS_SM_BP_TIM_XRF_H:"WHERE PSARCH_ID='BPM3HXX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_BP_TIM_XRF_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/BPM3HXX/SE/BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/BPM3HXX/SE/BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/BPM3HXX/SE/BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/BPM3HXX/SE/BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/BPM3HXX/SE/BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/BPM3HXX/SE/BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/BPM3HXX/SE/BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/BPM3HXX/SE/BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/BPM3HXX/SE/BPM3HXX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:14:36 2025 elapsed 0 00:00:36
+
+TEMPLATE_NAME:  BPM3HXX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-BPM3HXX successfully Exported, started at  Thu Dec 11 23:14:00 EST 2025 and finished at Thu Dec 11 23:14:40 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : BPM3HXX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : EMP_XX
+#########################################################################################
+ 
+=> ( 1 ) ADDL_PAY_DATA_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 2 ) ADDRESSES_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 3 ) DISABILITY_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 4 ) DIVERSITY_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 5 ) DIVERS_ETHNIC_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 6 ) EMAIL_ADDRESS_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 7 ) EMERGENCY_PHN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 8 ) EMERG_CNTCT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 9 ) HR_E_EMPID_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 10 ) JOB_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+12 rows created.
+
+
+Commit complete.
+
+=> ( 11 ) JOB_H_XX : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 12 ) JOB_JR_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 13 ) NAMES_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+9 rows created.
+
+
+Commit complete.
+
+=> ( 14 ) PERSNAL_DATA_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+4 rows created.
+
+
+Commit complete.
+
+=> ( 15 ) PERSONAL_PHN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 16 ) PERSON_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 17 ) PERS_DATA_USA_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 18 ) PERS_NID_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 19 ) PER_DAT_EFFDT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:14:48 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=EMP_XX_SE dumpfile=EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_ADDL_PAY_DATA_H QUERY=SYSADM.PS_ADDL_PAY_DATA_H:"WHERE PSARCH_ID='EMP_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_ADDRESSES_H QUERY=SYSADM.PS_ADDRESSES_H:"WHERE PSARCH_ID='EMP_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_DISABILITY_H QUERY=SYSADM.PS_DISABILITY_H:"WHERE PSARCH_ID='EMP_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_DIVERSITY_H QUERY=SYSADM.PS_DIVERSITY_H:"WHERE PSARCH_ID='EMP_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_DIVERS_ETHNIC_H QUERY=SYSADM.PS_DIVERS_ETHNIC_H:"WHERE PSARCH_ID='EMP_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_EMAIL_ADDRESS_H QUERY=SYSADM.PS_EMAIL_ADDRESS_H:"WHERE PSARCH_ID='EMP_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_EMERGENCY_PHN_H QUERY=SYSADM.PS_EMERGENCY_PHN_H:"WHERE PSARCH_ID='EMP_XX' AND PS
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_ADDL_PAY_DATA_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_ADDRESSES_H"                       0 KB       0 rows
+. . exported "SYSADM"."PS_DISABILITY_H"                      0 KB       0 rows
+. . exported "SYSADM"."PS_DIVERSITY_H"                       0 KB       0 rows
+. . exported "SYSADM"."PS_DIVERS_ETHNIC_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_EMAIL_ADDRESS_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_EMERGENCY_PHN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_EMERG_CNTCT_H"                     0 KB       0 rows
+. . exported "SYSADM"."PS_HR_E_EMPID_H_XX"                   0 KB       0 rows
+. . exported "SYSADM"."PS_JOB_H"                             0 KB       0 rows
+. . exported "SYSADM"."PS_JOB_H_XX"                          0 KB       0 rows
+. . exported "SYSADM"."PS_JOB_JR_H"                          0 KB       0 rows
+. . exported "SYSADM"."PS_NAMES_H"                           0 KB       0 rows
+. . exported "SYSADM"."PS_PERSNAL_DATA_H"                    0 KB       0 rows
+. . exported "SYSADM"."PS_PERSONAL_PHN_H"                    0 KB       0 rows
+. . exported "SYSADM"."PS_PERSON_H"                          0 KB       0 rows
+. . exported "SYSADM"."PS_PERS_DATA_USA_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_PERS_NID_H"                        0 KB       0 rows
+. . exported "SYSADM"."PS_PER_DAT_EFFDT_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/EMP_XX/SE/EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/EMP_XX/SE/EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/EMP_XX/SE/EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/EMP_XX/SE/EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/EMP_XX/SE/EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/EMP_XX/SE/EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/EMP_XX/SE/EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/EMP_XX/SE/EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/EMP_XX/SE/EMP_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:15:23 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  EMP_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-EMP_XX successfully Exported, started at  Thu Dec 11 23:14:48 EST 2025 and finished at Thu Dec 11 23:15:26 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : EMP_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : SEAT1_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_ATTACHMNT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) SM_CO_ATTACH_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:15:26 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=SEAT1_XX_SE dumpfile=SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_ATTACHMNT_H QUERY=SYSADM.PS_SM_ATTACHMNT_H:"WHERE PSARCH_ID='SEAT1_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_SM_CO_ATTACH_H QUERY=SYSADM.PS_SM_CO_ATTACH_H:"WHERE PSARCH_ID='SEAT1_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_ATTACHMNT_H"                    0 KB       0 rows
+. . exported "SYSADM"."PS_SM_CO_ATTACH_H"                    0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/SEAT1_XX/SE/SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/SEAT1_XX/SE/SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/SEAT1_XX/SE/SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/SEAT1_XX/SE/SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/SEAT1_XX/SE/SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/SEAT1_XX/SE/SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/SEAT1_XX/SE/SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/SEAT1_XX/SE/SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/SEAT1_XX/SE/SEAT1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:16:01 2025 elapsed 0 00:00:34
+
+TEMPLATE_NAME:  SEAT1_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-SEAT1_XX successfully Exported, started at  Thu Dec 11 23:15:26 EST 2025 and finished at Thu Dec 11 23:16:05 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : SEAT1_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : SEATT_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_ATT_DB_SRV_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:16:05 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=SEATT_XX_SE dumpfile=SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_ATT_DB_SRV_H QUERY=SYSADM.PS_SM_ATT_DB_SRV_H:"WHERE PSARCH_ID='SEATT_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_ATT_DB_SRV_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/SEATT_XX/SE/SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/SEATT_XX/SE/SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/SEATT_XX/SE/SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/SEATT_XX/SE/SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/SEATT_XX/SE/SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/SEATT_XX/SE/SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/SEATT_XX/SE/SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/SEATT_XX/SE/SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/SEATT_XX/SE/SEATT_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:16:40 2025 elapsed 0 00:00:35
+
+TEMPLATE_NAME:  SEATT_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-SEATT_XX successfully Exported, started at  Thu Dec 11 23:16:05 EST 2025 and finished at Thu Dec 11 23:16:43 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : SEATT_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : SEOB1_XX
+#########################################################################################
+ 
+=> ( 1 ) SM_OB_XREF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:16:44 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=SEOB1_XX_SE dumpfile=SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_SM_OB_XREF_H QUERY=SYSADM.PS_SM_OB_XREF_H:"WHERE PSARCH_ID='SEOB1_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" 
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_SM_OB_XREF_H"                      0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/SEOB1_XX/SE/SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/SEOB1_XX/SE/SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/SEOB1_XX/SE/SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/SEOB1_XX/SE/SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/SEOB1_XX/SE/SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/SEOB1_XX/SE/SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/SEOB1_XX/SE/SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/SEOB1_XX/SE/SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/SEOB1_XX/SE/SEOB1_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:17:20 2025 elapsed 0 00:00:36
+
+TEMPLATE_NAME:  SEOB1_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-SEOB1_XX successfully Exported, started at  Thu Dec 11 23:16:44 EST 2025 and finished at Thu Dec 11 23:17:24 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : SEOB1_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+Beginning export of Template : SEOB_XX
+#########################################################################################
+ 
+=> ( 1 ) AG_OB_BOA_ADD_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 2 ) AG_OB_BOA_HDR_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+4 rows created.
+
+
+Commit complete.
+
+=> ( 3 ) AG_OB_CA_MUTA_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 4 ) AG_OB_CG_INVN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 5 ) AG_OB_CL_INVN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 6 ) AG_OB_CRML_CH_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 7 ) AG_OB_CRML_CN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 8 ) AG_OB_CRMN_BG_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 9 ) AG_OB_DRG_AUT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 10 ) AG_OB_DSCQ_RF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 11 ) AG_OB_DSC_FIN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 12 ) AG_OB_DSC_REL_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 13 ) AG_OB_DSQ_HDR_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 14 ) AG_OB_EVNTAUD_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 15 ) AG_OB_HEPTS_B_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 16 ) AG_OB_MA_FMLA_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 17 ) AG_OB_MLBRK_R_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 18 ) AG_OB_ONBSE_A_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 19 ) AG_OB_ONBSE_P_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 20 ) AG_OB_SBI9_RC_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 21 ) AG_OB_VX_FG_R_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 22 ) SM_OB_8850_RC_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 23 ) SM_OB_ADDRESS_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 24 ) SM_OB_ADD_INF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 25 ) SM_OB_ADD_PAY_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 26 ) SM_OB_ATCH_EP_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 27 ) SM_OB_ATSM_LG_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 28 ) SM_OB_AT_SM_R_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 29 ) SM_OB_AUD_HIS_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+4 rows created.
+
+
+Commit complete.
+
+=> ( 30 ) SM_OB_AUD_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 31 ) SM_OB_BCH_DIS_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 32 ) SM_OB_BGV_CRH_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 33 ) SM_OB_BGV_FDC_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 34 ) SM_OB_BGV_HCR_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 35 ) SM_OB_BGV_OTN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 36 ) SM_OB_BGV_PRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 37 ) SM_OB_BGV_PRV_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 38 ) SM_OB_BGV_PR_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 39 ) SM_OB_BGV_STM_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 40 ) SM_OB_BGV_VCA_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 41 ) SM_OB_BONUS_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 42 ) SM_OB_BV_PRED_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 43 ) SM_OB_CAN_SLF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 44 ) SM_OB_CAN_TAX_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 45 ) SM_OB_CAN_TD4_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 46 ) SM_OB_CAN_XHR_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 47 ) SM_OB_CC35_RE_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 48 ) SM_OB_CHK_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 49 ) SM_OB_CLIN_AK_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+4 rows created.
+
+
+Commit complete.
+
+=> ( 50 ) SM_OB_CLNT_AD_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 51 ) SM_OB_CLNT_AK_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 52 ) SM_OB_CLT_AUD_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 53 ) SM_OB_CN_BENR_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 54 ) SM_OB_CN_F_WH_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 55 ) SM_OB_CN_P_WT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 56 ) SM_OB_CN_STAT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 57 ) SM_OB_CN_TX_P_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 58 ) SM_OB_COC_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 59 ) SM_OB_COP_ACK_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 60 ) SM_OB_CORP_AD_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 61 ) SM_OB_COR_AUD_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 62 ) SM_OB_DAT_TRN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 63 ) SM_OB_DIR_DEP_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 64 ) SM_OB_EC_AUDT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+=> ( 65 ) SM_OB_EC_AUD_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+=> ( 66 ) SM_OB_EC_QTN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 67 ) SM_OB_EC_VER_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 68 ) SM_OB_EDUVER_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 69 ) SM_OB_EG_ATRB_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 70 ) SM_OB_EMAIL_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 71 ) SM_OB_EMPR_RE_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 72 ) SM_OB_EMPVERF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 73 ) SM_OB_EMP_SUM_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 74 ) SM_OB_EMR_CNT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 75 ) SM_OB_EMR_NAM_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+=> ( 76 ) SM_OB_EMR_PHN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 77 ) SM_OB_EPGP_RE_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 78 ) SM_OB_FED_WTH_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 79 ) SM_OB_HPA_TRN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 80 ) SM_OB_INVED_X_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 81 ) SM_OB_INV_ADD_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 82 ) SM_OB_INV_ADL_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 83 ) SM_OB_INV_CRT_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 84 ) SM_OB_INV_DIS_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 85 ) SM_OB_INV_ECN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 86 ) SM_OB_INV_EML_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 87 ) SM_OB_INV_HDR_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+6 rows created.
+
+
+Commit complete.
+
+=> ( 88 ) SM_OB_INV_PHN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 89 ) SM_OB_INV_PRC_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 90 ) SM_OB_NAMES_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+3 rows created.
+
+
+Commit complete.
+
+=> ( 91 ) SM_OB_ONBS_EP_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+2 rows created.
+
+
+Commit complete.
+
+=> ( 92 ) SM_OB_PAYOPTN_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 93 ) SM_OB_PERSON_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 94 ) SM_OB_PHONE_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 95 ) SM_OB_PRF_XRE_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 96 ) SM_OB_RGD_XRF_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 97 ) SM_OB_SELF_ID_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 98 ) SM_OB_STATE_W_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 99 ) SM_OB_TAL_ICS_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 100 ) SM_OB_TXTCT_X_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 101 ) SM_OB_UPDT_HR_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 102 ) SM_OB_VETSEID_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 103 ) SM_OB_W2_REC_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 104 ) SM_OB_W4FTX_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 105 ) SM_OB_XHR60AG_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 106 ) SM_OB_XHR60TK_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 107 ) SM_OB_XHR72AE_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+=> ( 108 ) SM_OB_XHR72TK_H : Get History Record Counts
+
+1 row created.
+
+
+Commit complete.
+
+..Get TableSpace, Index & Index TableSpace
+
+1 row created.
+
+
+Commit complete.
+
+
+Export: Release 19.0.0.0.0 - Production on Thu Dec 11 23:18:08 2025
+Version 19.27.0.0.0
+
+Copyright (c) 1982, 2019, Oracle and/or its affiliates.  All rights reserved.
+
+Connected to: Oracle Database 19c Enterprise Edition Release 19.0.0.0.0 - Production
+Starting "SYS"."SYS_EXPORT_TABLE_01":  userid="/******** AS SYSDBA" directory=SEOB_XX_SE dumpfile=SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_%U.dmp logfile=SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE.log parallel=18 EXCLUDE=statistics EXCLUDE=TRIGGER ENCRYPTION=ALL ENCRYPTION_MODE=DUAL ENCRYPTION_ALGORITHM=AES256 ENCRYPTION_PASSWORD=******** FILESIZE=10G COMPRESSION=ALL TABLES=SYSADM.PS_AG_OB_BOA_ADD_H QUERY=SYSADM.PS_AG_OB_BOA_ADD_H:"WHERE PSARCH_ID='SEOB_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AG_OB_BOA_HDR_H QUERY=SYSADM.PS_AG_OB_BOA_HDR_H:"WHERE PSARCH_ID='SEOB_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AG_OB_CA_MUTA_H QUERY=SYSADM.PS_AG_OB_CA_MUTA_H:"WHERE PSARCH_ID='SEOB_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AG_OB_CG_INVN_H QUERY=SYSADM.PS_AG_OB_CG_INVN_H:"WHERE PSARCH_ID='SEOB_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AG_OB_CL_INVN_H QUERY=SYSADM.PS_AG_OB_CL_INVN_H:"WHERE PSARCH_ID='SEOB_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AG_OB_CRML_CH_H QUERY=SYSADM.PS_AG_OB_CRML_CH_H:"WHERE PSARCH_ID='SEOB_XX' AND PSARCH_BATCHNUM||PSARCH_ID IN (SELECT PSARCH_BATCHNUM||PSARCH_ID FROM SYSADM.PSARCHBATCH WHERE PSARCH_DTTM >= '01-May-2023' AND PSARCH_DTTM < '01-Mar-2024')" TABLES=SYSADM.PS_AG_OB_CRML_CN_H QUERY=SYSADM.PS_AG_OB_CRML_CN_H:"
+Processing object type TABLE_EXPORT/TABLE/TABLE_DATA
+. . exported "SYSADM"."PS_AG_OB_BOA_ADD_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_BOA_HDR_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_CA_MUTA_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_CG_INVN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_CL_INVN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_CRML_CH_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_CRML_CN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_CRMN_BG_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_DRG_AUT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_DSCQ_RF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_DSC_FIN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_DSC_REL_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_DSQ_HDR_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_EVNTAUD_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_HEPTS_B_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_MA_FMLA_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_MLBRK_R_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_ONBSE_A_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_ONBSE_P_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_SBI9_RC_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_AG_OB_VX_FG_R_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_8850_RC_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_ADDRESS_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_ADD_INF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_ADD_PAY_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_ATCH_EP_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_ATSM_LG_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_AT_SM_R_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_AUD_HIS_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_AUD_XRF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BCH_DIS_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BGV_CRH_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BGV_FDC_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BGV_HCR_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BGV_OTN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BGV_PRF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BGV_PRV_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BGV_PR_H"                    0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BGV_STM_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BGV_VCA_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BONUS_H"                     0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_BV_PRED_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CAN_SLF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CAN_TAX_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CAN_TD4_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CAN_XHR_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CC35_RE_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CHK_XRF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CLIN_AK_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CLNT_AD_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CLNT_AK_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CLT_AUD_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CN_BENR_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CN_F_WH_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CN_P_WT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CN_STAT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CN_TX_P_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_COC_XRF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_UPDT_HR_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_COP_ACK_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_CORP_AD_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_VETSEID_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_COR_AUD_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_DAT_TRN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_W2_REC_H"                    0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_DIR_DEP_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_W4FTX_H"                     0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EC_AUDT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_XHR60AG_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EC_AUD_H"                    0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_XHR60TK_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EC_QTN_H"                    0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_XHR72AE_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EC_VER_H"                    0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_XHR72TK_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EDUVER_H"                    0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EG_ATRB_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EMAIL_H"                     0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EMPR_RE_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EMPVERF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EMP_SUM_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EMR_CNT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EMR_NAM_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EMR_PHN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_EPGP_RE_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_FED_WTH_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_HPA_TRN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_INVED_X_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_INV_ADD_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_INV_ADL_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_INV_CRT_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_INV_DIS_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_INV_ECN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_INV_EML_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_INV_HDR_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_INV_PHN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_INV_PRC_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_NAMES_H"                     0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_ONBS_EP_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_PAYOPTN_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_PERSON_H"                    0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_PHONE_H"                     0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_PRF_XRE_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_RGD_XRF_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_SELF_ID_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_STATE_W_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_TAL_ICS_H"                   0 KB       0 rows
+. . exported "SYSADM"."PS_SM_OB_TXTCT_X_H"                   0 KB       0 rows
+Processing object type TABLE_EXPORT/TABLE/TABLE
+Processing object type TABLE_EXPORT/TABLE/GRANT/OWNER_GRANT/OBJECT_GRANT
+Processing object type TABLE_EXPORT/TABLE/INDEX/INDEX
+Master table "SYS"."SYS_EXPORT_TABLE_01" successfully loaded/unloaded
+******************************************************************************
+Dump file set for SYS.SYS_EXPORT_TABLE_01 is:
+  /backup/data_arch/SEOB_XX/SE/SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_01.dmp
+  /backup/data_arch/SEOB_XX/SE/SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_02.dmp
+  /backup/data_arch/SEOB_XX/SE/SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_03.dmp
+  /backup/data_arch/SEOB_XX/SE/SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_04.dmp
+  /backup/data_arch/SEOB_XX/SE/SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_05.dmp
+  /backup/data_arch/SEOB_XX/SE/SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_06.dmp
+  /backup/data_arch/SEOB_XX/SE/SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_07.dmp
+  /backup/data_arch/SEOB_XX/SE/SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_08.dmp
+  /backup/data_arch/SEOB_XX/SE/SEOB_XX_11-12-2025_1995_2000_01-May-2023_01-Mar-2024_SE_09.dmp
+Job "SYS"."SYS_EXPORT_TABLE_01" successfully completed at Thu Dec 11 23:18:44 2025 elapsed 0 00:00:36
+
+TEMPLATE_NAME:  SEOB_XX
+Error Count:  0
+CURRENT DATE:  2025/12/11
+Insert Data into PS_DATAMIN_EXPF_XX.
+
+1 row created.
+
+
+Commit complete.
+
+Successful Export: Insert Done.
+Template SEPRD-SEOB_XX successfully Exported, started at  Thu Dec 11 23:17:24 EST 2025 and finished at Thu Dec 11 23:18:49 EST 2025
+----------------------------------------------------------------------------------------
+Finished export of Template : SEOB_XX
+----------------------------------------------------------------------------------------
+#########################################################################################
+# Start time : Thu Dec 11 23:05:03 EST 2025 
+# End time   : Thu Dec 11 23:18:49 EST 2025
+#########################################################################################
