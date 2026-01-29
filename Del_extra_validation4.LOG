@@ -1,0 +1,35 @@
+Elapsed: 00:00:00.00
+Enter value for 1: FSLODX
+Enter value for 2: 2023/05/01
+Enter value for 3: 2024/03/01
+Enter value for 4: DATAMIN_LOG_DIR
+Enter value for 5: DataMinExports_FSLOG_20251211_230319.out
+old   4:   V_TARGET_DB  VARCHAR2(30) := '&P_TARGET_DB';
+new   4:   V_TARGET_DB  VARCHAR2(30) := 'FSLODX';
+old   7:   V_START_TS   TIMESTAMP := TO_TIMESTAMP(REPLACE('&P_START_DATE','/','-'), 'YYYY-MM-DD');
+new   7:   V_START_TS   TIMESTAMP := TO_TIMESTAMP(REPLACE('2023/05/01','/','-'), 'YYYY-MM-DD');
+old   8:   V_END_TS     TIMESTAMP := TO_TIMESTAMP(REPLACE('&P_END_DATE',  '/','-'), 'YYYY-MM-DD') + INTERVAL '1' DAY;
+new   8:   V_END_TS     TIMESTAMP := TO_TIMESTAMP(REPLACE('2024/03/01',  '/','-'), 'YYYY-MM-DD') + INTERVAL '1' DAY;
+old  61:       WHERE  directory_name = UPPER('&P_LOG_DIR');
+new  61:       WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old  66:         WHERE  directory_name = UPPER('&P_LOG_DIR');
+new  66:         WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old  71:     UTL_FILE.FGETATTR(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+new  71:     UTL_FILE.FGETATTR(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+old  74:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'&P_LOG_DIR'||'/'||'&P_LOG_FILE');
+new  74:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'DATAMIN_LOG_DIR'||'/'||'DataMinExports_FSLOG_20251211_230319.out');
+old  77:       RAISE_APPLICATION_ERROR(-20013, 'Log file is empty: '||'&P_LOG_FILE');
+new  77:       RAISE_APPLICATION_ERROR(-20013, 'Log file is empty: '||'DataMinExports_FSLOG_20251211_230319.out');
+old  81:     F_LOG := UTL_FILE.FOPEN(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), 'R', 32767);
+new  81:     F_LOG := UTL_FILE.FOPEN(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), 'R', 32767);
+old  99:           RAISE_APPLICATION_ERROR(-20014, 'Read error in log file: '||'&P_LOG_FILE');
+new  99:           RAISE_APPLICATION_ERROR(-20014, 'Read error in log file: '||'DataMinExports_FSLOG_20251211_230319.out');
+LOG DIR PATH=/backup/exa_ps/dba/PS_Archival/LOG
+DECLARE
+*
+ERROR at line 1:
+ORA-01403: no data found
+ORA-06512: at line 137
+ORA-06512: at line 124
+
+

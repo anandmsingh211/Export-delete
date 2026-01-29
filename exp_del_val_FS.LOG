@@ -1,0 +1,848 @@
+SQL> set autocommit off
+SQL> set feedback on
+SQL> set time on
+19:39:48 SQL> set timing on
+19:39:48 SQL> set trimspool on
+19:39:48 SQL> set pagesize 32767
+19:39:48 SQL> set linesize 1000
+19:39:48 SQL> set long 1000
+19:39:48 SQL> set longchunksize 1000
+19:39:48 SQL> set define on
+19:39:48 SQL> ttitle off
+19:39:48 SQL> btitle off
+19:39:48 SQL> alter session set nls_date_format = 'YYYY-MM-DD HH24:MI:SS';
+
+Session altered.
+
+Elapsed: 00:00:00.01
+19:39:48 SQL> whenever oserror EXIT failure ROLLBACK
+19:39:48 SQL> whenever sqlerror EXIT failure ROLLBACK
+19:39:48 SQL> 
+19:39:48 SQL> select instance_name from v$instance;
+
+INSTANCE_NAME
+----------------
+FSLODX1
+
+1 row selected.
+
+Elapsed: 00:00:00.03
+19:39:48 SQL> 
+19:39:48 SQL> -- **********************************************************************
+19:39:48 SQL> -- SQL Script File Name: exp_del_val_FS.SQL
+19:39:48 SQL> -- **********************************************************************
+19:39:48 SQL> -- Confidential - Allegis Group, Inc.
+19:39:48 SQL> -- **********************************************************************
+19:39:48 SQL> -- KEYWORD: ~XX
+19:39:48 SQL> -- **********************************************************************
+19:39:48 SQL> --
+19:39:48 SQL> --	       Confidentiality Information:
+19:39:48 SQL> --
+19:39:48 SQL> -- This module is the confidential and proprietary information of
+19:39:48 SQL> -- Allegis Group, Inc.; it is not to be copied, reproduced, or transmitted
+19:39:48 SQL> -- in any form, by any means, in whole or in part, nor is it to be used
+19:39:48 SQL> -- for any purpose other than that for which it is expressly provided
+19:39:48 SQL> -- without the written permission of Allegis Group, Inc.
+19:39:48 SQL> --
+19:39:48 SQL> -- Copyright (c) 2002 Allegis Group, Inc. All Rights Reserved
+19:39:48 SQL> --
+19:39:48 SQL> -- **********************************************************************
+19:39:48 SQL> -- Description:
+19:39:48 SQL> --   Purges PS_* history rows matched via PSARCH tables within a date window.
+19:39:48 SQL> --   COMMIT if SELECT count = DELETE rowcount
+19:39:48 SQL> -- **********************************************************************
+19:39:48 SQL> -- Note: RUN AS SYSADM
+19:39:48 SQL> -- HISTORY:
+19:39:48 SQL> -- 2025-12-25  Anandmohan Singh  SQL*Plus refactor; test-mode rollbacks
+19:39:48 SQL> -- 2026-01-06  Linux-friendly; runtime prompts; no default target DB
+19:39:48 SQL> -- **********************************************************************
+19:39:48 SQL> 
+19:39:48 SQL> -- =========[ Runtime Parameters via command line ]=========
+19:39:48 SQL> -- Usage:
+19:39:48 SQL> --   sqlplus sysadm/*******@SERVICE @exp_del_val_FS.SQL <DB_NAME> <START_DATE> <END_DATE>
+19:39:48 SQL> -- Example:
+19:39:48 SQL> --   sqlplus sysadm/*******@FSSNDX    @exp_del_val_FS.SQL FSSNDX 2025-12-01 2025-12-31
+19:39:48 SQL> -- Notes:
+19:39:48 SQL> --   Dates must be YYYY-MM-DD. End date is inclusive.
+19:39:48 SQL> --   Parameter positions: &1=DB_NAME, &2=START_DATE, &3=END_DATE
+19:39:48 SQL> 
+19:39:48 SQL> define p_target_db = '&1'
+Enter value for 1: FSLODX
+19:39:52 SQL> define p_start_date = '&2'
+Enter value for 2: 2023-05-01
+19:40:01 SQL> define p_end_date   = '&3'
+Enter value for 3: 2024-03-01
+19:40:12 SQL> 
+19:40:12 SQL> -- =========[ Variable Block ]=========
+19:40:12 SQL> declare
+19:40:12   2  	v_current_db   varchar2(30);
+19:40:12   3  	v_target_db    varchar2(30) := '&p_target_db';
+19:40:12   4  
+19:40:12   5  	v_start_ts     timestamp := to_timestamp('&p_start_date','YYYY-MM-DD');
+19:40:12   6  	v_end_ts       timestamp := to_timestamp('&p_end_date','YYYY-MM-DD') + interval '1' day;
+19:40:12   7  
+19:40:12   8  	v_sql	       varchar2(2000);
+19:40:12   9  	v_rows	       pls_integer;
+19:40:12  10  	v_row_select   pls_integer;
+19:40:12  11  	v_total_rows   pls_integer := 0;
+19:40:12  12  
+19:40:12  13  	-- Stop on first error? (kept TRUE as in your test mode)
+19:40:12  14  	c_stop_on_first_error constant boolean := TRUE;
+19:40:12  15  
+19:40:12  16  	function safe_tbl(rec_name in varchar2) return varchar2 is
+19:40:12  17  	begin
+19:40:12  18  	  return 'PS_' || dbms_assert.simple_sql_name(rec_name);
+19:40:12  19  	end;
+19:40:12  20  
+19:40:12  21  	procedure log_error(p_tbl in varchar2, p_id in varchar2, p_batch in number) is
+19:40:12  22  	begin
+19:40:12  23  	  dbms_output.put_line(
+19:40:12  24  	    'ERROR on '||p_tbl||
+19:40:12  25  	    ' (PSARCH_ID='||p_id||', PSARCH_BATCHNUM='||p_batch||'):'||
+19:40:12  26  	    chr(10)||'	SQLERRM: '||sqlerrm||
+19:40:12  27  	    chr(10)||'	BACKTRACE: '||dbms_utility.format_error_backtrace
+19:40:12  28  	  );
+19:40:12  29  	end;
+19:40:12  30  
+19:40:12  31  begin
+19:40:12  32  	select sys_context('USERENV','DB_NAME')
+19:40:12  33  	  into v_current_db
+19:40:12  34  	  from dual;
+19:40:12  35  
+19:40:12  36  	if v_current_db <> v_target_db then
+19:40:12  37  	  raise_application_error(
+19:40:12  38  	    -20001,
+19:40:12  39  	    'ABORT: Connected to '||v_current_db||' but target is '||v_target_db
+19:40:12  40  	  );
+19:40:12  41  	end if;
+19:40:12  42  
+19:40:12  43  	if v_end_ts <= v_start_ts then
+19:40:12  44  	  raise_application_error(-20002,'Invalid date window');
+19:40:12  45  	end if;
+19:40:12  46  
+19:40:12  47  	dbms_output.put_line('Execution DB	: '||v_current_db);
+19:40:12  48  	dbms_output.put_line('Date range	: '||
+19:40:12  49  			     to_char(v_start_ts,'YYYY-MM-DD')||' .. '||
+19:40:12  50  			     to_char(v_end_ts - interval '1' day,'YYYY-MM-DD'));
+19:40:12  51  
+19:40:12  52  	-- Optional cache flush (requires privileges). Comment out if not granted.
+19:40:12  53  	begin
+19:40:12  54  	  execute immediate 'alter system flush buffer_cache';
+19:40:12  55  	  execute immediate 'alter system flush shared_pool';
+19:40:12  56  	exception
+19:40:12  57  	  when others then
+19:40:12  58  	    dbms_output.put_line('Note: alter system flush skipped: '||sqlerrm);
+19:40:12  59  	end;
+19:40:12  60  
+19:40:12  61  	for r in (
+19:40:12  62  	  select distinct
+19:40:12  63  		 a.hist_recname,
+19:40:12  64  		 b.psarch_id,
+19:40:12  65  		 b.psarch_batchnum
+19:40:12  66  	    from psarchbatch b
+19:40:12  67  	    join psarchtempobj t on b.psarch_id = t.psarch_id
+19:40:12  68  	    join psarchobjrec  a on t.psarch_object = a.psarch_object
+19:40:12  69  	   where b.psarch_dttm >= v_start_ts
+19:40:12  70  	     and b.psarch_dttm <  v_end_ts
+19:40:12  71  	)
+19:40:12  72  	loop
+19:40:12  73  	  declare
+19:40:12  74  	    v_tbl varchar2(128) := safe_tbl(r.hist_recname);
+19:40:12  75  	  begin
+19:40:12  76  	    savepoint one_row;
+19:40:12  77  
+19:40:12  78  	    ----------------------------------------------------------
+19:40:12  79  	    -- SELECT COUNT VALIDATION
+19:40:12  80  	    ----------------------------------------------------------
+19:40:12  81  	    v_sql := 'select count(*) from '||v_tbl||
+19:40:12  82  		     ' where psarch_id = :1 and psarch_batchnum = :2';
+19:40:12  83  
+19:40:12  84  	    execute immediate v_sql
+19:40:12  85  	      into v_row_select
+19:40:12  86  	      using r.psarch_id, r.psarch_batchnum;
+19:40:12  87  
+19:40:12  88  	    ----------------------------------------------------------
+19:40:12  89  	    -- DELETE
+19:40:12  90  	    ----------------------------------------------------------
+19:40:12  91  	    v_sql := 'delete from '||v_tbl||
+19:40:12  92  		     ' where psarch_id = :1 and psarch_batchnum = :2';
+19:40:12  93  
+19:40:12  94  	    execute immediate v_sql
+19:40:12  95  	      using r.psarch_id, r.psarch_batchnum;
+19:40:12  96  
+19:40:12  97  	    v_rows := sql%rowcount;
+19:40:12  98  	    v_total_rows := v_total_rows + nvl(v_rows,0);
+19:40:12  99  
+19:40:12 100  	    ----------------------------------------------------------
+19:40:12 101  	    -- COMMIT / ROLLBACK DECISION
+19:40:12 102  	    ----------------------------------------------------------
+19:40:12 103  	    if v_row_select = v_rows then
+19:40:12 104  	      dbms_output.put_line(
+19:40:12 105  		'COMMIT | table='||v_tbl||
+19:40:12 106  		' | deleted='||v_rows||
+19:40:12 107  		' | PSARCH_ID='||r.psarch_id||
+19:40:12 108  		' | BATCH='||r.psarch_batchnum
+19:40:12 109  	      );
+19:40:12 110  	      rollback to savepoint one_row;
+19:40:12 111  	    else
+19:40:12 112  	      dbms_output.put_line(
+19:40:12 113  		'ROLLBACK | MISMATCH | table='||v_tbl||
+19:40:12 114  		' | expected='||v_row_select||
+19:40:12 115  		' | deleted='||v_rows||
+19:40:12 116  		' | PSARCH_ID='||r.psarch_id||
+19:40:12 117  		' | BATCH='||r.psarch_batchnum
+19:40:12 118  	      );
+19:40:12 119  	      rollback to savepoint one_row;
+19:40:12 120  
+19:40:12 121  	      if c_stop_on_first_error then
+19:40:12 122  		raise_application_error(
+19:40:12 123  		  -20003,
+19:40:12 124  		  'Row count validation failed for '||v_tbl
+19:40:12 125  		);
+19:40:12 126  	      end if;
+19:40:12 127  	    end if;
+19:40:12 128  
+19:40:12 129  	  exception
+19:40:12 130  	    when others then
+19:40:12 131  	      rollback to savepoint one_row;
+19:40:12 132  	      log_error(v_tbl, r.psarch_id, r.psarch_batchnum);
+19:40:12 133  	      if c_stop_on_first_error then
+19:40:12 134  		raise;
+19:40:12 135  	      end if;
+19:40:12 136  	  end;
+19:40:12 137  	end loop;
+19:40:12 138  
+19:40:12 139  	dbms_output.put_line('TOTAL deleted rows committed: '||v_total_rows);
+19:40:12 140  
+19:40:12 141  end;
+19:40:12 142  /
+old   3:   v_target_db    varchar2(30) := '&p_target_db';
+new   3:   v_target_db    varchar2(30) := 'FSLODX';
+old   5:   v_start_ts     timestamp := to_timestamp('&p_start_date','YYYY-MM-DD');
+new   5:   v_start_ts     timestamp := to_timestamp('2023-05-01','YYYY-MM-DD');
+old   6:   v_end_ts       timestamp := to_timestamp('&p_end_date','YYYY-MM-DD') + interval '1' day;
+new   6:   v_end_ts       timestamp := to_timestamp('2024-03-01','YYYY-MM-DD') + interval '1' day;
+Execution DB      : FSLODX
+Date range        : 2023-05-01 .. 2024-03-01
+COMMIT | table=PS_AP_ARC_EXP_DL_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCHL_M_H | deleted=82946 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCHL_E_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_ST_H | deleted=51160 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_UT_H | deleted=51333 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_LN_H | deleted=654395 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_LNWTHD_UPD_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_VED_DUPINV_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_PAY_TRNSMT_H_XX | deleted=892 | PSARCH_ID=APPYTTXX | BATCH=94
+COMMIT | table=PS_AR_FRMLIN2_XX_H | deleted=0 | PSARCH_ID=ARBUR_XX | BATCH=97
+COMMIT | table=PS_AR_FORMTMP_XX_H | deleted=0 | PSARCH_ID=ARBUR_XX | BATCH=97
+COMMIT | table=PS_AR_FORMNAR_XX_H | deleted=0 | PSARCH_ID=ARBUR_XX | BATCH=97
+COMMIT | table=PS_AR_CCTRN_HDR_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_ITM_ACTXDT_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_FORMMAR_XX_H | deleted=0 | PSARCH_ID=ARMAR_XX | BATCH=104
+COMMIT | table=PS_AR_PEND_DST_H | deleted=20453457 | PSARCH_ID=ARPEND | BATCH=96
+COMMIT | table=PS_AR_PEND_IT_MR_H | deleted=0 | PSARCH_ID=ARPEND | BATCH=96
+COMMIT | table=PS_AR_PEND_VAT_H | deleted=0 | PSARCH_ID=ARPEND | BATCH=96
+COMMIT | table=PS_AR_PO_FLDS_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_AR_FRMRARB_XX_H | deleted=0 | PSARCH_ID=ARRAR_XX | BATCH=105
+COMMIT | table=PS_AR_STMT_CUST_H | deleted=6460 | PSARCH_ID=ARSTMT | BATCH=3
+COMMIT | table=PS_AR_FORMTAR_XX_H | deleted=4 | PSARCH_ID=ARTAR_XX | BATCH=106
+COMMIT | table=PS_BICBIVCLIN_H_XX | deleted=0 | PSARCH_ID=BICBINXX | BATCH=5
+COMMIT | table=PS_BIACCTENTRY_HXX | deleted=14432815 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BIHDRAR_H_XX | deleted=3808639 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BIHDRCRCARD_HXX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNDSTAR_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BIACCTENTRY_HXX | deleted=746671 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BIALLTAXX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BIHDRAR_H_XX | deleted=189459 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNDST_H_XX | deleted=536243 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_VMSACCTLNX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BIPCITRCKX_H_XX | deleted=0 | PSARCH_ID=BIPCIXX | BATCH=74
+COMMIT | table=PS_BIRELCMPX_H_XX | deleted=2 | PSARCH_ID=BIRELXX | BATCH=84
+COMMIT | table=PS_CA_BP_EVENTS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_DFR_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_PRI_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DTL_RED_DA_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_FC_MAIN_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_LNRED_LANG_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_OPRID_CONT_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_PROJ_SUMMA_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_RNW_LN_RED_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CSH_CST_DTL_HXX | deleted=0 | PSARCH_ID=CM_FD_XX | BATCH=33
+COMMIT | table=PS_TR_ATTACH_H_XX | deleted=0 | PSARCH_ID=CM_AS_XX | BATCH=23
+COMMIT | table=PS_BNK_EXCP_H_XX | deleted=14725 | PSARCH_ID=CM_EP_XX | BATCH=31
+COMMIT | table=PS_CSH_CST_SUM_HXX | deleted=0 | PSARCH_ID=CM_FS_XX | BATCH=32
+COMMIT | table=PS_BNK_SMT_HDR_HXX | deleted=59 | PSARCH_ID=CM_SH_XX | BATCH=28
+COMMIT | table=PS_BANK_STMT_H_XX | deleted=263763 | PSARCH_ID=CM_ST_XX | BATCH=27
+COMMIT | table=PS_TR_WR_HDR_H_XX | deleted=0 | PSARCH_ID=CM_WH_XX | BATCH=29
+COMMIT | table=PS_EX_ADV_CHK_H | deleted=0 | PSARCH_ID=EXADV_XX | BATCH=17
+COMMIT | table=PS_EX_ADV_DIST_H | deleted=0 | PSARCH_ID=EXADV_XX | BATCH=17
+COMMIT | table=PS_EX_ADV_DOCSEQ_H | deleted=0 | PSARCH_ID=EXADV_XX | BATCH=17
+COMMIT | table=PS_EX_SHEET_LINE_H | deleted=0 | PSARCH_ID=EXSHT_XX | BATCH=63
+COMMIT | table=PS_EX_SHT_LN_PD_H | deleted=0 | PSARCH_ID=EXSHT_XX | BATCH=63
+COMMIT | table=PS_EID_FILE_EX_HXX | deleted=0 | PSARCH_ID=EX_FL_XX | BATCH=70
+COMMIT | table=PS_EX_ENHC_SMAMX_H | deleted=0 | PSARCH_ID=EX_MYWAL | BATCH=82
+COMMIT | table=PS_PMT_ACK_H_XX | deleted=0 | PSARCH_ID=FG_AK_XX | BATCH=21
+COMMIT | table=PS_PMT_ACK_HDR_HXX | deleted=0 | PSARCH_ID=FG_AK_XX | BATCH=21
+COMMIT | table=PS_PMT_UPARTY_H_XX | deleted=0 | PSARCH_ID=FG_DL_XX | BATCH=90
+COMMIT | table=PS_JRNL_IUAC_H | deleted=0 | PSARCH_ID=GL_JRLXX | BATCH=37
+COMMIT | table=PS_JRNL_LN_H | deleted=2452593 | PSARCH_ID=GL_JRLXX | BATCH=37
+COMMIT | table=PS_GL_OITEM_H | deleted=0 | PSARCH_ID=GL_JRLXX | BATCH=37
+COMMIT | table=PS_JRNL_HDR_H | deleted=83386 | PSARCH_ID=GL_JRLXX | BATCH=36
+COMMIT | table=PS_LEDGER_H | deleted=1903 | PSARCH_ID=GL_LEDXX | BATCH=41
+COMMIT | table=PS_PC_BUD_DETAIL_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_BUD_ITM_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_CHCINFO_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_CMPRREPXX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_RPO_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_VP_REVIEW_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PM_RES_STG_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PRJ_TMACTDTXX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJECT_TEAM_H | deleted=9034 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_JUSTIFY_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_RESOURCE_H | deleted=97820 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_RES_DELT_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_RSCTMPXX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PGM_MRHGRID_HXX | deleted=0 | PSARCH_ID=PGM_MHXX | BATCH=60
+COMMIT | table=PS_PGM_PRLQLNT_HXX | deleted=0 | PSARCH_ID=PGM_PRXX | BATCH=59
+COMMIT | table=PS_CDMAUTHIST_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_CDMLISTHIS_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_PRCDISTHIS_H_XX | deleted=2043 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_GM_PROP_PRJ_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_BEN_PRGPRTC_HXX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=66
+COMMIT | table=PS_JOB_XX_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=66
+COMMIT | table=PS_PERSONALDA_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=66
+COMMIT | table=PS_MSTR_ITMTBL_HXX | deleted=0 | PSARCH_ID=PURITMXX | BATCH=12
+COMMIT | table=PS_CNTRCT_DSTB_HXX | deleted=639 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_CNTR_EVTVCH_HXX | deleted=0 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_CNTR_LN_UOM_HXX | deleted=0 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_PO_DFLT_TBL_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_APPROVAL_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_DISPATCH_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_RECV_LN_SHP_HXX | deleted=0 | PSARCH_ID=PUR_RCXX | BATCH=55
+COMMIT | table=PS_AP_VCHR_AUD_ARC | deleted=0 | PSARCH_ID=VCHAUDXX | BATCH=103
+COMMIT | table=PS_RS_SCHED_TASK_H | deleted=0 | PSARCH_ID=RS_SCHXX | BATCH=8
+COMMIT | table=PS_CUSTAGINGX_H_XX | deleted=0 | PSARCH_ID=AGNGXX | BATCH=9
+COMMIT | table=PS_AP_ARC_PYM_RC_H | deleted=403197 | PSARCH_ID=APPYMTXX | BATCH=93
+COMMIT | table=PS_AP_ARC_PYM_AD_H | deleted=442649 | PSARCH_ID=APPYMTXX | BATCH=93
+COMMIT | table=PS_AP_ARC_VCH_RM_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_APVCH_DSPL_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_APYX42_IFC_H_XX | deleted=0 | PSARCH_ID=APY42_XX | BATCH=102
+COMMIT | table=PS_PAYMNT_TBL_H_XX | deleted=0 | PSARCH_ID=AP_PYMNT | BATCH=13
+COMMIT | table=PS_AP_SUPPRES_H_XX | deleted=0 | PSARCH_ID=AP_PYMNT | BATCH=13
+COMMIT | table=PS_AR_ACTION_LST_H | deleted=0 | PSARCH_ID=ARACTLST | BATCH=4
+COMMIT | table=PS_AR_IPAC_SGL_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_PO_WORK_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_AR_DEP_CONTRL_H | deleted=39396 | PSARCH_ID=ARPYMT | BATCH=1
+COMMIT | table=PS_BILNDST_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNNOTE_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNDSDTLX_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNDSTDFR_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNTAXDTL_H_XX | deleted=577165 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILINE_H_XX | deleted=536243 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNIUEXP_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNNOTE_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILINEX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_CA_AP_DFR_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_EVT_CHG_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_PC_DFR_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BONUS_PENL_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BP_EV_AMXX_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DTL_DST_DA_H | deleted=2 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_FC_STG_RUN_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_HDREV_RED_H | deleted=2 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_MS_COND_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_RATE_H | deleted=2 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_RECON_BI_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_RECON_SUM_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_RNW_LN_LIN_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_INTFCBIADCMPHXX | deleted=0 | PSARCH_ID=BINFADXX | BATCH=83
+COMMIT | table=PS_EX_ADV_LINE_H | deleted=0 | PSARCH_ID=EXADV_XX | BATCH=17
+COMMIT | table=PS_EX_ADV_HDR_H | deleted=0 | PSARCH_ID=EXADV_XX | BATCH=17
+COMMIT | table=PS_EX_SHEET_ADV_H | deleted=0 | PSARCH_ID=EXSHT_XX | BATCH=63
+COMMIT | table=PS_EX_ACCTG_LINE_H | deleted=0 | PSARCH_ID=EX_ACCTG | BATCH=85
+COMMIT | table=PS_EX_ENHC_DET_H | deleted=0 | PSARCH_ID=EX_MYWAL | BATCH=82
+COMMIT | table=PS_EOAW_NEMSTS_HXX | deleted=0 | PSARCH_ID=EX_NS_XX | BATCH=87
+COMMIT | table=PS_EOAW_SPINST_HXX | deleted=0 | PSARCH_ID=EX_SY_XX | BATCH=88
+COMMIT | table=PS_EOAW_SUMM_HXX | deleted=0 | PSARCH_ID=EX_SY_XX | BATCH=88
+COMMIT | table=PS_PMT_FIL_REF_HXX | deleted=0 | PSARCH_ID=FG_FE_XX | BATCH=22
+COMMIT | table=PS_JRNL_HDR_H | deleted=5749 | PSARCH_ID=GL_JRLXX | BATCH=37
+COMMIT | table=PS_JRNL_HDR_H | deleted=153 | PSARCH_ID=GL_JRLXX | BATCH=38
+COMMIT | table=PS_JRNL_IUAC_H | deleted=0 | PSARCH_ID=GL_JRLXX | BATCH=36
+COMMIT | table=PS_LEDGER_H | deleted=2876871 | PSARCH_ID=GL_LEDXX | BATCH=40
+COMMIT | table=PS_PC_ACT_SUM_H | deleted=27173 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_AMRULE_ACT_H | deleted=9771 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_PRICE_RATE_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_PROJHEALTH_H | deleted=62433 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_COM_HD_XX_H | deleted=240 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PM_SPR_STG_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_ACT_LOC_H | deleted=5 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_APPROVAL_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_DOCUMENT_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_INTF_PROJ_RES_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_INTFCSTGXX_H | deleted=0 | PSARCH_ID=PC_05_XX | BATCH=47
+COMMIT | table=PS_EMAILADRS_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=66
+COMMIT | table=PS_PURGEDATA_H_XX | deleted=0 | PSARCH_ID=PSPUR_XX | BATCH=80
+COMMIT | table=PS_RTV_HDR_H_XX | deleted=0 | PSARCH_ID=PURRTVXX | BATCH=56
+COMMIT | table=PS_CNTR_BUDSTB_HXX | deleted=639 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_CNTRCT_DFLT_HXX | deleted=1 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_PO_LINE_H_XX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_RECV_COMNT_HXX | deleted=0 | PSARCH_ID=PUR_RCXX | BATCH=55
+COMMIT | table=PS_RECV_LNDSTB_HXX | deleted=0 | PSARCH_ID=PUR_RCXX | BATCH=55
+COMMIT | table=PS_RECV_LNINSP_HXX | deleted=0 | PSARCH_ID=PUR_RCXX | BATCH=55
+COMMIT | table=PS_VMSTRNCNLX_H_XX | deleted=0 | PSARCH_ID=VMSCTRXX | BATCH=58
+COMMIT | table=PS_AP_ARC_PYM_TB_H | deleted=402580 | PSARCH_ID=APPYMTXX | BATCH=93
+COMMIT | table=PS_WTH_TRXTBL_H_XX | deleted=14674 | PSARCH_ID=APPYMTXX | BATCH=93
+COMMIT | table=PS_AP_ARC_PYM_XR_H | deleted=579392 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_APYX18_IFC_H_XX | deleted=0 | PSARCH_ID=APY18_XX | BATCH=101
+COMMIT | table=PS_AR_ITM_ACTTAX_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_ITMDSP_XX_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_ITEM_DST_H | deleted=22396043 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_PO_TOT_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_PO_KEY_DTA_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_AR_PAY_ITEM_H | deleted=0 | PSARCH_ID=ARPYMT | BATCH=1
+COMMIT | table=PS_AR_STMT_CUS_H | deleted=6428 | PSARCH_ID=ARSTMT | BATCH=3
+COMMIT | table=PS_BILNDSTAR_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNDSTUAR_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNIUEXP_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNDSLVL_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BIHDR_H_XX | deleted=189459 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNDSTUAR_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNDSDTLX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILINEX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_CA_ACCTG_LINE_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_ACCTPLN_LA_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_TXN_UAR_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BP_FEE_WS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_CHG_DTL_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_DC_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_INVTRKL_XX_H | deleted=177 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_IVC_PRT_XX_H | deleted=1 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_LMT_FEE_DT_H | deleted=1 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_LNREV_RED_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_NOTE_TRANS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_OPP_TYP_XX_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_PGP_PROJ_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_PGP_WKS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_RNWLNRR_LG_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_RNW_APPLIE_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_RNW_LN_RDS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_WTH_RELEAS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_BI_HDR_TMP_XX_H | deleted=66206 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_PRO_H | deleted=0 | PSARCH_ID=CA_PD_XX | BATCH=54
+COMMIT | table=PS_BANK_BAL_H_XX | deleted=0 | PSARCH_ID=CM_BS_XX | BATCH=24
+COMMIT | table=PS_CASH_FLW_TR_HXX | deleted=0 | PSARCH_ID=CM_FW_XX | BATCH=34
+COMMIT | table=PS_BANK_NON_PD_HXX | deleted=0 | PSARCH_ID=CM_NP_XX | BATCH=35
+COMMIT | table=PS_EX_SHEET_HDR_H | deleted=0 | PSARCH_ID=EXSHT_XX | BATCH=63
+COMMIT | table=PS_EX_SHEET_PYMT_H | deleted=0 | PSARCH_ID=EXSHT_XX | BATCH=63
+COMMIT | table=PS_EX_SHT_SPLIT_H | deleted=0 | PSARCH_ID=EXSHT_XX | BATCH=63
+COMMIT | table=PS_EX_ENHC_DTAMX_H | deleted=0 | PSARCH_ID=EX_MYWAL | BATCH=82
+COMMIT | table=PS_PMT_FIL_ACK_HXX | deleted=0 | PSARCH_ID=FG_AK_XX | BATCH=21
+COMMIT | table=PS_JRNL_CF_BAL_H | deleted=5424 | PSARCH_ID=GL_JRLXX | BATCH=37
+COMMIT | table=PS_JRNL_CF_BAL_H | deleted=153 | PSARCH_ID=GL_JRLXX | BATCH=38
+COMMIT | table=PS_GL_OITEM_H | deleted=0 | PSARCH_ID=GL_JRLXX | BATCH=38
+COMMIT | table=PS_PC_BUD_ALERT_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_BUD_DETLXX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_DELUTIL_RC_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_OPIDPRJACT_H | deleted=1 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_PICSTS_TBL_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_PRJ_ACT_XX_H | deleted=5125 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJECT_H | deleted=8919 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJECT_SD_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_ACTIVITY_H | deleted=9771 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_ACT_DESC_H | deleted=936 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_TEAMSVXX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PCX0015_ERRXX_H | deleted=0 | PSARCH_ID=PC_04_XX | BATCH=46
+COMMIT | table=PS_PC_UPLD_CI_XX_H | deleted=0 | PSARCH_ID=PC_06_XX | BATCH=48
+COMMIT | table=PS_PC_GLTOPC_SUM_H | deleted=0 | PSARCH_ID=PC_10_XX | BATCH=51
+COMMIT | table=PS_PC_EXTOPC_SUM_H | deleted=0 | PSARCH_ID=PC_12_XX | BATCH=53
+COMMIT | table=PS_AP_PYMT_AUD_ARC | deleted=0 | PSARCH_ID=PMTAUDXX | BATCH=95
+COMMIT | table=PS_PRCPARMHIS_H_XX | deleted=2043 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_GM_BUD_HDR_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_GM_OPTYDTTM_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_GM_PROP_XX_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_EMPLOYMENT_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=66
+COMMIT | table=PS_INV_ITEMS_H_XX | deleted=0 | PSARCH_ID=PURITMXX | BATCH=12
+COMMIT | table=PS_COMMENT_TBL_HXX | deleted=0 | PSARCH_ID=PURCMTXX | BATCH=71
+COMMIT | table=PS_CNTRCT_MLST_HXX | deleted=0 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_PO_LNSHPMCH_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_RC_WB_EX_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PAYMNT_TBL_H_XX | deleted=402580 | PSARCH_ID=APPYMTXX | BATCH=93
+COMMIT | table=PS_AP_ARC_VCH_AC_H | deleted=5181089 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_DO_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_FR_H | deleted=29105 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_TX_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_VI_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_TSEVLN_FLD_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_TSEVCH_FLD_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_REMRPRT_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_RVLACTG_LN_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_PYM_AD_H | deleted=0 | PSARCH_ID=AP_PYMNT | BATCH=13
+COMMIT | table=PS_AR_FORMATT_XX_H | deleted=0 | PSARCH_ID=ARBUR_XX | BATCH=97
+COMMIT | table=PS_AR_FRMLIN4_XX_H | deleted=0 | PSARCH_ID=ARBUR_XX | BATCH=97
+COMMIT | table=PS_AR_EE_ITACTLN_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_PEND_ITM_H | deleted=11776783 | PSARCH_ID=ARPEND | BATCH=96
+COMMIT | table=PS_AR_PO_EML_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_AR_PO_SEQ_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_AR_EE_DJR_ACT_H | deleted=0 | PSARCH_ID=ARPYMT | BATCH=1
+COMMIT | table=PS_AR_PAY_ID_ITM_H | deleted=4776291 | PSARCH_ID=ARPYMT | BATCH=1
+COMMIT | table=PS_AR_FRMRAR1_XX_H | deleted=0 | PSARCH_ID=ARRAR_XX | BATCH=105
+COMMIT | table=PS_BILNDSLVL_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNTAX_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BIADJHSTX_H_XX | deleted=960 | PSARCH_ID=BIADJXX | BATCH=92
+COMMIT | table=PS_BIADJHSTX_H_XX | deleted=0 | PSARCH_ID=BIADJXX | BATCH=75
+COMMIT | table=PS_VMSACCTLNX_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BIEXTCIIDS_H_XX | deleted=0 | PSARCH_ID=BICBINXX | BATCH=5
+COMMIT | table=PS_BIHDRNOTE_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNDSDTL_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNIUEXP_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNIUPAY_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BIHDRNOTE_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_CA_AP_PC_DST_H | deleted=141 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_TXN_DST_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_ATTACHMENT_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BILLPLN_LA_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BP_EVT_CHG_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_EARLY_OPTI_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_LMT_TXN_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_LN_REDUCTS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_NOTE_DETAI_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_PREPAID_AU_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_WTH_TERMS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_INTFCBICMP_H_XX | deleted=0 | PSARCH_ID=BIINFXX | BATCH=73
+COMMIT | table=PS_TR_WR_DTL_H_XX | deleted=0 | PSARCH_ID=CM_WH_XX | BATCH=29
+COMMIT | table=PS_EX_SHT_NOTE_HXX | deleted=0 | PSARCH_ID=EXSHT_XX | BATCH=63
+COMMIT | table=PS_EOAW_WL_HXX | deleted=0 | PSARCH_ID=EX_SY_XX | BATCH=88
+COMMIT | table=PS_EOAW_URINST_HXX | deleted=0 | PSARCH_ID=EX_UI_XX | BATCH=89
+COMMIT | table=PS_EOAW_UESCAL_HXX | deleted=0 | PSARCH_ID=EX_UI_XX | BATCH=89
+COMMIT | table=PS_PMT_DTL_H_XX | deleted=0 | PSARCH_ID=FG_DL_XX | BATCH=90
+COMMIT | table=PS_PMT_UPY_STG_HXX | deleted=0 | PSARCH_ID=FG_DL_XX | BATCH=90
+COMMIT | table=PS_TR_EVNT_LOG_HXX | deleted=0 | PSARCH_ID=FG_ET_XX | BATCH=18
+COMMIT | table=PS_JRNL_LN_H | deleted=10719297 | PSARCH_ID=GL_JRLXX | BATCH=36
+COMMIT | table=PS_PC_BITOPC_SUM_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_BUD_ACT_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PM_SPRCMSN_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PRJSPRDEXT_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJECT_SCHED_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJECT_XX_H | deleted=240 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_CMACCTLNXX_H | deleted=0 | PSARCH_ID=PC_03_XX | BATCH=45
+COMMIT | table=PS_PCX0013_ERRXX_H | deleted=0 | PSARCH_ID=PC_07_XX | BATCH=49
+COMMIT | table=PS_PGM_MROVRLD_HXX | deleted=0 | PSARCH_ID=PGM_MOXX | BATCH=77
+COMMIT | table=PS_PRCJOBSTAT_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_PRCTXFRHIS_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_GM_OPDTTMXX_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_GM_PMDTRSC_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_TE_EMP_HDR_H_XX | deleted=0 | PSARCH_ID=PSHDR_XX | BATCH=81
+COMMIT | table=PS_COMPNSTION_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=66
+COMMIT | table=PS_PERSONALPH_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=66
+COMMIT | table=PS_PERSDATAEF_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=66
+COMMIT | table=PS_PO_HDR_VAT_H_XX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_CHG_HDR_H_XX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_DFLTDSTB_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_LNSHPSUT_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_AP_PYMT_AUD_ARC | deleted=0 | PSARCH_ID=PYMT_AUD | BATCH=43
+COMMIT | table=PS_VMSSRCCNLX_H_XX | deleted=0 | PSARCH_ID=VMSCSTXX | BATCH=7
+COMMIT | table=PS_VMSSRCARCX_H_XX | deleted=0 | PSARCH_ID=VMSSTRXX | BATCH=6
+COMMIT | table=PS_AP_ARC_VCH_VN_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_DIST_L_H | deleted=1124091 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_PYM_WT_H | deleted=19568 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_MS_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_UNMTCH_TMP_H_XX | deleted=19 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_VATXRF_VCH_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_WTHD_UPDT_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_PYM_RC_H | deleted=0 | PSARCH_ID=AP_PYMNT | BATCH=13
+COMMIT | table=PS_AR_CCTRN_TBL_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_ITM_ACTVTY_H | deleted=11861178 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_ITMAGNG_XX_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_POKEYS_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_AR_820RMNF_XX_H | deleted=0 | PSARCH_ID=ARPYMT | BATCH=1
+COMMIT | table=PS_AR_PAYMENT_H | deleted=1335452 | PSARCH_ID=ARPYMT | BATCH=1
+COMMIT | table=PS_AR_FORMRAR_XX_H | deleted=0 | PSARCH_ID=ARRAR_XX | BATCH=105
+COMMIT | table=PS_AR_STMT_CUSBD_H | deleted=0 | PSARCH_ID=ARSTMT | BATCH=3
+COMMIT | table=PS_AR_FRMTAR1_XX_H | deleted=1 | PSARCH_ID=ARTAR_XX | BATCH=106
+COMMIT | table=PS_BIHDRAR_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BIHDRCRCARD_HXX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILINE_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNDSTDFR_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNDSDFR_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNDSDTL_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BIHDRVAT_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILINEX_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BIHDR_H_XX | deleted=3808639 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILINE_H_XX | deleted=10047011 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNDSTUAR_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNTAX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BIHDRCRCARD_HXX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNDSDTL_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNIUPAY_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_CA_BP_LINES_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_H | deleted=2 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_APP_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_LAN_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_EMAIL_CON2_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_MILESTONE_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_PREPAID_TB_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_RECON_REV_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_EX_SHEET_ATT_H | deleted=0 | PSARCH_ID=EXSHT_XX | BATCH=63
+COMMIT | table=PS_EX_ER_ATCH_H_XX | deleted=0 | PSARCH_ID=EX_AT_XX | BATCH=69
+COMMIT | table=PS_EX_TRANS_H | deleted=0 | PSARCH_ID=EX_MYWAL | BATCH=82
+COMMIT | table=PS_PMT_ACK_ERR_HXX | deleted=0 | PSARCH_ID=FG_AK_XX | BATCH=21
+COMMIT | table=PS_PMT_OID_STG_HXX | deleted=0 | PSARCH_ID=FG_DL_XX | BATCH=90
+COMMIT | table=PS_PMT_REQ_LOG_HXX | deleted=0 | PSARCH_ID=FG_DL_XX | BATCH=90
+COMMIT | table=PS_PMT_FIL_DEF_HXX | deleted=0 | PSARCH_ID=FG_FE_XX | BATCH=22
+COMMIT | table=PS_JRNL_CF_BAL_H | deleted=81723 | PSARCH_ID=GL_JRLXX | BATCH=36
+COMMIT | table=PS_GL_OITEM_H | deleted=0 | PSARCH_ID=GL_JRLXX | BATCH=36
+COMMIT | table=PS_PC_BUD_ITEMXX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_BUD_PLN_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_OPIDPRJREM_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_PROJECT_XX_H | deleted=8906 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PM_SPRBRDN_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PM_SPRCUST_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PRJ_RESTMP_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_ACT_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_EV_APPRV_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_SPRD_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_UB_FDET_XX_H | deleted=0 | PSARCH_ID=PC_08_XX | BATCH=50
+COMMIT | table=PS_PC_APTOPC_SUM_H | deleted=100 | PSARCH_ID=PC_11_XX | BATCH=52
+COMMIT | table=PS_PGM_CONVST2_XXH | deleted=0 | PSARCH_ID=PGMST2XX | BATCH=79
+COMMIT | table=PS_PRCRQSTHIS_H_XX | deleted=2043 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_GM_PROPOSAL_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_TE_EMP_OBU_H_XX | deleted=0 | PSARCH_ID=PSHDR_XX | BATCH=81
+COMMIT | table=PS_PERS_NID_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=66
+COMMIT | table=PS_CMMTS_TBL_H_XX | deleted=0 | PSARCH_ID=PURCMTXX | BATCH=71
+COMMIT | table=PS_ASET_ITMATR_HXX | deleted=0 | PSARCH_ID=PURITMXX | BATCH=12
+COMMIT | table=PS_PURCH_ITMBU_HXX | deleted=0 | PSARCH_ID=PURITMXX | BATCH=12
+COMMIT | table=PS_PURC_ITMATR_HXX | deleted=0 | PSARCH_ID=PURITMXX | BATCH=12
+COMMIT | table=PS_RTV_CMMNT_H_XX | deleted=0 | PSARCH_ID=PURRTVXX | BATCH=56
+COMMIT | table=PS_RTV_LN_FEE_H_XX | deleted=0 | PSARCH_ID=PURRTVXX | BATCH=56
+COMMIT | table=PS_CNTR_HDRRLS_HXX | deleted=640 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_CNTR_RLSDTL_HXX | deleted=0 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_CNTR_RLSHDR_HXX | deleted=0 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_PO_HDR_EXS_H_XX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_HDR_H_XX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_HDR_EMAL_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_LN_SHIP_H_XX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PYMNT_ADVC_H_XX | deleted=26515 | PSARCH_ID=APPYMTXX | BATCH=93
+COMMIT | table=PS_AP_ARC_VOUCH_H | deleted=566074 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_VCHR_UPDT_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_PAY_TRNSMT_H_XX | deleted=0 | PSARCH_ID=APPYTTXX | BATCH=42
+COMMIT | table=PS_AR_FRMATTD_XX_H | deleted=0 | PSARCH_ID=ARATTDXX | BATCH=99
+COMMIT | table=PS_AR_FORMHDR_XX_H | deleted=0 | PSARCH_ID=ARBUR_XX | BATCH=97
+COMMIT | table=PS_AR_ITM_ACTVAT_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_FRMMAR2_XX_H | deleted=0 | PSARCH_ID=ARMAR_XX | BATCH=104
+COMMIT | table=PS_AR_GROUP_CNTL_H | deleted=1500586 | PSARCH_ID=ARPEND | BATCH=96
+COMMIT | table=PS_AR_PO_PRNT_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_AR_820RMSG_XX_H | deleted=0 | PSARCH_ID=ARPYMT | BATCH=1
+COMMIT | table=PS_AR_PAY_IT_MRL_H | deleted=0 | PSARCH_ID=ARPYMT | BATCH=1
+COMMIT | table=PS_BIALLTAXX_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BIHDRNOTE_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNIUPAY_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNTAXDTL_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BICBIVCHDR_H_XX | deleted=0 | PSARCH_ID=BICBINXX | BATCH=5
+COMMIT | table=PS_BIX24DSTMPX_HXX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNDST_H_XX | deleted=10047011 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BIX24DSTMPX_HXX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BIHDRX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_CA_AP_EVENT_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_UAR_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BP_CDATAXX_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BP_NOTE_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_DST_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_UAR_H | deleted=3 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DST_ERR_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_HDR_REDUCT_H | deleted=2 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_LMT_TXN_LG_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_LREVRED_LG_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_RNWLNRE_LG_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_SUPPORT_TE_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_INTFCBINTCMPHXX | deleted=0 | PSARCH_ID=BIINFXX | BATCH=73
+COMMIT | table=PS_BNK_SDBAL_H_XX | deleted=0 | PSARCH_ID=CM_SL_XX | BATCH=25
+COMMIT | table=PS_EX_ADV_PYMT_H | deleted=0 | PSARCH_ID=EXADV_XX | BATCH=17
+COMMIT | table=PS_EX_SHEET_AW_H | deleted=0 | PSARCH_ID=EX_ER_AD | BATCH=68
+COMMIT | table=PS_EX_ENHC_SUMM_H | deleted=0 | PSARCH_ID=EX_MYWAL | BATCH=82
+COMMIT | table=PS_EOAW_HISCOM_HXX | deleted=0 | PSARCH_ID=EX_SY_XX | BATCH=88
+COMMIT | table=PS_PMT_OTHID_H_XX | deleted=0 | PSARCH_ID=FG_DL_XX | BATCH=90
+COMMIT | table=PS_SNW_FILE_H_XX | deleted=0 | PSARCH_ID=FG_SF_XX | BATCH=20
+COMMIT | table=PS_JRNL_IUAC_H | deleted=0 | PSARCH_ID=GL_JRLXX | BATCH=38
+COMMIT | table=PS_JRNL_VAT_H | deleted=0 | PSARCH_ID=GL_JRLXX | BATCH=38
+COMMIT | table=PS_JRNL_VAT_H | deleted=0 | PSARCH_ID=GL_JRLXX | BATCH=36
+COMMIT | table=PS_PC_BUD_DTL_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_CHC_INFO_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_CMPRSTG_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_PRJ_BRDNXX_H | deleted=6759 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_COM_LN_XX_H | deleted=336 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_POREF_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJECT_DESCR_H | deleted=5392 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_BIL_INFO_H | deleted=9761 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_LOCATION_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_TM_SCHED_H | deleted=9035 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_TL_RTS_ACT_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PGM_WRKLDST_HXX | deleted=0 | PSARCH_ID=PGM_WDXX | BATCH=78
+COMMIT | table=PS_GM_PROPCMMT_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_GM_PROPRJXX_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_RTV_ADDR_H_XX | deleted=0 | PSARCH_ID=PURRTVXX | BATCH=56
+COMMIT | table=PS_RTV_LN_H_XX | deleted=0 | PSARCH_ID=PURRTVXX | BATCH=56
+COMMIT | table=PS_CNTRCT_LN_H_XX | deleted=639 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_CNTR_LNRLS_HXX | deleted=639 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_CNTR_SCHDL_H_XX | deleted=640 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_PO_CHG_SHP_H_XX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_EST_SHIP_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_RECV_LNASET_HXX | deleted=0 | PSARCH_ID=PUR_RCXX | BATCH=55
+COMMIT | table=PS_TLRTSTRCXX_H_XX | deleted=0 | PSARCH_ID=TLRTS_XX | BATCH=65
+COMMIT | table=PS_VCHRREG_LC_H_XX | deleted=566074 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_VB_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_BCH_XR_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_PY_MSG_H | deleted=20 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_HP_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_TSEALN_FLD_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_TSEPMT_FLD_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_VCHDUP_INV_H_XX | deleted=957 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_PYMNT_ADVC_H_XX | deleted=0 | PSARCH_ID=AP_PYMNT | BATCH=13
+COMMIT | table=PS_AR_FRMLIN3_XX_H | deleted=0 | PSARCH_ID=ARBUR_XX | BATCH=97
+COMMIT | table=PS_AR_IPAC_DET_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_IPAC_HDR_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_ITEM_H | deleted=5678877 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_ITMNOTE_XX_H | deleted=0 | PSARCH_ID=ARITEM | BATCH=98
+COMMIT | table=PS_AR_FRMMAR1_XX_H | deleted=0 | PSARCH_ID=ARMAR_XX | BATCH=104
+COMMIT | table=PS_AR_PEND_TAX_H | deleted=0 | PSARCH_ID=ARPEND | BATCH=96
+COMMIT | table=PS_AR_PEND_TX_DT_H | deleted=0 | PSARCH_ID=ARPEND | BATCH=96
+COMMIT | table=PS_AR_PO_DTL_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_AR_PAY_ID_CUS_H | deleted=458084 | PSARCH_ID=ARPYMT | BATCH=1
+COMMIT | table=PS_AR_PAY_MIS_DS_H | deleted=1989 | PSARCH_ID=ARPYMT | BATCH=1
+COMMIT | table=PS_AR_STMT_CUSDT_H | deleted=87387 | PSARCH_ID=ARSTMT | BATCH=3
+COMMIT | table=PS_AR_FRMXREF_XX_H | deleted=7 | PSARCH_ID=ARXRF_XX | BATCH=107
+COMMIT | table=PS_BIHDRX_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_EIDFILEINVX_HXX | deleted=0 | PSARCH_ID=BIEIDXX | BATCH=76
+COMMIT | table=PS_BIALLTAXX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNNOTE_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNDSDTLX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNDSTAR_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNTAX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_VMSACCTLNX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_CA_ACCTG_LN_P_H | deleted=282 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_EVENT_D_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_FEE_WS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_PC_UAR_H | deleted=141 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BP_EVT_LN_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BP_FEE_ADJ_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BP_SCHEDUL_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BP_XREF_H | deleted=94 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_HDR_DC_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_PRO_H | deleted=4 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_DETAIL_RED_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_EMAIL_CONT_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_HDRRED_LAN_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_HDR_AE_ACC_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_NOTE_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_PGP_TERMS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_PREPAID_PR_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_WTH_TRM_LA_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_BI_LN_TMP_XX_H | deleted=1043431 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_TR_AF_STL_H_XX | deleted=0 | PSARCH_ID=CM_XF_XX | BATCH=30
+COMMIT | table=PS_EX_SHEET_DIST_H | deleted=0 | PSARCH_ID=EXSHT_XX | BATCH=63
+COMMIT | table=PS_EX_APRVL_HIST_H | deleted=0 | PSARCH_ID=EX_APPR | BATCH=86
+COMMIT | table=PS_EOAW_COMNTS_HXX | deleted=0 | PSARCH_ID=EX_SY_XX | BATCH=88
+COMMIT | table=PS_EOAW_SUMDTL_HXX | deleted=0 | PSARCH_ID=EX_SY_XX | BATCH=88
+COMMIT | table=PS_PMT_FIL_ERR_HXX | deleted=0 | PSARCH_ID=FG_AK_XX | BATCH=21
+COMMIT | table=PS_BSP_FIL_INF_HXX | deleted=0 | PSARCH_ID=FG_BF_XX | BATCH=19
+COMMIT | table=PS_PMT_INTRM_H_XX | deleted=0 | PSARCH_ID=FG_DL_XX | BATCH=90
+COMMIT | table=PS_JRNL_LN_H | deleted=2505 | PSARCH_ID=GL_JRLXX | BATCH=38
+COMMIT | table=PS_PC_ACT_IN_USE_H | deleted=27173 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_EMPPROJ_TM_H | deleted=36262 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_STATUS_H | deleted=18178 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_ACT_STAT_H | deleted=10125 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PSA_ORGPRJ_DF_H | deleted=1 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_TL_RTS_TRC_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_AMRULE_PRJ_H | deleted=8919 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PRCTEXTHIS_H_XX | deleted=160 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_GM_BUDHDRXX_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_GM_BUD_PERD_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_GM_PROPCHXX_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_ITM_VENDOR_H_XX | deleted=0 | PSARCH_ID=PURITMXX | BATCH=12
+COMMIT | table=PS_CNTR_RLSTBL_HXX | deleted=0 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_CNTR_RLS_LN_HXX | deleted=0 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_PO_CHG_ADDR_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_CHG_LN_H_XX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_COMMENT_H_XX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_RECV_HDR_H_XX | deleted=0 | PSARCH_ID=PUR_RCXX | BATCH=55
+COMMIT | table=PS_VMSTRNSHST_H_XX | deleted=0 | PSARCH_ID=VMSTRNXX | BATCH=57
+COMMIT | table=PS_TLRTSPRJXX_H_XX | deleted=0 | PSARCH_ID=TLRTS_XX | BATCH=65
+COMMIT | table=PS_AP_SUPPRES_H_XX | deleted=0 | PSARCH_ID=APPYMTXX | BATCH=93
+COMMIT | table=PS_AP_ARC_DIST_N_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_TG_H | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_VCH_WT_H | deleted=22074 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_TSE_VCHR_H_XX | deleted=0 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_DSTRPMTXRF_H_XX | deleted=42 | PSARCH_ID=APVCHRXX | BATCH=100
+COMMIT | table=PS_AP_ARC_PYM_TB_H | deleted=0 | PSARCH_ID=AP_PYMNT | BATCH=13
+COMMIT | table=PS_WTH_TRXTBL_H_XX | deleted=0 | PSARCH_ID=AP_PYMNT | BATCH=13
+COMMIT | table=PS_AR_FRMLIN1_XX_H | deleted=0 | PSARCH_ID=ARBUR_XX | BATCH=97
+COMMIT | table=PS_PO_EXTRACT_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_AR_PO_PRTF_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_AR_PO_XX_H | deleted=0 | PSARCH_ID=ARPO_XX | BATCH=72
+COMMIT | table=PS_BIX24DSTMPX_HXX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BIHDR_H_XX | deleted=0 | PSARCH_ID=BICANXX | BATCH=64
+COMMIT | table=PS_BILNDSDFR_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BILNDSTDFR_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNDSDFR_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNDSLVL_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BILNTAXDTL_H_XX | deleted=20969 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BIHDRVAT_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_BIHDRVAT_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=2
+COMMIT | table=PS_BIHDRX_H_XX | deleted=0 | PSARCH_ID=BIINVXX | BATCH=91
+COMMIT | table=PS_CA_ACCTG_LN_T_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_ACCTPLAN_H | deleted=2 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_DST_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_FEE_ADJ_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_AP_SCHEDUL_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BILL_PLAN_H | deleted=2 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_BIL_PLN_XX_H | deleted=2 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_CHG_HDR_H | deleted=2 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_CONTR_HDR_H | deleted=2 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_HREVRED_LG_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_HDR_COMM_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_INVTRKH_XX_H | deleted=116 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_PGP_COSTS_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_CA_WTH_REL_LA_H | deleted=0 | PSARCH_ID=CA_001 | BATCH=16
+COMMIT | table=PS_BANK_SDSTMT_HXX | deleted=0 | PSARCH_ID=CM_SD_XX | BATCH=26
+COMMIT | table=PS_EX_SHT_DOCSEQ_H | deleted=0 | PSARCH_ID=EXSHT_XX | BATCH=63
+COMMIT | table=PS_PMT_ADDR_H_XX | deleted=0 | PSARCH_ID=FG_DL_XX | BATCH=90
+COMMIT | table=PS_PMT_REF_H_XX | deleted=0 | PSARCH_ID=FG_DL_XX | BATCH=90
+COMMIT | table=PS_JRNL_VAT_H | deleted=0 | PSARCH_ID=GL_JRLXX | BATCH=37
+COMMIT | table=PS_LEDGER_H | deleted=1010576 | PSARCH_ID=GL_LEDXX | BATCH=39
+COMMIT | table=PS_PC_BUD_ITEM_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_BUD_PLAN_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_BUD_SUMRY_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_BUD_SUM_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_EMP_RES_TM_H | deleted=68663 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PM_ACT_STG_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PM_SPRASGN_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PM_SPRXREF_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJECT_MGR_H | deleted=9068 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PROJ_ACT_TEAM_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_INT_PRJACT_XX_H | deleted=0 | PSARCH_ID=PC_02_XX | BATCH=44
+COMMIT | table=PS_PROJ_QUALITY_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_TL_RTS_PRJ_XX_H | deleted=0 | PSARCH_ID=PC_01_XX | BATCH=15
+COMMIT | table=PS_PC_UB_PO_XX_H | deleted=0 | PSARCH_ID=PC_09_XX | BATCH=67
+COMMIT | table=PS_PGM_CONVST1_XXH | deleted=0 | PSARCH_ID=PGMST1XX | BATCH=61
+COMMIT | table=PS_PRCQUEHIST_H_XX | deleted=2043 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_CDMFILELIS_H_XX | deleted=4129 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_PRCRQSTFLE_H_XX | deleted=0 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_PRCRQSTSTR_H_XX | deleted=2041 | PSARCH_ID=PRCS_XX | BATCH=14
+COMMIT | table=PS_GM_BUD_LNSM_HXX | deleted=0 | PSARCH_ID=PRMGT_XX | BATCH=62
+COMMIT | table=PS_TE_EMP_UP_H_XX | deleted=0 | PSARCH_ID=PSHDR_XX | BATCH=81
+COMMIT | table=PS_JOB_H_XX | deleted=0 | PSARCH_ID=PSPDA_XX | BATCH=66
+COMMIT | table=PS_INV_ITEMUOM_HXX | deleted=0 | PSARCH_ID=PURITMXX | BATCH=12
+COMMIT | table=PS_INV_ITM_PHT_HXX | deleted=0 | PSARCH_ID=PURITMXX | BATCH=12
+COMMIT | table=PS_RTV_DSPTCH_H_XX | deleted=0 | PSARCH_ID=PURRTVXX | BATCH=56
+COMMIT | table=PS_RTV_LN_DSTB_HXX | deleted=0 | PSARCH_ID=PURRTVXX | BATCH=56
+COMMIT | table=PS_CNTRCT_HDR_H_XX | deleted=640 | PSARCH_ID=PUR_CTXX | BATCH=11
+COMMIT | table=PS_PO_CHG_ORD_H_XX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_ER_EMSGQ_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_PO_LN_DISTB_HXX | deleted=0 | PSARCH_ID=PUR_POXX | BATCH=10
+COMMIT | table=PS_RECV_LNSHMT_HXX | deleted=0 | PSARCH_ID=PUR_RCXX | BATCH=55
+COMMIT | table=PS_TLRTSACTXX_H_XX | deleted=0 | PSARCH_ID=TLRTS_XX | BATCH=65
+TOTAL deleted rows committed: 155039757
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 02:25:04.18
+22:05:17 SQL> spool off

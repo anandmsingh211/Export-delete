@@ -1,0 +1,288 @@
+SQL> set autocommit off
+SQL> set feedback on
+SQL> set time on
+12:07:34 SQL> set timing on
+12:07:34 SQL> set trimspool on
+12:07:34 SQL> set pagesize 32767
+12:07:34 SQL> set linesize 1000
+12:07:34 SQL> set long 1000
+12:07:34 SQL> set longchunksize 1000
+12:07:34 SQL> set define on
+12:07:34 SQL> ttitle off
+12:07:34 SQL> btitle off
+12:07:34 SQL> alter session set nls_date_format = 'YYYY-MM-DD HH24:MI:SS';
+
+Session altered.
+
+Elapsed: 00:00:00.02
+12:07:34 SQL> whenever oserror EXIT failure ROLLBACK
+12:07:34 SQL> whenever sqlerror EXIT failure ROLLBACK
+12:07:34 SQL> 
+12:07:34 SQL> select instance_name from v$instance;
+
+INSTANCE_NAME
+----------------
+TELODX2
+
+1 row selected.
+
+Elapsed: 00:00:00.03
+12:07:34 SQL> 
+12:07:34 SQL> -- **********************************************************************
+12:07:34 SQL> -- SQL Script File Name: export_delete_script_final6_TE.SQL
+12:07:34 SQL> -- **********************************************************************
+12:07:34 SQL> -- TEST MODE: ROLLBACK instead of COMMIT (see comments)
+12:07:34 SQL> -- Confidential - Allegis Group, Inc.
+12:07:34 SQL> -- **********************************************************************
+12:07:34 SQL> -- KEYWORD: ~XX
+12:07:34 SQL> -- **********************************************************************
+12:07:34 SQL> --
+12:07:34 SQL> --	       Confidentiality Information:
+12:07:34 SQL> --
+12:07:34 SQL> -- This module is the confidential and proprietary information of
+12:07:34 SQL> -- Allegis Group, Inc.; it is not to be copied, reproduced, or transmitted
+12:07:34 SQL> -- in any form, by any means, in whole or in part, nor is it to be used
+12:07:34 SQL> -- for any purpose other than that for which it is expressly provided
+12:07:34 SQL> -- without the written permission of Allegis Group, Inc.
+12:07:34 SQL> --
+12:07:34 SQL> -- Copyright (c) 2002 Allegis Group, Inc. All Rights Reserved
+12:07:34 SQL> --
+12:07:34 SQL> -- **********************************************************************
+12:07:34 SQL> -- Description:
+12:07:34 SQL> --   Purges PS_* history rows matched via PSARCH tables within a date window.
+12:07:34 SQL> --   TEST MODE: Uses ROLLBACK in place of COMMIT (see inline comments).
+12:07:34 SQL> -- **********************************************************************
+12:07:34 SQL> -- Note: RUN AS SYSADM
+12:07:34 SQL> -- HISTORY:
+12:07:34 SQL> -- 2025-12-25  Anandmohan Singh  SQL*Plus refactor; test-mode rollbacks
+12:07:34 SQL> -- 2026-01-06  Linux-friendly; runtime prompts; no default target DB
+12:07:34 SQL> -- **********************************************************************
+12:07:34 SQL> 
+12:07:34 SQL> -- =========[ Runtime Parameters via command line ]=========
+12:07:34 SQL> -- Usage:
+12:07:34 SQL> --   sqlplus sysadm/*******@SERVICE @export_delete_script_final6_TE.SQL <DB_NAME> <START_DATE> <END_DATE>
+12:07:34 SQL> -- Example:
+12:07:34 SQL> --   sqlplus sysadm/*******@FSSNDX    @export_delete_script_final6_TE.SQL FSSNDX 2025-12-01 2025-12-31
+12:07:34 SQL> -- Notes:
+12:07:34 SQL> --   Dates must be YYYY-MM-DD. End date is inclusive.
+12:07:34 SQL> --   Parameter positions: &1=DB_NAME, &2=START_DATE, &3=END_DATE
+12:07:34 SQL> 
+12:07:34 SQL> -- Map positional parameters to named defines (so the rest of the block stays untouched)
+12:07:34 SQL> define p_target_db = '&1'
+Enter value for 1: TELODX
+12:07:39 SQL> define p_start_date = '&2'
+Enter value for 2: 2023-05-01
+12:07:49 SQL> define p_end_date   = '&3'
+Enter value for 3: 2024-03-01
+12:08:01 SQL> 
+12:08:01 SQL> -- =========[ Variable Block ]=========
+12:08:01 SQL> declare
+12:08:01   2  	v_current_db   varchar2(30);
+12:08:01   3  	v_target_db    varchar2(30) := '&p_target_db';
+12:08:01   4  
+12:08:01   5  	-- Convert input dates to timestamps at midnight.
+12:08:01   6  	-- End date is inclusive: add 1 day and use < v_end_ts comparison.
+12:08:01   7  	v_start_ts     timestamp := to_timestamp('&p_start_date', 'YYYY-MM-DD');		  -- YYYY-MM-DD 00:00:00
+12:08:01   8  	v_end_ts       timestamp := to_timestamp('&p_end_date',   'YYYY-MM-DD') + interval '1' day; -- (end + 1 day) 00:00:00
+12:08:01   9  
+12:08:01  10  	v_sql	       varchar2(2000);
+12:08:01  11  	v_rows	       pls_integer;
+12:08:01  12  	v_total_rows   pls_integer := 0;
+12:08:01  13  
+12:08:01  14  	-- Stop on first error? (kept TRUE as in your test mode)
+12:08:01  15  	c_stop_on_first_error constant boolean := TRUE;
+12:08:01  16  
+12:08:01  17  	function safe_tbl(rec_name in varchar2) return varchar2 is
+12:08:01  18  	begin
+12:08:01  19  	  return 'PS_' || dbms_assert.simple_sql_name(rec_name);
+12:08:01  20  	end;
+12:08:01  21  
+12:08:01  22  	procedure log_error(p_tbl in varchar2, p_id in varchar2, p_batch in number) is
+12:08:01  23  	begin
+12:08:01  24  	  dbms_output.put_line(
+12:08:01  25  	    'ERROR on '||p_tbl||
+12:08:01  26  	    ' (PSARCH_ID='||p_id||', PSARCH_BATCHNUM='||p_batch||'):'||
+12:08:01  27  	    chr(10)||'	SQLERRM: '||sqlerrm||
+12:08:01  28  	    chr(10)||'	BACKTRACE: '||dbms_utility.format_error_backtrace
+12:08:01  29  	  );
+12:08:01  30  	end;
+12:08:01  31  begin
+12:08:01  32  	-- Derive current DB at runtime
+12:08:01  33  	select sys_context('USERENV','DB_NAME') into v_current_db from dual;
+12:08:01  34  
+12:08:01  35  	if v_target_db is null then
+12:08:01  36  	  raise_application_error(-20000, 'Target DB name is required. Aborting.');
+12:08:01  37  	end if;
+12:08:01  38  
+12:08:01  39  	if v_current_db <> v_target_db then
+12:08:01  40  	  dbms_output.put_line('ABORT: DB_NAME='||v_current_db||' != target='||v_target_db);
+12:08:01  41  	  return;
+12:08:01  42  	end if;
+12:08:01  43  
+12:08:01  44  	-- Validate date window (after inclusive adjustment)
+12:08:01  45  	if v_end_ts <= v_start_ts then
+12:08:01  46  	  raise_application_error(-20001, 'End date must be the same or after start date.');
+12:08:01  47  	end if;
+12:08:01  48  
+12:08:01  49  	dbms_output.put_line('TEST MODE: ROLLBACK enabled, stop_on_first_error='||
+12:08:01  50  			     case when c_stop_on_first_error then 'TRUE' else 'FALSE' end);
+12:08:01  51  	dbms_output.put_line('Window (inclusive dates): '||
+12:08:02  52  			     to_char(v_start_ts,'YYYY-MM-DD')||' .. '||
+12:08:02  53  			     to_char(v_end_ts - interval '1' day,'YYYY-MM-DD'));
+12:08:02  54  	dbms_output.put_line('DB check: current_db='||v_current_db||', target_db='||v_target_db);
+12:08:02  55  
+12:08:02  56  	-- Optional cache flush (requires privileges). Comment out if not granted.
+12:08:02  57  	begin
+12:08:02  58  	  execute immediate 'alter system flush buffer_cache';
+12:08:02  59  	  execute immediate 'alter system flush shared_pool';
+12:08:02  60  	exception
+12:08:02  61  	  when others then
+12:08:02  62  	    dbms_output.put_line('Note: alter system flush skipped: '||sqlerrm);
+12:08:02  63  	end;
+12:08:02  64  
+12:08:02  65  	for r in (
+12:08:02  66  	  select /*+ ORDERED */
+12:08:02  67  		 distinct a.hist_recname, b.psarch_batchnum, b.psarch_id
+12:08:02  68  	    from psarchbatch b
+12:08:02  69  	    join psarchtempobj t on b.psarch_id = t.psarch_id
+12:08:02  70  	    join psarchobjrec a  on t.psarch_object = a.psarch_object
+12:08:02  71  	   where b.psarch_dttm >= v_start_ts
+12:08:02  72  	     and b.psarch_dttm <  v_end_ts
+12:08:02  73  	) loop
+12:08:02  74  	  declare
+12:08:02  75  	    v_tbl varchar2(128) := safe_tbl(r.hist_recname);
+12:08:02  76  	  begin
+12:08:02  77  	    savepoint one_row;
+12:08:02  78  
+12:08:02  79  	    v_sql := 'delete from '||v_tbl||
+12:08:02  80  		     ' where psarch_id = :1 and psarch_batchnum = :2';
+12:08:02  81  	    execute immediate v_sql using r.psarch_id, r.psarch_batchnum;
+12:08:02  82  
+12:08:02  83  	    v_rows := sql%rowcount;
+12:08:02  84  	    v_total_rows := v_total_rows + nvl(v_rows,0);
+12:08:02  85  
+12:08:02  86  	    dbms_output.put_line('Deleted |'||v_rows||'| rows from |'||v_tbl||
+12:08:02  87  				 '| for (PSARCH_ID= |'||r.psarch_id||
+12:08:02  88  				 ',| PSARCH_BATCHNUM= |'||r.psarch_batchnum||'|).');
+12:08:02  89  
+12:08:02  90  	    -- TEST MODE: rollback this iteration
+12:08:02  91  	    rollback to savepoint one_row;
+12:08:02  92  
+12:08:02  93  	  exception
+12:08:02  94  	    when others then
+12:08:02  95  	      rollback to savepoint one_row;
+12:08:02  96  	      log_error(v_tbl, r.psarch_id, r.psarch_batchnum);
+12:08:02  97  
+12:08:02  98  	      if c_stop_on_first_error then
+12:08:02  99  		raise;
+12:08:02 100  	      end if;
+12:08:02 101  	  end;
+12:08:02 102  	end loop;
+12:08:02 103  
+12:08:02 104  	dbms_output.put_line('TOTAL rows (attempted deletes, rolled back): '||v_total_rows);
+12:08:02 105  
+12:08:02 106  	-- TEST MODE: rollback entire session
+12:08:02 107  	rollback;
+12:08:02 108  
+12:08:02 109  end;
+12:08:02 110  /
+old   3:   v_target_db    varchar2(30) := '&p_target_db';
+new   3:   v_target_db    varchar2(30) := 'TELODX';
+old   7:   v_start_ts     timestamp := to_timestamp('&p_start_date', 'YYYY-MM-DD');                  -- YYYY-MM-DD 00:00:00
+new   7:   v_start_ts     timestamp := to_timestamp('2023-05-01', 'YYYY-MM-DD');                  -- YYYY-MM-DD 00:00:00
+old   8:   v_end_ts       timestamp := to_timestamp('&p_end_date',   'YYYY-MM-DD') + interval '1' day; -- (end + 1 day) 00:00:00
+new   8:   v_end_ts       timestamp := to_timestamp('2024-03-01',   'YYYY-MM-DD') + interval '1' day; -- (end + 1 day) 00:00:00
+TEST MODE: ROLLBACK enabled, stop_on_first_error=TRUE
+Window (inclusive dates): 2023-05-01 .. 2024-03-01
+DB check: current_db=TELODX, target_db=TELODX
+Deleted |0| rows from |PS_TEJRTCHSTX_H_XX| for (PSARCH_ID= |JOBRQ_XX,| PSARCH_BATCHNUM= |26|).
+Deleted |0| rows from |PS_CANTAXDATA_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_PERSDATAEF_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_PERS_NID_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_CDMLISTHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |3490352| rows from |PS_AHRPSPCTCM_H_XX| for (PSARCH_ID= |PSCOM_XX,| PSARCH_BATCHNUM= |12|).
+Deleted |0| rows from |PS_JRPOSDSX_H_XX| for (PSARCH_ID= |PSDSC_XX,| PSARCH_BATCHNUM= |13|).
+Deleted |0| rows from |PS_PMOASISTEC_H_XX| for (PSARCH_ID= |TEPOS_XX,| PSARCH_BATCHNUM= |16|).
+Deleted |657246| rows from |PS_TEJRPOSHDX_H_XX| for (PSARCH_ID= |POSRQ_XX,| PSARCH_BATCHNUM= |3|).
+Deleted |0| rows from |PS_TECOUDFVALX_HXX| for (PSARCH_ID= |COUDF_XX,| PSARCH_BATCHNUM= |28|).
+Deleted |0| rows from |PS_JOBREQ_H_XX| for (PSARCH_ID= |JOBRQ_XX,| PSARCH_BATCHNUM= |26|).
+Deleted |0| rows from |PS_JOB_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_JOB_XX_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_STATETAXDA_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_CDMAUTHIST_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |0| rows from |PS_CDMFILELIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |0| rows from |PS_PRCDISTHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |0| rows from |PS_PRCRQSTFLE_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |369| rows from |PS_TEJOBRQPSX_H_XX| for (PSARCH_ID= |TEPOS_XX,| PSARCH_BATCHNUM= |16|).
+Deleted |9739782| rows from |PS_APYTMSUMM_H_XX| for (PSARCH_ID= |TMSUM_XX,| PSARCH_BATCHNUM= |18|).
+Deleted |481505| rows from |PS_APYCOMMSUM_H_XX| for (PSARCH_ID= |CMSUM_XX,| PSARCH_BATCHNUM= |1|).
+Deleted |17823| rows from |PS_AHRPSPCTDCM_HXX| for (PSARCH_ID= |DPTRQ_XX,| PSARCH_BATCHNUM= |2|).
+Deleted |8919| rows from |PS_PROJECT_H_XX| for (PSARCH_ID= |PRJCSTNG,| PSARCH_BATCHNUM= |20|).
+Deleted |0| rows from |PS_AHRSRVJBRT_H_XX| for (PSARCH_ID= |AJBRQ_XX,| PSARCH_BATCHNUM= |25|).
+Deleted |42| rows from |PS_COMSCHDTLX_H_XX| for (PSARCH_ID= |CMSCH_XX,| PSARCH_BATCHNUM= |7|).
+Deleted |8| rows from |PS_TEPSASTNMX_H_XX| for (PSARCH_ID= |PSAST_XX,| PSARCH_BATCHNUM= |8|).
+Deleted |664| rows from |PS_AHRCMHLDT_H_XX| for (PSARCH_ID= |PSCOM_XX,| PSARCH_BATCHNUM= |12|).
+Deleted |6757145| rows from |PS_APYTMBILL2_H_XX| for (PSARCH_ID= |TMBID_XX,| PSARCH_BATCHNUM= |17|).
+Deleted |9| rows from |PS_APYTMBINEG_H_XX| for (PSARCH_ID= |TMBID_XX,| PSARCH_BATCHNUM= |17|).
+Deleted |8706| rows from |PS_AHRJBRQDPT_H_XX| for (PSARCH_ID= |DPTRQ_XX,| PSARCH_BATCHNUM= |2|).
+Deleted |9771| rows from |PS_PROJ_ACT_H_XX| for (PSARCH_ID= |PRJCSTNG,| PSARCH_BATCHNUM= |20|).
+Deleted |0| rows from |PS_TE_EMP_REG_H_XX| for (PSARCH_ID= |PSHDR_XX,| PSARCH_BATCHNUM= |23|).
+Deleted |0| rows from |PS_AHRSRVDISX_H_XX| for (PSARCH_ID= |SRVHD_XX,| PSARCH_BATCHNUM= |27|).
+Deleted |0| rows from |PS_PERSONALDA_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_PERSONALPH_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |17| rows from |PS_TEPSASTDTX_H_XX| for (PSARCH_ID= |PSAST_XX,| PSARCH_BATCHNUM= |8|).
+Deleted |0| rows from |PS_PRCPARMHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |0| rows from |PS_PRCRQSTHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |0| rows from |PS_PRCTEXTHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |0| rows from |PS_PRCTXFRHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |6673676| rows from |PS_APYTMBILL_H_XX| for (PSARCH_ID= |TMBID_XX,| PSARCH_BATCHNUM= |17|).
+Deleted |542088| rows from |PS_APYTMSUMADJ_HXX| for (PSARCH_ID= |TMSUM_XX,| PSARCH_BATCHNUM= |18|).
+Deleted |10125| rows from |PS_PROJ_ACTST_H_XX| for (PSARCH_ID= |PRJCSTNG,| PSARCH_BATCHNUM= |20|).
+Deleted |5664102| rows from |PS_AHRPSBILPY_H_XX| for (PSARCH_ID= |PSBPY_XX,| PSARCH_BATCHNUM= |9|).
+Deleted |2| rows from |PS_CA_CNTRHDR_H_XX| for (PSARCH_ID= |CONTRCTS,| PSARCH_BATCHNUM= |21|).
+Deleted |0| rows from |PS_ABICSTINVT_H_XX| for (PSARCH_ID= |SRVHD_XX,| PSARCH_BATCHNUM= |27|).
+Deleted |0| rows from |PS_AHRSRVNTX_H_XX| for (PSARCH_ID= |SRVHD_XX,| PSARCH_BATCHNUM= |27|).
+Deleted |0| rows from |PS_TECOUDFHDRX_HXX| for (PSARCH_ID= |COUDF_XX,| PSARCH_BATCHNUM= |28|).
+Deleted |0| rows from |PS_EMAILADRS_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_PURGEDATA_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_PRCQUEHIST_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |0| rows from |PS_PRCRQSTSTR_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |6|).
+Deleted |0| rows from |PS_JRPOSDISCX_H_XX| for (PSARCH_ID= |PSDSC_XX,| PSARCH_BATCHNUM= |13|).
+Deleted |0| rows from |PS_TEJRPESMX_H_XX| for (PSARCH_ID= |TEPOS_XX,| PSARCH_BATCHNUM= |16|).
+Deleted |2328246| rows from |PS_TEBURDENX_H_XX| for (PSARCH_ID= |PSBUR_XX,| PSARCH_BATCHNUM= |10|).
+Deleted |1932723| rows from |PS_TEPSTERPTX_H_XX| for (PSARCH_ID= |POSRQ_XX,| PSARCH_BATCHNUM= |3|).
+Deleted |0| rows from |PS_TE_EMP_OBU_H_XX| for (PSARCH_ID= |PSHDR_XX,| PSARCH_BATCHNUM= |23|).
+Deleted |0| rows from |PS_TE_EMP_PRD_H_XX| for (PSARCH_ID= |PSHDR_XX,| PSARCH_BATCHNUM= |23|).
+Deleted |0| rows from |PS_JPMPROFILE_H_XX| for (PSARCH_ID= |PSJPM_XX,| PSARCH_BATCHNUM= |24|).
+Deleted |0| rows from |PS_TLHRTESTGX_H_XX| for (PSARCH_ID= |TLHR_XX,| PSARCH_BATCHNUM= |19|).
+Deleted |0| rows from |PS_TEJOBREQX_H_XX| for (PSARCH_ID= |JOBRQ_XX,| PSARCH_BATCHNUM= |26|).
+Deleted |0| rows from |PS_HREXTEMP_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_JOB_JR_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_TEJOBRPTXX_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |2| rows from |PS_TEPOSASTX_H_XX| for (PSARCH_ID= |PSAST_XX,| PSARCH_BATCHNUM= |8|).
+Deleted |10695168| rows from |PS_APYTMBIDET_H_XX| for (PSARCH_ID= |TMBID_XX,| PSARCH_BATCHNUM= |17|).
+Deleted |18577010| rows from |PS_APYSPREAD_H_XX| for (PSARCH_ID= |SPRD_XX,| PSARCH_BATCHNUM= |4|).
+Deleted |18178| rows from |PS_PROJ_STAT_H_XX| for (PSARCH_ID= |PRJCSTNG,| PSARCH_BATCHNUM= |20|).
+Deleted |0| rows from |PS_TE_EMP_HDR_H_XX| for (PSARCH_ID= |PSHDR_XX,| PSARCH_BATCHNUM= |23|).
+Deleted |0| rows from |PS_TESPRDSUMX_H_XX| for (PSARCH_ID= |TESPD_XX,| PSARCH_BATCHNUM= |5|).
+Deleted |4| rows from |PS_CA_DT_PROJ_H_XX| for (PSARCH_ID= |CONTRCTS,| PSARCH_BATCHNUM= |21|).
+Deleted |0| rows from |PS_AHRSRVDSX_H_XX| for (PSARCH_ID= |SRVHD_XX,| PSARCH_BATCHNUM= |27|).
+Deleted |0| rows from |PS_AHRSRVHDRT_H_XX| for (PSARCH_ID= |SRVHD_XX,| PSARCH_BATCHNUM= |27|).
+Deleted |0| rows from |PS_TECOUDFX_H_XX| for (PSARCH_ID= |COUDF_XX,| PSARCH_BATCHNUM= |28|).
+Deleted |14| rows from |PS_COMSCHHDRX_H_XX| for (PSARCH_ID= |CMSCH_XX,| PSARCH_BATCHNUM= |7|).
+Deleted |61| rows from |PS_TEPSNCTEX_H_XX| for (PSARCH_ID= |PSNCT_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |0| rows from |PS_TEJBRQDPTX_H_XX| for (PSARCH_ID= |TEDPT_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_TE_EMP_UP_H_XX| for (PSARCH_ID= |PSHDR_XX,| PSARCH_BATCHNUM= |23|).
+Deleted |0| rows from |PS_CA_DETAIL_H_XX| for (PSARCH_ID= |CONTRCTS,| PSARCH_BATCHNUM= |21|).
+Deleted |0| rows from |PS_ABICSTINVSP_HXX| for (PSARCH_ID= |SRVHD_XX,| PSARCH_BATCHNUM= |27|).
+Deleted |0| rows from |PS_TECOMSBILX_H_XX| for (PSARCH_ID= |SRVHD_XX,| PSARCH_BATCHNUM= |27|).
+Deleted |0| rows from |PS_TECOMMISDR_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |1733| rows from |PS_TEPOSCOMPX_H_XX| for (PSARCH_ID= |PSCMP_XX,| PSARCH_BATCHNUM= |11|).
+Deleted |1932752| rows from |PS_AHRJOBRQPS_H_XX| for (PSARCH_ID= |POSRQ_XX,| PSARCH_BATCHNUM= |3|).
+Deleted |0| rows from |PS_TE_EMP_CO_H_XX| for (PSARCH_ID= |PSHDR_XX,| PSARCH_BATCHNUM= |23|).
+TOTAL rows (attempted deletes, rolled back): 69548242
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 00:55:55.68
+13:03:57 SQL> spool off

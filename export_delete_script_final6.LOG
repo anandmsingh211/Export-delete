@@ -1,0 +1,819 @@
+SQL> set autocommit off
+SQL> set feedback on
+SQL> set time on
+12:25:17 SQL> set timing on
+12:25:17 SQL> set trimspool on
+12:25:17 SQL> set pagesize 32767
+12:25:17 SQL> set linesize 1000
+12:25:17 SQL> set long 1000
+12:25:17 SQL> set longchunksize 1000
+12:25:17 SQL> set define on
+12:25:17 SQL> ttitle off
+12:25:17 SQL> btitle off
+12:25:17 SQL> alter session set nls_date_format = 'YYYY-MM-DD HH24:MI:SS';
+
+Session altered.
+
+Elapsed: 00:00:00.02
+12:25:17 SQL> whenever oserror EXIT failure ROLLBACK
+12:25:17 SQL> whenever sqlerror EXIT failure ROLLBACK
+12:25:17 SQL> 
+12:25:17 SQL> select instance_name from v$instance;
+
+INSTANCE_NAME
+----------------
+FSLODX1
+
+1 row selected.
+
+Elapsed: 00:00:00.02
+12:25:17 SQL> 
+12:25:17 SQL> -- **********************************************************************
+12:25:17 SQL> -- SQL Script File Name: export_delete_script_final6.SQL
+12:25:17 SQL> -- **********************************************************************
+12:25:17 SQL> -- TEST MODE: ROLLBACK instead of COMMIT (see comments)
+12:25:17 SQL> -- Confidential - Allegis Group, Inc.
+12:25:17 SQL> -- **********************************************************************
+12:25:17 SQL> -- KEYWORD: ~XX
+12:25:17 SQL> -- **********************************************************************
+12:25:17 SQL> --
+12:25:17 SQL> --	       Confidentiality Information:
+12:25:17 SQL> --
+12:25:17 SQL> -- This module is the confidential and proprietary information of
+12:25:17 SQL> -- Allegis Group, Inc.; it is not to be copied, reproduced, or transmitted
+12:25:17 SQL> -- in any form, by any means, in whole or in part, nor is it to be used
+12:25:17 SQL> -- for any purpose other than that for which it is expressly provided
+12:25:17 SQL> -- without the written permission of Allegis Group, Inc.
+12:25:17 SQL> --
+12:25:17 SQL> -- Copyright (c) 2002 Allegis Group, Inc. All Rights Reserved
+12:25:17 SQL> --
+12:25:17 SQL> -- **********************************************************************
+12:25:17 SQL> -- Description:
+12:25:17 SQL> --   Purges PS_* history rows matched via PSARCH tables within a date window.
+12:25:17 SQL> --   TEST MODE: Uses ROLLBACK in place of COMMIT (see inline comments).
+12:25:17 SQL> -- **********************************************************************
+12:25:17 SQL> -- Note: RUN AS SYSADM
+12:25:17 SQL> -- HISTORY:
+12:25:17 SQL> -- 2025-12-25  Anandmohan Singh  SQL*Plus refactor; test-mode rollbacks
+12:25:17 SQL> -- 2026-01-06  Linux-friendly; runtime prompts; no default target DB
+12:25:17 SQL> -- **********************************************************************
+12:25:17 SQL> 
+12:25:17 SQL> -- =========[ Runtime Parameters via command line ]=========
+12:25:17 SQL> -- Usage:
+12:25:17 SQL> --   sqlplus sysadm/*******@SERVICE @export_delete_script_final6.SQL <DB_NAME> <START_DATE> <END_DATE>
+12:25:17 SQL> -- Example:
+12:25:17 SQL> --   sqlplus sysadm/*******@FSSNDX    @export_delete_script_final6.SQL FSSNDX 2025-12-01 2025-12-31
+12:25:17 SQL> -- Notes:
+12:25:17 SQL> --   Dates must be YYYY-MM-DD. End date is inclusive.
+12:25:17 SQL> --   Parameter positions: &1=DB_NAME, &2=START_DATE, &3=END_DATE
+12:25:17 SQL> 
+12:25:17 SQL> -- Map positional parameters to named defines (so the rest of the block stays untouched)
+12:25:17 SQL> define p_target_db = '&1'
+Enter value for 1: FSLODX
+12:25:23 SQL> define p_start_date = '&2'
+Enter value for 2: 2023-05-01
+12:26:03 SQL> define p_end_date   = '&3'
+Enter value for 3: 2024-03-01
+12:26:16 SQL> 
+12:26:16 SQL> -- =========[ Variable Block ]=========
+12:26:16 SQL> declare
+12:26:16   2  	v_current_db   varchar2(30);
+12:26:16   3  	v_target_db    varchar2(30) := '&p_target_db';
+12:26:16   4  
+12:26:16   5  	-- Convert input dates to timestamps at midnight.
+12:26:16   6  	-- End date is inclusive: add 1 day and use < v_end_ts comparison.
+12:26:16   7  	v_start_ts     timestamp := to_timestamp('&p_start_date', 'YYYY-MM-DD');		  -- YYYY-MM-DD 00:00:00
+12:26:16   8  	v_end_ts       timestamp := to_timestamp('&p_end_date',   'YYYY-MM-DD') + interval '1' day; -- (end + 1 day) 00:00:00
+12:26:16   9  
+12:26:16  10  	v_sql	       varchar2(2000);
+12:26:16  11  	v_rows	       pls_integer;
+12:26:16  12  	v_total_rows   pls_integer := 0;
+12:26:16  13  
+12:26:16  14  	-- Stop on first error? (kept TRUE as in your test mode)
+12:26:16  15  	c_stop_on_first_error constant boolean := TRUE;
+12:26:16  16  
+12:26:16  17  	function safe_tbl(rec_name in varchar2) return varchar2 is
+12:26:16  18  	begin
+12:26:16  19  	  return 'PS_' || dbms_assert.simple_sql_name(rec_name);
+12:26:16  20  	end;
+12:26:16  21  
+12:26:16  22  	procedure log_error(p_tbl in varchar2, p_id in varchar2, p_batch in number) is
+12:26:16  23  	begin
+12:26:16  24  	  dbms_output.put_line(
+12:26:16  25  	    'ERROR on '||p_tbl||
+12:26:16  26  	    ' (PSARCH_ID='||p_id||', PSARCH_BATCHNUM='||p_batch||'):'||
+12:26:16  27  	    chr(10)||'	SQLERRM: '||sqlerrm||
+12:26:16  28  	    chr(10)||'	BACKTRACE: '||dbms_utility.format_error_backtrace
+12:26:16  29  	  );
+12:26:16  30  	end;
+12:26:16  31  begin
+12:26:16  32  	-- Derive current DB at runtime
+12:26:16  33  	select sys_context('USERENV','DB_NAME') into v_current_db from dual;
+12:26:16  34  
+12:26:16  35  	if v_target_db is null then
+12:26:16  36  	  raise_application_error(-20000, 'Target DB name is required. Aborting.');
+12:26:16  37  	end if;
+12:26:16  38  
+12:26:16  39  	if v_current_db <> v_target_db then
+12:26:16  40  	  dbms_output.put_line('ABORT: DB_NAME='||v_current_db||' != target='||v_target_db);
+12:26:16  41  	  return;
+12:26:16  42  	end if;
+12:26:16  43  
+12:26:16  44  	-- Validate date window (after inclusive adjustment)
+12:26:16  45  	if v_end_ts <= v_start_ts then
+12:26:16  46  	  raise_application_error(-20001, 'End date must be the same or after start date.');
+12:26:16  47  	end if;
+12:26:16  48  
+12:26:16  49  	dbms_output.put_line('TEST MODE: ROLLBACK enabled, stop_on_first_error='||
+12:26:16  50  			     case when c_stop_on_first_error then 'TRUE' else 'FALSE' end);
+12:26:16  51  	dbms_output.put_line('Window (inclusive dates): '||
+12:26:16  52  			     to_char(v_start_ts,'YYYY-MM-DD')||' .. '||
+12:26:16  53  			     to_char(v_end_ts - interval '1' day,'YYYY-MM-DD'));
+12:26:16  54  	dbms_output.put_line('DB check: current_db='||v_current_db||', target_db='||v_target_db);
+12:26:16  55  
+12:26:16  56  	-- Optional cache flush (requires privileges). Comment out if not granted.
+12:26:16  57  	begin
+12:26:16  58  	  execute immediate 'alter system flush buffer_cache';
+12:26:16  59  	  execute immediate 'alter system flush shared_pool';
+12:26:16  60  	exception
+12:26:16  61  	  when others then
+12:26:16  62  	    dbms_output.put_line('Note: alter system flush skipped: '||sqlerrm);
+12:26:16  63  	end;
+12:26:16  64  
+12:26:16  65  	for r in (
+12:26:16  66  	  select /*+ ORDERED */
+12:26:16  67  		 distinct a.hist_recname, b.psarch_batchnum, b.psarch_id
+12:26:16  68  	    from psarchbatch b
+12:26:16  69  	    join psarchtempobj t on b.psarch_id = t.psarch_id
+12:26:16  70  	    join psarchobjrec a  on t.psarch_object = a.psarch_object
+12:26:16  71  	   where b.psarch_dttm >= v_start_ts
+12:26:16  72  	     and b.psarch_dttm <  v_end_ts
+12:26:16  73  	) loop
+12:26:16  74  	  declare
+12:26:16  75  	    v_tbl varchar2(128) := safe_tbl(r.hist_recname);
+12:26:16  76  	  begin
+12:26:16  77  	    savepoint one_row;
+12:26:16  78  
+12:26:16  79  	    v_sql := 'delete from '||v_tbl||
+12:26:16  80  		     ' where psarch_id = :1 and psarch_batchnum = :2';
+12:26:16  81  	    execute immediate v_sql using r.psarch_id, r.psarch_batchnum;
+12:26:16  82  
+12:26:16  83  	    v_rows := sql%rowcount;
+12:26:16  84  	    v_total_rows := v_total_rows + nvl(v_rows,0);
+12:26:16  85  
+12:26:16  86  	    dbms_output.put_line('Deleted |'||v_rows||'| rows from |'||v_tbl||
+12:26:16  87  				 '| for (PSARCH_ID= |'||r.psarch_id||
+12:26:16  88  				 ',| PSARCH_BATCHNUM= |'||r.psarch_batchnum||'|).');
+12:26:16  89  
+12:26:16  90  	    -- TEST MODE: rollback this iteration
+12:26:16  91  	    rollback to savepoint one_row;
+12:26:16  92  
+12:26:16  93  	  exception
+12:26:16  94  	    when others then
+12:26:16  95  	      rollback to savepoint one_row;
+12:26:16  96  	      log_error(v_tbl, r.psarch_id, r.psarch_batchnum);
+12:26:16  97  
+12:26:16  98  	      if c_stop_on_first_error then
+12:26:16  99  		raise;
+12:26:16 100  	      end if;
+12:26:16 101  	  end;
+12:26:16 102  	end loop;
+12:26:16 103  
+12:26:16 104  	dbms_output.put_line('TOTAL rows (attempted deletes, rolled back): '||v_total_rows);
+12:26:16 105  
+12:26:16 106  	-- TEST MODE: rollback entire session
+12:26:16 107  	rollback;
+12:26:16 108  
+12:26:16 109  end;
+12:26:16 110  /
+old   3:   v_target_db    varchar2(30) := '&p_target_db';
+new   3:   v_target_db    varchar2(30) := 'FSLODX';
+old   7:   v_start_ts     timestamp := to_timestamp('&p_start_date', 'YYYY-MM-DD');                  -- YYYY-MM-DD 00:00:00
+new   7:   v_start_ts     timestamp := to_timestamp('2023-05-01', 'YYYY-MM-DD');                  -- YYYY-MM-DD 00:00:00
+old   8:   v_end_ts       timestamp := to_timestamp('&p_end_date',   'YYYY-MM-DD') + interval '1' day; -- (end + 1 day) 00:00:00
+new   8:   v_end_ts       timestamp := to_timestamp('2024-03-01',   'YYYY-MM-DD') + interval '1' day; -- (end + 1 day) 00:00:00
+TEST MODE: ROLLBACK enabled, stop_on_first_error=TRUE
+Window (inclusive dates): 2023-05-01 .. 2024-03-01
+DB check: current_db=FSLODX, target_db=FSLODX
+Deleted |14674| rows from |PS_WTH_TRXTBL_H_XX| for (PSARCH_ID= |APPYMTXX,| PSARCH_BATCHNUM= |93|).
+Deleted |0| rows from |PS_AP_ARC_DIST_N_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_REMRPRT_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_APYX42_IFC_H_XX| for (PSARCH_ID= |APY42_XX,| PSARCH_BATCHNUM= |102|).
+Deleted |0| rows from |PS_AR_FRMLIN2_XX_H| for (PSARCH_ID= |ARBUR_XX,| PSARCH_BATCHNUM= |97|).
+Deleted |0| rows from |PS_AR_FRMLIN3_XX_H| for (PSARCH_ID= |ARBUR_XX,| PSARCH_BATCHNUM= |97|).
+Deleted |0| rows from |PS_AR_ITM_ACTXDT_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_ITMDSP_XX_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_PEND_VAT_H| for (PSARCH_ID= |ARPEND,| PSARCH_BATCHNUM= |96|).
+Deleted |0| rows from |PS_AR_PO_SEQ_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |1335452| rows from |PS_AR_PAYMENT_H| for (PSARCH_ID= |ARPYMT,| PSARCH_BATCHNUM= |1|).
+Deleted |0| rows from |PS_AR_PAY_ITEM_H| for (PSARCH_ID= |ARPYMT,| PSARCH_BATCHNUM= |1|).
+Deleted |0| rows from |PS_AR_PAY_IT_MRL_H| for (PSARCH_ID= |ARPYMT,| PSARCH_BATCHNUM= |1|).
+Deleted |0| rows from |PS_BIHDR_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |960| rows from |PS_BIADJHSTX_H_XX| for (PSARCH_ID= |BIADJXX,| PSARCH_BATCHNUM= |92|).
+Deleted |0| rows from |PS_BIEXTCIIDS_H_XX| for (PSARCH_ID= |BICBINXX,| PSARCH_BATCHNUM= |5|).
+Deleted |3808639| rows from |PS_BIHDR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BIHDRNOTE_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNDSTAR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BIHDRX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILINEX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |2| rows from |PS_BIRELCMPX_H_XX| for (PSARCH_ID= |BIRELXX,| PSARCH_BATCHNUM= |84|).
+Deleted |282| rows from |PS_CA_ACCTG_LN_P_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_FEE_ADJ_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BP_EVT_LN_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_DETAIL_LAN_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |2| rows from |PS_CA_DTL_DST_DA_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_EARLY_OPTI_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_EMAIL_CON2_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_FC_STG_RUN_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_HREVRED_LG_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_HDR_COMM_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_LREVRED_LG_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_NOTE_TRANS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |2| rows from |PS_CA_RATE_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_RNW_APPLIE_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_RNW_LN_RED_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |1043431| rows from |PS_BI_LN_TMP_XX_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_BANK_NON_PD_HXX| for (PSARCH_ID= |CM_NP_XX,| PSARCH_BATCHNUM= |35|).
+Deleted |0| rows from |PS_TR_AF_STL_H_XX| for (PSARCH_ID= |CM_XF_XX,| PSARCH_BATCHNUM= |30|).
+Deleted |0| rows from |PS_EX_ADV_DIST_H| for (PSARCH_ID= |EXADV_XX,| PSARCH_BATCHNUM= |17|).
+Deleted |0| rows from |PS_EX_ADV_DOCSEQ_H| for (PSARCH_ID= |EXADV_XX,| PSARCH_BATCHNUM= |17|).
+Deleted |0| rows from |PS_EX_SHEET_DIST_H| for (PSARCH_ID= |EXSHT_XX,| PSARCH_BATCHNUM= |63|).
+Deleted |0| rows from |PS_EX_SHEET_PYMT_H| for (PSARCH_ID= |EXSHT_XX,| PSARCH_BATCHNUM= |63|).
+Deleted |0| rows from |PS_EX_ENHC_DTAMX_H| for (PSARCH_ID= |EX_MYWAL,| PSARCH_BATCHNUM= |82|).
+Deleted |0| rows from |PS_EX_ENHC_SMAMX_H| for (PSARCH_ID= |EX_MYWAL,| PSARCH_BATCHNUM= |82|).
+Deleted |0| rows from |PS_PMT_ADDR_H_XX| for (PSARCH_ID= |FG_DL_XX,| PSARCH_BATCHNUM= |90|).
+Deleted |0| rows from |PS_PMT_UPY_STG_HXX| for (PSARCH_ID= |FG_DL_XX,| PSARCH_BATCHNUM= |90|).
+Deleted |5749| rows from |PS_JRNL_HDR_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |37|).
+Deleted |0| rows from |PS_PC_BUD_DTL_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_PICSTS_TBL_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |8906| rows from |PS_PC_PROJECT_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_RPO_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PM_ACT_STG_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PM_SPRASGN_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PM_SPR_STG_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |5392| rows from |PS_PROJECT_DESCR_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJECT_SCHED_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_DOCUMENT_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_JUSTIFY_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_INTFCSTGXX_H| for (PSARCH_ID= |PC_05_XX,| PSARCH_BATCHNUM= |47|).
+Deleted |0| rows from |PS_PCX0013_ERRXX_H| for (PSARCH_ID= |PC_07_XX,| PSARCH_BATCHNUM= |49|).
+Deleted |0| rows from |PS_PC_UB_FDET_XX_H| for (PSARCH_ID= |PC_08_XX,| PSARCH_BATCHNUM= |50|).
+Deleted |2043| rows from |PS_PRCQUEHIST_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |2043| rows from |PS_PRCRQSTHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |160| rows from |PS_PRCTEXTHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |0| rows from |PS_BEN_PRGPRTC_HXX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |66|).
+Deleted |0| rows from |PS_EMAILADRS_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |66|).
+Deleted |0| rows from |PS_EMPLOYMENT_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |66|).
+Deleted |0| rows from |PS_INV_ITEMS_H_XX| for (PSARCH_ID= |PURITMXX,| PSARCH_BATCHNUM= |12|).
+Deleted |0| rows from |PS_MSTR_ITMTBL_HXX| for (PSARCH_ID= |PURITMXX,| PSARCH_BATCHNUM= |12|).
+Deleted |0| rows from |PS_PURC_ITMATR_HXX| for (PSARCH_ID= |PURITMXX,| PSARCH_BATCHNUM= |12|).
+Deleted |640| rows from |PS_CNTRCT_HDR_H_XX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_CNTR_RLSHDR_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |640| rows from |PS_CNTR_SCHDL_H_XX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_PO_LN_DISTB_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_RECV_LNINSP_HXX| for (PSARCH_ID= |PUR_RCXX,| PSARCH_BATCHNUM= |55|).
+Deleted |402580| rows from |PS_PAYMNT_TBL_H_XX| for (PSARCH_ID= |APPYMTXX,| PSARCH_BATCHNUM= |93|).
+Deleted |0| rows from |PS_AP_SUPPRES_H_XX| for (PSARCH_ID= |APPYMTXX,| PSARCH_BATCHNUM= |93|).
+Deleted |566074| rows from |PS_VCHRREG_LC_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |892| rows from |PS_PAY_TRNSMT_H_XX| for (PSARCH_ID= |APPYTTXX,| PSARCH_BATCHNUM= |94|).
+Deleted |0| rows from |PS_PAYMNT_TBL_H_XX| for (PSARCH_ID= |AP_PYMNT,| PSARCH_BATCHNUM= |13|).
+Deleted |0| rows from |PS_WTH_TRXTBL_H_XX| for (PSARCH_ID= |AP_PYMNT,| PSARCH_BATCHNUM= |13|).
+Deleted |0| rows from |PS_AP_SUPPRES_H_XX| for (PSARCH_ID= |AP_PYMNT,| PSARCH_BATCHNUM= |13|).
+Deleted |0| rows from |PS_AR_FRMLIN4_XX_H| for (PSARCH_ID= |ARBUR_XX,| PSARCH_BATCHNUM= |97|).
+Deleted |0| rows from |PS_AR_CCTRN_TBL_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_IPAC_HDR_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_IPAC_SGL_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_ITMNOTE_XX_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |11776783| rows from |PS_AR_PEND_ITM_H| for (PSARCH_ID= |ARPEND,| PSARCH_BATCHNUM= |96|).
+Deleted |0| rows from |PS_AR_PO_DTL_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |0| rows from |PS_AR_PO_WORK_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |0| rows from |PS_AR_EE_DJR_ACT_H| for (PSARCH_ID= |ARPYMT,| PSARCH_BATCHNUM= |1|).
+Deleted |87387| rows from |PS_AR_STMT_CUSDT_H| for (PSARCH_ID= |ARSTMT,| PSARCH_BATCHNUM= |3|).
+Deleted |4| rows from |PS_AR_FORMTAR_XX_H| for (PSARCH_ID= |ARTAR_XX,| PSARCH_BATCHNUM= |106|).
+Deleted |1| rows from |PS_AR_FRMTAR1_XX_H| for (PSARCH_ID= |ARTAR_XX,| PSARCH_BATCHNUM= |106|).
+Deleted |0| rows from |PS_BIX24DSTMPX_HXX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNDSDFR_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNTAX_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BIHDRX_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BIALLTAXX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BILNIUPAY_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BILNNOTE_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |189459| rows from |PS_BIHDRAR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_CA_AP_EVENT_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_EVT_CHG_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_ATTACHMENT_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_DETAIL_APP_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_DETAIL_DC_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_LNRED_LANG_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_LNREV_RED_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_PGP_PROJ_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_PREPAID_PR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_WTH_REL_LA_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |66206| rows from |PS_BI_HDR_TMP_XX_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CSH_CST_SUM_HXX| for (PSARCH_ID= |CM_FS_XX,| PSARCH_BATCHNUM= |32|).
+Deleted |59| rows from |PS_BNK_SMT_HDR_HXX| for (PSARCH_ID= |CM_SH_XX,| PSARCH_BATCHNUM= |28|).
+Deleted |0| rows from |PS_EX_ADV_PYMT_H| for (PSARCH_ID= |EXADV_XX,| PSARCH_BATCHNUM= |17|).
+Deleted |0| rows from |PS_EX_ADV_CHK_H| for (PSARCH_ID= |EXADV_XX,| PSARCH_BATCHNUM= |17|).
+Deleted |0| rows from |PS_EX_ADV_HDR_H| for (PSARCH_ID= |EXADV_XX,| PSARCH_BATCHNUM= |17|).
+Deleted |0| rows from |PS_EX_SHEET_AW_H| for (PSARCH_ID= |EX_ER_AD,| PSARCH_BATCHNUM= |68|).
+Deleted |0| rows from |PS_EOAW_NEMSTS_HXX| for (PSARCH_ID= |EX_NS_XX,| PSARCH_BATCHNUM= |87|).
+Deleted |0| rows from |PS_EOAW_SPINST_HXX| for (PSARCH_ID= |EX_SY_XX,| PSARCH_BATCHNUM= |88|).
+Deleted |0| rows from |PS_EOAW_SUMDTL_HXX| for (PSARCH_ID= |EX_SY_XX,| PSARCH_BATCHNUM= |88|).
+Deleted |0| rows from |PS_PMT_OID_STG_HXX| for (PSARCH_ID= |FG_DL_XX,| PSARCH_BATCHNUM= |90|).
+Deleted |153| rows from |PS_JRNL_CF_BAL_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |38|).
+Deleted |1010576| rows from |PS_LEDGER_H| for (PSARCH_ID= |GL_LEDXX,| PSARCH_BATCHNUM= |39|).
+Deleted |0| rows from |PS_PC_CHC_INFO_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_CHCINFO_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_DELUTIL_RC_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |62433| rows from |PS_PC_PROJHEALTH_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |5125| rows from |PS_PC_PRJ_ACT_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PRJ_TMACTDTXX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_ACT_TEAM_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_ACT_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_CMACCTLNXX_H| for (PSARCH_ID= |PC_03_XX,| PSARCH_BATCHNUM= |45|).
+Deleted |0| rows from |PS_PC_UB_PO_XX_H| for (PSARCH_ID= |PC_09_XX,| PSARCH_BATCHNUM= |67|).
+Deleted |0| rows from |PS_PC_EXTOPC_SUM_H| for (PSARCH_ID= |PC_12_XX,| PSARCH_BATCHNUM= |53|).
+Deleted |0| rows from |PS_GM_PROP_PRJ_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_JOB_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |66|).
+Deleted |0| rows from |PS_PERSDATAEF_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |66|).
+Deleted |0| rows from |PS_CMMTS_TBL_H_XX| for (PSARCH_ID= |PURCMTXX,| PSARCH_BATCHNUM= |71|).
+Deleted |0| rows from |PS_RTV_HDR_H_XX| for (PSARCH_ID= |PURRTVXX,| PSARCH_BATCHNUM= |56|).
+Deleted |639| rows from |PS_CNTR_LNRLS_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_RECV_HDR_H_XX| for (PSARCH_ID= |PUR_RCXX,| PSARCH_BATCHNUM= |55|).
+Deleted |0| rows from |PS_RECV_LNASET_HXX| for (PSARCH_ID= |PUR_RCXX,| PSARCH_BATCHNUM= |55|).
+Deleted |0| rows from |PS_AP_VCHR_AUD_ARC| for (PSARCH_ID= |VCHAUDXX,| PSARCH_BATCHNUM= |103|).
+Deleted |0| rows from |PS_VMSTRNCNLX_H_XX| for (PSARCH_ID= |VMSCTRXX,| PSARCH_BATCHNUM= |58|).
+Deleted |0| rows from |PS_TLRTSPRJXX_H_XX| for (PSARCH_ID= |TLRTS_XX,| PSARCH_BATCHNUM= |65|).
+Deleted |26515| rows from |PS_PYMNT_ADVC_H_XX| for (PSARCH_ID= |APPYMTXX,| PSARCH_BATCHNUM= |93|).
+Deleted |1124091| rows from |PS_AP_ARC_DIST_L_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |19568| rows from |PS_AP_ARC_PYM_WT_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |5181089| rows from |PS_AP_ARC_VCH_AC_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AP_ARC_VCH_DO_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AP_ARC_VCH_TG_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AP_ARC_VCH_TX_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_TSEVCH_FLD_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_RVLACTG_LN_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_APYX18_IFC_H_XX| for (PSARCH_ID= |APY18_XX,| PSARCH_BATCHNUM= |101|).
+Deleted |0| rows from |PS_AP_ARC_PYM_TB_H| for (PSARCH_ID= |AP_PYMNT,| PSARCH_BATCHNUM= |13|).
+Deleted |0| rows from |PS_AR_FRMLIN1_XX_H| for (PSARCH_ID= |ARBUR_XX,| PSARCH_BATCHNUM= |97|).
+Deleted |0| rows from |PS_AR_ITM_ACTTAX_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_FRMMAR2_XX_H| for (PSARCH_ID= |ARMAR_XX,| PSARCH_BATCHNUM= |104|).
+Deleted |0| rows from |PS_AR_FORMMAR_XX_H| for (PSARCH_ID= |ARMAR_XX,| PSARCH_BATCHNUM= |104|).
+Deleted |0| rows from |PS_AR_PO_TOT_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |458084| rows from |PS_AR_PAY_ID_CUS_H| for (PSARCH_ID= |ARPYMT,| PSARCH_BATCHNUM= |1|).
+Deleted |1989| rows from |PS_AR_PAY_MIS_DS_H| for (PSARCH_ID= |ARPYMT,| PSARCH_BATCHNUM= |1|).
+Deleted |0| rows from |PS_AR_FORMRAR_XX_H| for (PSARCH_ID= |ARRAR_XX,| PSARCH_BATCHNUM= |105|).
+Deleted |0| rows from |PS_BIHDRCRCARD_HXX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BIHDRVAT_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |10047011| rows from |PS_BILNDST_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BILNDSTDFR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BILNDSDFR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BILNDSDTL_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BILNTAX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |189459| rows from |PS_BIHDR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNIUEXP_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_VMSACCTLNX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_VMSACCTLNX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_CA_ACCTG_LINE_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_UAR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BILLPLN_LA_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |2| rows from |PS_CA_BIL_PLN_XX_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BP_EV_AMXX_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BP_SCHEDUL_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_CHG_DTL_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |2| rows from |PS_CA_CHG_HDR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_HDR_DC_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |2| rows from |PS_CA_DETAIL_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |1| rows from |PS_CA_LMT_FEE_DT_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_LMT_TXN_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_MILESTONE_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_OPP_TYP_XX_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_PGP_COSTS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_RNW_LN_LIN_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_RNW_LN_RDS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_INTFCBICMP_H_XX| for (PSARCH_ID= |BIINFXX,| PSARCH_BATCHNUM= |73|).
+Deleted |0| rows from |PS_BANK_SDSTMT_HXX| for (PSARCH_ID= |CM_SD_XX,| PSARCH_BATCHNUM= |26|).
+Deleted |0| rows from |PS_BNK_SDBAL_H_XX| for (PSARCH_ID= |CM_SL_XX,| PSARCH_BATCHNUM= |25|).
+Deleted |0| rows from |PS_EX_SHEET_ADV_H| for (PSARCH_ID= |EXSHT_XX,| PSARCH_BATCHNUM= |63|).
+Deleted |0| rows from |PS_EX_SHEET_ATT_H| for (PSARCH_ID= |EXSHT_XX,| PSARCH_BATCHNUM= |63|).
+Deleted |0| rows from |PS_EX_SHEET_HDR_H| for (PSARCH_ID= |EXSHT_XX,| PSARCH_BATCHNUM= |63|).
+Deleted |0| rows from |PS_EX_SHEET_LINE_H| for (PSARCH_ID= |EXSHT_XX,| PSARCH_BATCHNUM= |63|).
+Deleted |0| rows from |PS_EID_FILE_EX_HXX| for (PSARCH_ID= |EX_FL_XX,| PSARCH_BATCHNUM= |70|).
+Deleted |0| rows from |PS_EX_ENHC_DET_H| for (PSARCH_ID= |EX_MYWAL,| PSARCH_BATCHNUM= |82|).
+Deleted |0| rows from |PS_EOAW_SUMM_HXX| for (PSARCH_ID= |EX_SY_XX,| PSARCH_BATCHNUM= |88|).
+Deleted |0| rows from |PS_PMT_ACK_ERR_HXX| for (PSARCH_ID= |FG_AK_XX,| PSARCH_BATCHNUM= |21|).
+Deleted |0| rows from |PS_PMT_INTRM_H_XX| for (PSARCH_ID= |FG_DL_XX,| PSARCH_BATCHNUM= |90|).
+Deleted |0| rows from |PS_JRNL_VAT_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |38|).
+Deleted |83386| rows from |PS_JRNL_HDR_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |36|).
+Deleted |2876871| rows from |PS_LEDGER_H| for (PSARCH_ID= |GL_LEDXX,| PSARCH_BATCHNUM= |40|).
+Deleted |0| rows from |PS_PC_BUD_ALERT_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_BUD_PLN_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |68663| rows from |PS_PC_EMP_RES_TM_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PM_SPRXREF_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PRJSPRDEXT_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_LOCATION_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |8919| rows from |PS_PC_AMRULE_PRJ_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |100| rows from |PS_PC_APTOPC_SUM_H| for (PSARCH_ID= |PC_11_XX,| PSARCH_BATCHNUM= |52|).
+Deleted |0| rows from |PS_CDMLISTHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |4129| rows from |PS_CDMFILELIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |0| rows from |PS_PRCTXFRHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |0| rows from |PS_GM_PROPOSAL_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_TE_EMP_HDR_H_XX| for (PSARCH_ID= |PSHDR_XX,| PSARCH_BATCHNUM= |81|).
+Deleted |0| rows from |PS_TE_EMP_UP_H_XX| for (PSARCH_ID= |PSHDR_XX,| PSARCH_BATCHNUM= |81|).
+Deleted |0| rows from |PS_JOB_XX_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |66|).
+Deleted |0| rows from |PS_PERSONALPH_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |66|).
+Deleted |0| rows from |PS_ASET_ITMATR_HXX| for (PSARCH_ID= |PURITMXX,| PSARCH_BATCHNUM= |12|).
+Deleted |0| rows from |PS_ITM_VENDOR_H_XX| for (PSARCH_ID= |PURITMXX,| PSARCH_BATCHNUM= |12|).
+Deleted |0| rows from |PS_RTV_ADDR_H_XX| for (PSARCH_ID= |PURRTVXX,| PSARCH_BATCHNUM= |56|).
+Deleted |640| rows from |PS_CNTR_HDRRLS_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_CNTRCT_MLST_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_CNTR_RLSDTL_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_PO_DFLT_TBL_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_HDR_EXS_H_XX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_CHG_ADDR_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_CHG_ORD_H_XX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_COMMENT_H_XX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_RECV_LNDSTB_HXX| for (PSARCH_ID= |PUR_RCXX,| PSARCH_BATCHNUM= |55|).
+Deleted |0| rows from |PS_VMSSRCCNLX_H_XX| for (PSARCH_ID= |VMSCSTXX,| PSARCH_BATCHNUM= |7|).
+Deleted |0| rows from |PS_CUSTAGINGX_H_XX| for (PSARCH_ID= |AGNGXX,| PSARCH_BATCHNUM= |9|).
+Deleted |29105| rows from |PS_AP_ARC_VCH_FR_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |22074| rows from |PS_AP_ARC_VCH_WT_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AP_ARC_VCHL_E_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AP_ARC_VCH_RM_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |566074| rows from |PS_AP_ARC_VOUCH_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_TSEALN_FLD_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_TSE_VCHR_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |19| rows from |PS_UNMTCH_TMP_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_VCHR_UPDT_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_WTHD_UPDT_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AP_ARC_PYM_RC_H| for (PSARCH_ID= |AP_PYMNT,| PSARCH_BATCHNUM= |13|).
+Deleted |0| rows from |PS_PYMNT_ADVC_H_XX| for (PSARCH_ID= |AP_PYMNT,| PSARCH_BATCHNUM= |13|).
+Deleted |0| rows from |PS_AR_FRMATTD_XX_H| for (PSARCH_ID= |ARATTDXX,| PSARCH_BATCHNUM= |99|).
+Deleted |0| rows from |PS_AR_FORMATT_XX_H| for (PSARCH_ID= |ARBUR_XX,| PSARCH_BATCHNUM= |97|).
+Deleted |0| rows from |PS_AR_CCTRN_HDR_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |5678877| rows from |PS_AR_ITEM_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_ITMAGNG_XX_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_PO_FLDS_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |0| rows from |PS_AR_PO_PRNT_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |0| rows from |PS_AR_PO_PRTF_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |0| rows from |PS_AR_STMT_CUSBD_H| for (PSARCH_ID= |ARSTMT,| PSARCH_BATCHNUM= |3|).
+Deleted |0| rows from |PS_BIALLTAXX_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BIHDRNOTE_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNDST_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNDSTUAR_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNIUPAY_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNNOTE_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNDSLVL_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BILNIUEXP_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BIALLTAXX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNIUPAY_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNTAX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |2| rows from |PS_CA_ACCTPLAN_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_EVENT_D_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_FEE_WS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_TXN_DST_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BONUS_PENL_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BP_EVT_CHG_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BP_FEE_ADJ_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_DETAIL_DST_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_EMAIL_CONT_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |1| rows from |PS_CA_IVC_PRT_XX_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_PGP_TERMS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_PREPAID_TB_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_RECON_BI_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_RECON_SUM_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_WTH_TERMS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_INTFCBIADCMPHXX| for (PSARCH_ID= |BINFADXX,| PSARCH_BATCHNUM= |83|).
+Deleted |0| rows from |PS_EX_SHT_SPLIT_H| for (PSARCH_ID= |EXSHT_XX,| PSARCH_BATCHNUM= |63|).
+Deleted |0| rows from |PS_EOAW_WL_HXX| for (PSARCH_ID= |EX_SY_XX,| PSARCH_BATCHNUM= |88|).
+Deleted |0| rows from |PS_PMT_ACK_H_XX| for (PSARCH_ID= |FG_AK_XX,| PSARCH_BATCHNUM= |21|).
+Deleted |0| rows from |PS_PMT_ACK_HDR_HXX| for (PSARCH_ID= |FG_AK_XX,| PSARCH_BATCHNUM= |21|).
+Deleted |0| rows from |PS_BSP_FIL_INF_HXX| for (PSARCH_ID= |FG_BF_XX,| PSARCH_BATCHNUM= |19|).
+Deleted |0| rows from |PS_PMT_REF_H_XX| for (PSARCH_ID= |FG_DL_XX,| PSARCH_BATCHNUM= |90|).
+Deleted |0| rows from |PS_PMT_FIL_REF_HXX| for (PSARCH_ID= |FG_FE_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |5424| rows from |PS_JRNL_CF_BAL_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |37|).
+Deleted |0| rows from |PS_GL_OITEM_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |37|).
+Deleted |0| rows from |PS_PC_BUD_DETLXX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |36262| rows from |PS_PC_EMPPROJ_TM_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |6759| rows from |PS_PC_PRJ_BRDNXX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_VP_REVIEW_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJECT_SD_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |5| rows from |PS_PROJ_ACT_LOC_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_TEAMSVXX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_TL_RTS_ACT_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_INTF_PROJ_RES_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PGM_CONVST1_XXH| for (PSARCH_ID= |PGMST1XX,| PSARCH_BATCHNUM= |61|).
+Deleted |0| rows from |PS_PGM_PRLQLNT_HXX| for (PSARCH_ID= |PGM_PRXX,| PSARCH_BATCHNUM= |59|).
+Deleted |0| rows from |PS_GM_BUD_HDR_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_GM_OPTYDTTM_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_COMPNSTION_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |66|).
+Deleted |0| rows from |PS_COMMENT_TBL_HXX| for (PSARCH_ID= |PURCMTXX,| PSARCH_BATCHNUM= |71|).
+Deleted |0| rows from |PS_PURCH_ITMBU_HXX| for (PSARCH_ID= |PURITMXX,| PSARCH_BATCHNUM= |12|).
+Deleted |0| rows from |PS_RTV_CMMNT_H_XX| for (PSARCH_ID= |PURRTVXX,| PSARCH_BATCHNUM= |56|).
+Deleted |0| rows from |PS_RTV_DSPTCH_H_XX| for (PSARCH_ID= |PURRTVXX,| PSARCH_BATCHNUM= |56|).
+Deleted |0| rows from |PS_RTV_LN_FEE_H_XX| for (PSARCH_ID= |PURRTVXX,| PSARCH_BATCHNUM= |56|).
+Deleted |639| rows from |PS_CNTR_BUDSTB_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_PO_DISPATCH_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_HDR_EMAL_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_RECV_LNSHMT_HXX| for (PSARCH_ID= |PUR_RCXX,| PSARCH_BATCHNUM= |55|).
+Deleted |0| rows from |PS_VMSTRNSHST_H_XX| for (PSARCH_ID= |VMSTRNXX,| PSARCH_BATCHNUM= |57|).
+Deleted |0| rows from |PS_RS_SCHED_TASK_H| for (PSARCH_ID= |RS_SCHXX,| PSARCH_BATCHNUM= |8|).
+Deleted |0| rows from |PS_TLRTSACTXX_H_XX| for (PSARCH_ID= |TLRTS_XX,| PSARCH_BATCHNUM= |65|).
+Deleted |0| rows from |PS_AP_ARC_VCH_VB_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |20| rows from |PS_AP_ARC_PY_MSG_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |579392| rows from |PS_AP_ARC_PYM_XR_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |51333| rows from |PS_AP_ARC_VCH_UT_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |654395| rows from |PS_AP_ARC_VCH_LN_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_VED_DUPINV_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AR_FORMTMP_XX_H| for (PSARCH_ID= |ARBUR_XX,| PSARCH_BATCHNUM= |97|).
+Deleted |0| rows from |PS_AR_FORMNAR_XX_H| for (PSARCH_ID= |ARBUR_XX,| PSARCH_BATCHNUM= |97|).
+Deleted |0| rows from |PS_AR_PEND_TX_DT_H| for (PSARCH_ID= |ARPEND,| PSARCH_BATCHNUM= |96|).
+Deleted |0| rows from |PS_AR_PO_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |0| rows from |PS_PO_KEY_DTA_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |0| rows from |PS_AR_FRMRAR1_XX_H| for (PSARCH_ID= |ARRAR_XX,| PSARCH_BATCHNUM= |105|).
+Deleted |0| rows from |PS_BIHDRAR_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNDSTAR_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_EIDFILEINVX_HXX| for (PSARCH_ID= |BIEIDXX,| PSARCH_BATCHNUM= |76|).
+Deleted |0| rows from |PS_BIX24DSTMPX_HXX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |14432815| rows from |PS_BIACCTENTRY_HXX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |536243| rows from |PS_BILINE_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNDSDFR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNNOTE_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |20969| rows from |PS_BILNTAXDTL_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BIHDRVAT_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BILINEX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BIPCITRCKX_H_XX| for (PSARCH_ID= |BIPCIXX,| PSARCH_BATCHNUM= |74|).
+Deleted |141| rows from |PS_CA_AP_PC_UAR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_SCHEDUL_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_TXN_UAR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BP_EVENTS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BP_FEE_WS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |94| rows from |PS_CA_BP_XREF_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |2| rows from |PS_CA_CONTR_HDR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_DETAIL_PRI_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_DTL_RED_DA_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_HDR_AE_ACC_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |116| rows from |PS_CA_INVTRKH_XX_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_LMT_TXN_LG_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_MS_COND_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_NOTE_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_OPRID_CONT_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CSH_CST_DTL_HXX| for (PSARCH_ID= |CM_FD_XX,| PSARCH_BATCHNUM= |33|).
+Deleted |0| rows from |PS_TR_WR_HDR_H_XX| for (PSARCH_ID= |CM_WH_XX,| PSARCH_BATCHNUM= |29|).
+Deleted |0| rows from |PS_EX_SHT_DOCSEQ_H| for (PSARCH_ID= |EXSHT_XX,| PSARCH_BATCHNUM= |63|).
+Deleted |0| rows from |PS_EX_TRANS_H| for (PSARCH_ID= |EX_MYWAL,| PSARCH_BATCHNUM= |82|).
+Deleted |0| rows from |PS_EOAW_COMNTS_HXX| for (PSARCH_ID= |EX_SY_XX,| PSARCH_BATCHNUM= |88|).
+Deleted |0| rows from |PS_EOAW_URINST_HXX| for (PSARCH_ID= |EX_UI_XX,| PSARCH_BATCHNUM= |89|).
+Deleted |0| rows from |PS_PMT_REQ_LOG_HXX| for (PSARCH_ID= |FG_DL_XX,| PSARCH_BATCHNUM= |90|).
+Deleted |0| rows from |PS_PMT_FIL_DEF_HXX| for (PSARCH_ID= |FG_FE_XX,| PSARCH_BATCHNUM= |22|).
+Deleted |0| rows from |PS_SNW_FILE_H_XX| for (PSARCH_ID= |FG_SF_XX,| PSARCH_BATCHNUM= |20|).
+Deleted |2452593| rows from |PS_JRNL_LN_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |37|).
+Deleted |153| rows from |PS_JRNL_HDR_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |38|).
+Deleted |81723| rows from |PS_JRNL_CF_BAL_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |36|).
+Deleted |0| rows from |PS_JRNL_IUAC_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |36|).
+Deleted |0| rows from |PS_JRNL_VAT_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |36|).
+Deleted |27173| rows from |PS_PC_ACT_IN_USE_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_BUD_ITEM_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_BUD_SUMRY_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_CMPRREPXX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |336| rows from |PS_PC_COM_LN_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PM_SPRCMSN_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |18178| rows from |PS_PROJ_STATUS_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |9034| rows from |PS_PROJECT_TEAM_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_EV_APPRV_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_QUALITY_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |9035| rows from |PS_PROJ_TM_SCHED_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PGM_MROVRLD_HXX| for (PSARCH_ID= |PGM_MOXX,| PSARCH_BATCHNUM= |77|).
+Deleted |0| rows from |PS_PGM_MRHGRID_HXX| for (PSARCH_ID= |PGM_MHXX,| PSARCH_BATCHNUM= |60|).
+Deleted |0| rows from |PS_PGM_WRKLDST_HXX| for (PSARCH_ID= |PGM_WDXX,| PSARCH_BATCHNUM= |78|).
+Deleted |0| rows from |PS_CDMAUTHIST_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |0| rows from |PS_GM_BUDHDRXX_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_GM_BUD_PERD_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_GM_PROPCHXX_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_GM_PROP_XX_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_INV_ITEMUOM_HXX| for (PSARCH_ID= |PURITMXX,| PSARCH_BATCHNUM= |12|).
+Deleted |0| rows from |PS_CNTR_RLSTBL_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_PO_CHG_LN_H_XX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_EST_SHIP_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_HDR_H_XX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_RECV_LN_SHP_HXX| for (PSARCH_ID= |PUR_RCXX,| PSARCH_BATCHNUM= |55|).
+Deleted |0| rows from |PS_VMSSRCARCX_H_XX| for (PSARCH_ID= |VMSSTRXX,| PSARCH_BATCHNUM= |6|).
+Deleted |402580| rows from |PS_AP_ARC_PYM_TB_H| for (PSARCH_ID= |APPYMTXX,| PSARCH_BATCHNUM= |93|).
+Deleted |442649| rows from |PS_AP_ARC_PYM_AD_H| for (PSARCH_ID= |APPYMTXX,| PSARCH_BATCHNUM= |93|).
+Deleted |0| rows from |PS_AP_ARC_VCH_VN_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AP_ARC_EXP_DL_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |82946| rows from |PS_AP_ARC_VCHL_M_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |51160| rows from |PS_AP_ARC_VCH_ST_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_TSEVLN_FLD_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |957| rows from |PS_VCHDUP_INV_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AR_ACTION_LST_H| for (PSARCH_ID= |ARACTLST,| PSARCH_BATCHNUM= |4|).
+Deleted |0| rows from |PS_AR_IPAC_DET_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_ITM_ACTVAT_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |22396043| rows from |PS_AR_ITEM_DST_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_PEND_TAX_H| for (PSARCH_ID= |ARPEND,| PSARCH_BATCHNUM= |96|).
+Deleted |0| rows from |PS_AR_POKEYS_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |0| rows from |PS_AR_PO_EML_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |4776291| rows from |PS_AR_PAY_ID_ITM_H| for (PSARCH_ID= |ARPYMT,| PSARCH_BATCHNUM= |1|).
+Deleted |0| rows from |PS_BILINE_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNDSTDFR_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_VMSACCTLNX_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BICBIVCHDR_H_XX| for (PSARCH_ID= |BICBINXX,| PSARCH_BATCHNUM= |5|).
+Deleted |0| rows from |PS_BICBIVCLIN_H_XX| for (PSARCH_ID= |BICBINXX,| PSARCH_BATCHNUM= |5|).
+Deleted |0| rows from |PS_BILNDSTUAR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BIX24DSTMPX_HXX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |746671| rows from |PS_BIACCTENTRY_HXX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNDSDTL_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |2| rows from |PS_CA_BILL_PLAN_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BP_LINES_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_BP_NOTE_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_DETAIL_DFR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_DETAIL_RED_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |3| rows from |PS_CA_DETAIL_UAR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |2| rows from |PS_CA_HDR_REDUCT_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |177| rows from |PS_CA_INVTRKL_XX_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_NOTE_DETAI_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_PREPAID_AU_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_WTH_RELEAS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_INTFCBINTCMPHXX| for (PSARCH_ID= |BIINFXX,| PSARCH_BATCHNUM= |73|).
+Deleted |0| rows from |PS_CA_DETAIL_PRO_H| for (PSARCH_ID= |CA_PD_XX,| PSARCH_BATCHNUM= |54|).
+Deleted |0| rows from |PS_BANK_BAL_H_XX| for (PSARCH_ID= |CM_BS_XX,| PSARCH_BATCHNUM= |24|).
+Deleted |263763| rows from |PS_BANK_STMT_H_XX| for (PSARCH_ID= |CM_ST_XX,| PSARCH_BATCHNUM= |27|).
+Deleted |0| rows from |PS_EX_SHT_LN_PD_H| for (PSARCH_ID= |EXSHT_XX,| PSARCH_BATCHNUM= |63|).
+Deleted |0| rows from |PS_EX_ACCTG_LINE_H| for (PSARCH_ID= |EX_ACCTG,| PSARCH_BATCHNUM= |85|).
+Deleted |0| rows from |PS_EX_APRVL_HIST_H| for (PSARCH_ID= |EX_APPR,| PSARCH_BATCHNUM= |86|).
+Deleted |0| rows from |PS_EX_ENHC_SUMM_H| for (PSARCH_ID= |EX_MYWAL,| PSARCH_BATCHNUM= |82|).
+Deleted |0| rows from |PS_GL_OITEM_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |36|).
+Deleted |0| rows from |PS_PC_BITOPC_SUM_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_CMPRSTG_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_PRICE_RATE_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |240| rows from |PS_PC_COM_HD_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |9771| rows from |PS_PROJ_ACTIVITY_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |10125| rows from |PS_PROJ_ACT_STAT_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |9761| rows from |PS_PROJ_BIL_INFO_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |97820| rows from |PS_PROJ_RESOURCE_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PCX0015_ERRXX_H| for (PSARCH_ID= |PC_04_XX,| PSARCH_BATCHNUM= |46|).
+Deleted |0| rows from |PS_PRCJOBSTAT_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |2043| rows from |PS_PRCDISTHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |0| rows from |PS_GM_PROPCMMT_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_TE_EMP_OBU_H_XX| for (PSARCH_ID= |PSHDR_XX,| PSARCH_BATCHNUM= |81|).
+Deleted |0| rows from |PS_PERSONALDA_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |66|).
+Deleted |0| rows from |PS_RTV_LN_H_XX| for (PSARCH_ID= |PURRTVXX,| PSARCH_BATCHNUM= |56|).
+Deleted |0| rows from |PS_RTV_LN_DSTB_HXX| for (PSARCH_ID= |PURRTVXX,| PSARCH_BATCHNUM= |56|).
+Deleted |639| rows from |PS_CNTRCT_DSTB_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_CNTR_EVTVCH_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |639| rows from |PS_CNTRCT_LN_H_XX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_CNTR_RLS_LN_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_PO_APPROVAL_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_LINE_H_XX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_LNSHPSUT_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_RC_WB_EX_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_AP_PYMT_AUD_ARC| for (PSARCH_ID= |PYMT_AUD,| PSARCH_BATCHNUM= |43|).
+Deleted |403197| rows from |PS_AP_ARC_PYM_RC_H| for (PSARCH_ID= |APPYMTXX,| PSARCH_BATCHNUM= |93|).
+Deleted |0| rows from |PS_AP_ARC_BCH_XR_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AP_ARC_VCH_MS_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AP_ARC_VCH_VI_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_APVCH_DSPL_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_VATXRF_VCH_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_AP_ARC_PYM_AD_H| for (PSARCH_ID= |AP_PYMNT,| PSARCH_BATCHNUM= |13|).
+Deleted |0| rows from |PS_AR_FORMHDR_XX_H| for (PSARCH_ID= |ARBUR_XX,| PSARCH_BATCHNUM= |97|).
+Deleted |1500586| rows from |PS_AR_GROUP_CNTL_H| for (PSARCH_ID= |ARPEND,| PSARCH_BATCHNUM= |96|).
+Deleted |20453457| rows from |PS_AR_PEND_DST_H| for (PSARCH_ID= |ARPEND,| PSARCH_BATCHNUM= |96|).
+Deleted |0| rows from |PS_PO_EXTRACT_XX_H| for (PSARCH_ID= |ARPO_XX,| PSARCH_BATCHNUM= |72|).
+Deleted |7| rows from |PS_AR_FRMXREF_XX_H| for (PSARCH_ID= |ARXRF_XX,| PSARCH_BATCHNUM= |107|).
+Deleted |0| rows from |PS_BILNDSDTLX_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |3808639| rows from |PS_BIHDRAR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BIHDRCRCARD_HXX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BIHDRNOTE_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BILNDSTAR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |577165| rows from |PS_BILNTAXDTL_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BILNDSDTLX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_BIHDRCRCARD_HXX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNDSDTLX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BIHDRVAT_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_CA_BP_CDATAXX_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_FC_MAIN_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_HDRRED_LAN_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_LN_REDUCTS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_RNWLNRE_LG_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_RNWLNRR_LG_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_SUPPORT_TE_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_TR_WR_DTL_H_XX| for (PSARCH_ID= |CM_WH_XX,| PSARCH_BATCHNUM= |29|).
+Deleted |0| rows from |PS_EX_ADV_LINE_H| for (PSARCH_ID= |EXADV_XX,| PSARCH_BATCHNUM= |17|).
+Deleted |0| rows from |PS_EX_ER_ATCH_H_XX| for (PSARCH_ID= |EX_AT_XX,| PSARCH_BATCHNUM= |69|).
+Deleted |0| rows from |PS_EOAW_HISCOM_HXX| for (PSARCH_ID= |EX_SY_XX,| PSARCH_BATCHNUM= |88|).
+Deleted |0| rows from |PS_PMT_FIL_ERR_HXX| for (PSARCH_ID= |FG_AK_XX,| PSARCH_BATCHNUM= |21|).
+Deleted |0| rows from |PS_PMT_DTL_H_XX| for (PSARCH_ID= |FG_DL_XX,| PSARCH_BATCHNUM= |90|).
+Deleted |0| rows from |PS_PMT_OTHID_H_XX| for (PSARCH_ID= |FG_DL_XX,| PSARCH_BATCHNUM= |90|).
+Deleted |0| rows from |PS_JRNL_VAT_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |37|).
+Deleted |0| rows from |PS_JRNL_IUAC_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |38|).
+Deleted |2505| rows from |PS_JRNL_LN_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |38|).
+Deleted |10719297| rows from |PS_JRNL_LN_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |36|).
+Deleted |1903| rows from |PS_LEDGER_H| for (PSARCH_ID= |GL_LEDXX,| PSARCH_BATCHNUM= |41|).
+Deleted |27173| rows from |PS_PC_ACT_SUM_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_BUD_DETAIL_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_BUD_PLAN_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |1| rows from |PS_PC_OPIDPRJACT_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_OPIDPRJREM_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PM_SPRCUST_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PRJ_RESTMP_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |9068| rows from |PS_PROJECT_MGR_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |240| rows from |PS_PROJECT_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |936| rows from |PS_PROJ_ACT_DESC_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_RES_DELT_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |1| rows from |PS_PSA_ORGPRJ_DF_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_TL_RTS_PRJ_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_GLTOPC_SUM_H| for (PSARCH_ID= |PC_10_XX,| PSARCH_BATCHNUM= |51|).
+Deleted |2041| rows from |PS_PRCRQSTSTR_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |0| rows from |PS_GM_BUD_LNSM_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_GM_OPDTTMXX_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_GM_PMDTRSC_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_GM_PROPRJXX_HXX| for (PSARCH_ID= |PRMGT_XX,| PSARCH_BATCHNUM= |62|).
+Deleted |0| rows from |PS_PURGEDATA_H_XX| for (PSARCH_ID= |PSPUR_XX,| PSARCH_BATCHNUM= |80|).
+Deleted |1| rows from |PS_CNTRCT_DFLT_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_CNTR_LN_UOM_HXX| for (PSARCH_ID= |PUR_CTXX,| PSARCH_BATCHNUM= |11|).
+Deleted |0| rows from |PS_PO_HDR_VAT_H_XX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_CHG_HDR_H_XX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_CHG_SHP_H_XX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_DFLTDSTB_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_LNSHPMCH_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_RECV_COMNT_HXX| for (PSARCH_ID= |PUR_RCXX,| PSARCH_BATCHNUM= |55|).
+Deleted |0| rows from |PS_TLRTSTRCXX_H_XX| for (PSARCH_ID= |TLRTS_XX,| PSARCH_BATCHNUM= |65|).
+Deleted |0| rows from |PS_AP_ARC_VCH_HP_H| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_TSEPMT_FLD_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |42| rows from |PS_DSTRPMTXRF_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_LNWTHD_UPD_H_XX| for (PSARCH_ID= |APVCHRXX,| PSARCH_BATCHNUM= |100|).
+Deleted |0| rows from |PS_PAY_TRNSMT_H_XX| for (PSARCH_ID= |APPYTTXX,| PSARCH_BATCHNUM= |42|).
+Deleted |0| rows from |PS_AR_EE_ITACTLN_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |11861178| rows from |PS_AR_ITM_ACTVTY_H| for (PSARCH_ID= |ARITEM,| PSARCH_BATCHNUM= |98|).
+Deleted |0| rows from |PS_AR_FRMMAR1_XX_H| for (PSARCH_ID= |ARMAR_XX,| PSARCH_BATCHNUM= |104|).
+Deleted |0| rows from |PS_AR_PEND_IT_MR_H| for (PSARCH_ID= |ARPEND,| PSARCH_BATCHNUM= |96|).
+Deleted |0| rows from |PS_AR_820RMNF_XX_H| for (PSARCH_ID= |ARPYMT,| PSARCH_BATCHNUM= |1|).
+Deleted |0| rows from |PS_AR_820RMSG_XX_H| for (PSARCH_ID= |ARPYMT,| PSARCH_BATCHNUM= |1|).
+Deleted |39396| rows from |PS_AR_DEP_CONTRL_H| for (PSARCH_ID= |ARPYMT,| PSARCH_BATCHNUM= |1|).
+Deleted |0| rows from |PS_AR_FRMRARB_XX_H| for (PSARCH_ID= |ARRAR_XX,| PSARCH_BATCHNUM= |105|).
+Deleted |6428| rows from |PS_AR_STMT_CUS_H| for (PSARCH_ID= |ARSTMT,| PSARCH_BATCHNUM= |3|).
+Deleted |6460| rows from |PS_AR_STMT_CUST_H| for (PSARCH_ID= |ARSTMT,| PSARCH_BATCHNUM= |3|).
+Deleted |0| rows from |PS_BILNDSDTL_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNDSLVL_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNIUEXP_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BILNTAXDTL_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |0| rows from |PS_BIADJHSTX_H_XX| for (PSARCH_ID= |BIADJXX,| PSARCH_BATCHNUM= |75|).
+Deleted |0| rows from |PS_BILINEX_H_XX| for (PSARCH_ID= |BICANXX,| PSARCH_BATCHNUM= |64|).
+Deleted |10047011| rows from |PS_BILINE_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |536243| rows from |PS_BILNDST_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNDSTDFR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNDSTUAR_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BILNDSLVL_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |2|).
+Deleted |0| rows from |PS_BIHDRX_H_XX| for (PSARCH_ID= |BIINVXX,| PSARCH_BATCHNUM= |91|).
+Deleted |0| rows from |PS_CA_ACCTG_LN_T_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_ACCTPLN_LA_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_DFR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_DST_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_AP_PC_DFR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |141| rows from |PS_CA_AP_PC_DST_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |4| rows from |PS_CA_DETAIL_PRO_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_DST_ERR_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |2| rows from |PS_CA_HDREV_RED_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_PGP_WKS_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_PROJ_SUMMA_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_RECON_REV_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_CA_WTH_TRM_LA_H| for (PSARCH_ID= |CA_001,| PSARCH_BATCHNUM= |16|).
+Deleted |0| rows from |PS_TR_ATTACH_H_XX| for (PSARCH_ID= |CM_AS_XX,| PSARCH_BATCHNUM= |23|).
+Deleted |14725| rows from |PS_BNK_EXCP_H_XX| for (PSARCH_ID= |CM_EP_XX,| PSARCH_BATCHNUM= |31|).
+Deleted |0| rows from |PS_CASH_FLW_TR_HXX| for (PSARCH_ID= |CM_FW_XX,| PSARCH_BATCHNUM= |34|).
+Deleted |0| rows from |PS_EX_SHT_NOTE_HXX| for (PSARCH_ID= |EXSHT_XX,| PSARCH_BATCHNUM= |63|).
+Deleted |0| rows from |PS_EOAW_UESCAL_HXX| for (PSARCH_ID= |EX_UI_XX,| PSARCH_BATCHNUM= |89|).
+Deleted |0| rows from |PS_PMT_FIL_ACK_HXX| for (PSARCH_ID= |FG_AK_XX,| PSARCH_BATCHNUM= |21|).
+Deleted |0| rows from |PS_PMT_UPARTY_H_XX| for (PSARCH_ID= |FG_DL_XX,| PSARCH_BATCHNUM= |90|).
+Deleted |0| rows from |PS_TR_EVNT_LOG_HXX| for (PSARCH_ID= |FG_ET_XX,| PSARCH_BATCHNUM= |18|).
+Deleted |0| rows from |PS_JRNL_IUAC_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |37|).
+Deleted |0| rows from |PS_GL_OITEM_H| for (PSARCH_ID= |GL_JRLXX,| PSARCH_BATCHNUM= |38|).
+Deleted |9771| rows from |PS_PC_AMRULE_ACT_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_BUD_ACT_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_BUD_ITEMXX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_BUD_ITM_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_BUD_SUM_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_POREF_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PM_RES_STG_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PM_SPRBRDN_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |8919| rows from |PS_PROJECT_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_APPROVAL_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_INT_PRJACT_XX_H| for (PSARCH_ID= |PC_02_XX,| PSARCH_BATCHNUM= |44|).
+Deleted |0| rows from |PS_PROJ_RSCTMPXX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PROJ_SPRD_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_TL_RTS_TRC_XX_H| for (PSARCH_ID= |PC_01_XX,| PSARCH_BATCHNUM= |15|).
+Deleted |0| rows from |PS_PC_UPLD_CI_XX_H| for (PSARCH_ID= |PC_06_XX,| PSARCH_BATCHNUM= |48|).
+Deleted |0| rows from |PS_PGM_CONVST2_XXH| for (PSARCH_ID= |PGMST2XX,| PSARCH_BATCHNUM= |79|).
+Deleted |0| rows from |PS_AP_PYMT_AUD_ARC| for (PSARCH_ID= |PMTAUDXX,| PSARCH_BATCHNUM= |95|).
+Deleted |2043| rows from |PS_PRCPARMHIS_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |0| rows from |PS_PRCRQSTFLE_H_XX| for (PSARCH_ID= |PRCS_XX,| PSARCH_BATCHNUM= |14|).
+Deleted |0| rows from |PS_PERS_NID_H_XX| for (PSARCH_ID= |PSPDA_XX,| PSARCH_BATCHNUM= |66|).
+Deleted |0| rows from |PS_INV_ITM_PHT_HXX| for (PSARCH_ID= |PURITMXX,| PSARCH_BATCHNUM= |12|).
+Deleted |0| rows from |PS_PO_ER_EMSGQ_HXX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+Deleted |0| rows from |PS_PO_LN_SHIP_H_XX| for (PSARCH_ID= |PUR_POXX,| PSARCH_BATCHNUM= |10|).
+TOTAL rows (attempted deletes, rolled back): 155039757
+
+PL/SQL procedure successfully completed.
+
+Elapsed: 02:37:46.38
+15:04:02 SQL> spool off
