@@ -1,0 +1,351 @@
+/* --------------------[ SQL*PLUS SESSION SETUP ]-------------------- */
+SET SERVEROUTPUT ON SIZE UNLIMITED
+SPOOL /backup/exa_ps/dba/PS_ARCHIVAL/LOG/EXP_DEL_VAL_1.LOG
+SET ECHO OFF
+SET AUTOCOMMIT OFF
+SET FEEDBACK OFF
+SET TIME ON
+SET TIMING ON
+SET TRIMSPOOL ON
+SET PAGESIZE 0
+SET LINESIZE 32767
+SET DEFINE ON
+TTITLE OFF
+BTITLE OFF
+
+ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS';
+
+WHENEVER OSERROR EXIT FAILURE ROLLBACK
+WHENEVER SQLERROR EXIT FAILURE ROLLBACK
+
+-- **************************************************************
+-- SQL Script File Name: EXP_DEL_VAL_1.sql
+-- Description:
+--   Generic script to delete exported PeopleSoft PS_* history data
+--   using PSARCH control tables for a specified date range.
+--   Supports filtering by specific Templates via parameter &6.
+-- **************************************************************
+
+/* --------------------[ PARAMETERS ]-------------------- */
+DEFINE P_TARGET_DB       = '&1'
+DEFINE P_START_DATE      = '&2'  -- MM/DD/YYYY
+DEFINE P_END_DATE        = '&3'  -- MM/DD/YYYY
+DEFINE P_LOG_DIR         = '&4'
+DEFINE P_LOG_FILE        = '&5'
+DEFINE P_TEMPLATE_CLAUSE = '&6'
+
+/* --------------------[ MAIN LOGIC BLOCK ]-------------------- */
+DECLARE
+  /* 1) CONTEXT VARIABLES */
+  V_CURRENT_DB  VARCHAR2(30);
+  V_TARGET_DB   VARCHAR2(30) := '&P_TARGET_DB';
+
+  -- Accepts MM/DD/YYYY (e.g., 05/01/2023)
+  V_START_TS    TIMESTAMP := TO_TIMESTAMP('&P_START_DATE', 'MM/DD/YYYY');
+  V_END_TS      TIMESTAMP := TO_TIMESTAMP('&P_END_DATE',   'MM/DD/YYYY') + INTERVAL '1' DAY;
+
+  /* 2) RECONCILIATION MAPS */
+  TYPE T_COUNT_MAP IS TABLE OF PLS_INTEGER INDEX BY VARCHAR2(400);
+  V_EXPECTED_LOG T_COUNT_MAP;
+
+  /* 3) OUTPUT BUFFERING */
+  TYPE T_OUT_BUFFER IS TABLE OF VARCHAR2(4000) INDEX BY PLS_INTEGER;
+  V_BATCH_MSGS T_OUT_BUFFER;
+
+  /* 4) COUNTERS AND HELPERS */
+  V_TOTAL_ROWS  PLS_INTEGER := 0;
+  V_CUR_TEMPLATE VARCHAR2(64);
+  V_LINES_READ  PLS_INTEGER := 0;
+  V_TPL_FOUND   PLS_INTEGER := 0;
+  V_EXPORT_LINES PLS_INTEGER := 0;
+
+  -- Validation helper
+  V_IS_IN_SCOPE NUMBER;
+
+  -- Safe capture of user-supplied clause (&6) allowing embedded single quotes.
+  -- Examples you can pass from the wrapper:
+  --   IN ('GL_LEDXX')  |  IN ('A','B','C')  |  LIKE 'FSLOG_%'  |  IS NOT NULL
+  V_TPL_CLAUSE  VARCHAR2(4000) := q'[&P_TEMPLATE_CLAUSE]';
+
+  FUNCTION MK_KEY(P_TEMPLATE VARCHAR2, P_TABLE VARCHAR2) RETURN VARCHAR2 IS
+  BEGIN
+    -- Use a newline as a separator between template and table
+    RETURN P_TEMPLATE || CHR(10) || P_TABLE;
+  END;
+BEGIN
+  /* -------------------------------------------------------------------- */
+  /* BLOCK 5: DATABASE AND INPUT SAFETY CHECKS                            */
+  /* -------------------------------------------------------------------- */
+  SELECT SYS_CONTEXT('USERENV','DB_NAME') INTO V_CURRENT_DB FROM DUAL;
+
+  IF V_CURRENT_DB <> V_TARGET_DB THEN
+    RAISE_APPLICATION_ERROR(-20001,
+      'Connected to '||V_CURRENT_DB||' but script expects '||V_TARGET_DB);
+  END IF;
+
+  IF V_END_TS <= V_START_TS THEN
+    RAISE_APPLICATION_ERROR(-20002, 'Invalid date range');
+  END IF;
+
+  -- Normalize clause if empty/ALL
+  IF V_TPL_CLAUSE IS NULL OR TRIM(V_TPL_CLAUSE) IS NULL
+     OR UPPER(TRIM(V_TPL_CLAUSE)) = 'ALL'
+  THEN
+    V_TPL_CLAUSE := 'IS NOT NULL';
+  END IF;
+
+  -- Quick guard against clearly incomplete IN (
+  IF REGEXP_LIKE(V_TPL_CLAUSE, '^\s*IN\s*\(\s*$', 'i') THEN
+    RAISE_APPLICATION_ERROR(-20050,
+      'Invalid P_TEMPLATE_CLAUSE (looks incomplete): '||V_TPL_CLAUSE);
+  END IF;
+
+  DBMS_OUTPUT.PUT_LINE('Filter Applied: PSARCH_ID ' || V_TPL_CLAUSE);
+
+  /* -------------------------------------------------------------------- */
+  /* BLOCK 6: LOG FILE PARSING (Loads EVERYTHING from Log)                */
+  /* -------------------------------------------------------------------- */
+  DECLARE
+    F_LOG      UTL_FILE.FILE_TYPE;
+    V_LINE     VARCHAR2(32767);
+    V_TBL      VARCHAR2(128);
+    V_ROWS     PLS_INTEGER;
+    V_KEY      VARCHAR2(400);
+    V_EXISTS   BOOLEAN;
+    V_FILE_LEN NUMBER;
+    V_BLKSIZE  NUMBER;
+    V_DIR_PATH VARCHAR2(1000);
+  BEGIN
+    -- Resolve directory path
+    BEGIN
+      SELECT directory_path INTO V_DIR_PATH
+        FROM ALL_DIRECTORIES
+       WHERE directory_name = UPPER('&P_LOG_DIR');
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        SELECT directory_path INTO V_DIR_PATH
+          FROM DBA_DIRECTORIES
+         WHERE directory_name = UPPER('&P_LOG_DIR');
+    END;
+
+    DBMS_OUTPUT.PUT_LINE('LOG DIR PATH=' || V_DIR_PATH);
+
+    -- Check file presence
+    UTL_FILE.FGETATTR(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'),
+                      V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+    IF NOT V_EXISTS THEN
+      RAISE_APPLICATION_ERROR(-20012,
+        'Log file not found: '||'&P_LOG_DIR'||'/'||'&P_LOG_FILE');
+    END IF;
+
+    F_LOG := UTL_FILE.FOPEN(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), 'R', 32767);
+
+    <<READ_LOOP>>
+    LOOP
+      BEGIN
+        UTL_FILE.GET_LINE(F_LOG, V_LINE);
+        V_LINES_READ := V_LINES_READ + 1;
+      EXCEPTION
+        WHEN NO_DATA_FOUND THEN
+          UTL_FILE.FCLOSE(F_LOG);
+          EXIT READ_LOOP;
+        WHEN OTHERS THEN
+          UTL_FILE.FCLOSE(F_LOG);
+          RAISE_APPLICATION_ERROR(-20014, 'Read error in log file');
+      END;
+
+      /* Detect template banner */
+      IF REGEXP_LIKE(V_LINE, '^Beginning export of Template\s*:') THEN
+        V_CUR_TEMPLATE :=
+          REGEXP_SUBSTR(V_LINE,
+                        'Beginning export of Template\s*:\s*(\S+)', 1, 1, NULL, 1);
+        CONTINUE;
+      END IF;
+
+      /* Extract table and rows */
+      V_TBL := REGEXP_SUBSTR(V_LINE, '"SYSADM"\."(PS_[^"]+)"', 1, 1, NULL, 1);
+
+      IF REGEXP_LIKE(V_LINE, '\s(\d+)\s+rows') THEN
+        V_ROWS := TO_NUMBER(REGEXP_SUBSTR(V_LINE,
+                                          '\s(\d+)\s+rows', 1, 1, NULL, 1));
+      ELSE
+        V_ROWS := NULL;
+      END IF;
+
+      IF V_CUR_TEMPLATE IS NOT NULL AND V_TBL IS NOT NULL AND V_ROWS IS NOT NULL THEN
+        V_KEY := MK_KEY(V_CUR_TEMPLATE, V_TBL);
+        IF V_EXPECTED_LOG.EXISTS(V_KEY) THEN
+          V_EXPECTED_LOG(V_KEY) := V_EXPECTED_LOG(V_KEY) + V_ROWS;
+        ELSE
+          V_EXPECTED_LOG(V_KEY) := V_ROWS;
+        END IF;
+      END IF;
+    END LOOP READ_LOOP;
+  END;
+
+/* -------------------------------------------------------------------- */
+/* BLOCK 7: PROCESS BY TEMPLATE (aggregate across all tables)           */
+/* -------------------------------------------------------------------- */
+DECLARE
+  -- Existing locals reused
+  K               VARCHAR2(400);
+
+  -- Keys we parse from the combined key "TEMPLATE || CHR(10) || TABLE"
+  V_TPL_KEY       VARCHAR2(64);
+  V_TBL_KEY       VARCHAR2(128);
+  V_PURE_TBL      VARCHAR2(128);
+
+  -- Template-level totals
+  V_TPL_EXPECTED_TOTAL PLS_INTEGER;
+  V_TPL_ACTUAL_TOTAL   PLS_INTEGER;
+
+  -- Batch-level scratch
+  V_EXP_CNT        PLS_INTEGER;
+  V_DEL_CNT        PLS_INTEGER;
+  V_POST_CNT       PLS_INTEGER;
+
+  -- Filter scope
+  V_IN_SCOPE       NUMBER;
+
+  -- A small "set" of templates discovered in the log
+  TYPE T_STR_SET IS TABLE OF PLS_INTEGER INDEX BY VARCHAR2(64);
+  V_TPL_SET T_STR_SET;
+
+  -- Helper to extract template from a combined key
+  FUNCTION EXTRACT_TPL(p_key VARCHAR2) RETURN VARCHAR2 IS
+  BEGIN
+    RETURN SUBSTR(p_key, 1, INSTR(p_key, CHR(10)) - 1);
+  END;
+
+  -- Helper to extract full table name from a combined key
+  FUNCTION EXTRACT_TBL(p_key VARCHAR2) RETURN VARCHAR2 IS
+  BEGIN
+    RETURN SUBSTR(p_key, INSTR(p_key, CHR(10)) + 1);
+  END;
+
+BEGIN
+  /* A) Build the set of Templates present in the parsed log */
+  K := V_EXPECTED_LOG.FIRST;
+  WHILE K IS NOT NULL LOOP
+    V_TPL_SET(EXTRACT_TPL(K)) := 1;
+    K := V_EXPECTED_LOG.NEXT(K);
+  END LOOP;
+
+  /* B) Iterate Templates (PSARCH_ID) and process all their tables */
+  V_TPL_KEY := V_TPL_SET.FIRST;
+  WHILE V_TPL_KEY IS NOT NULL LOOP
+    /* B1) Apply user-supplied filter clause against template key */
+    BEGIN
+      EXECUTE IMMEDIATE 'SELECT 1 FROM DUAL WHERE :1 ' || V_TPL_CLAUSE
+        INTO V_IN_SCOPE
+        USING V_TPL_KEY;
+    EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+        V_IN_SCOPE := 0;
+    END;
+    IF V_IN_SCOPE = 0 THEN
+      V_TPL_KEY := V_TPL_SET.NEXT(V_TPL_KEY);
+      CONTINUE;
+    END IF;
+
+    /* B2) Expected total for this template (sum across all its tables) */
+    V_TPL_EXPECTED_TOTAL := 0;
+    K := V_EXPECTED_LOG.FIRST;
+    WHILE K IS NOT NULL LOOP
+      IF EXTRACT_TPL(K) = V_TPL_KEY THEN
+        V_TPL_EXPECTED_TOTAL := V_TPL_EXPECTED_TOTAL + V_EXPECTED_LOG(K);
+      END IF;
+      K := V_EXPECTED_LOG.NEXT(K);
+    END LOOP;
+
+    /* B3) Perform deletes across all tables for this template, summing actuals */
+    V_TPL_ACTUAL_TOTAL := 0;
+
+    K := V_EXPECTED_LOG.FIRST;
+    WHILE K IS NOT NULL LOOP
+      IF EXTRACT_TPL(K) = V_TPL_KEY THEN
+        V_TBL_KEY  := EXTRACT_TBL(K);       -- e.g., PS_LEDGER_H
+        V_PURE_TBL := SUBSTR(V_TBL_KEY, 4); -- drop 'PS_' for HIST_RECNAME
+
+        FOR BATCH_REC IN (
+          SELECT DISTINCT B.PSARCH_BATCHNUM, B.PSARCH_ID
+            FROM PSARCHBATCH   B
+            JOIN PSARCHTEMPOBJ T ON B.PSARCH_ID    = T.PSARCH_ID
+            JOIN PSARCHOBJREC  A ON T.PSARCH_OBJECT = A.PSARCH_OBJECT
+           WHERE B.PSARCH_ID    = V_TPL_KEY
+             AND A.HIST_RECNAME = V_PURE_TBL
+             AND B.PSARCH_DTTM >= V_START_TS
+             AND B.PSARCH_DTTM <  V_END_TS
+           ORDER BY B.PSARCH_BATCHNUM
+        ) LOOP
+          -- Per-batch safety checks (no per-batch printing)
+          SAVEPOINT ONE_BATCH;
+
+          EXECUTE IMMEDIATE
+            'SELECT COUNT(*) FROM '||V_TBL_KEY||
+            ' WHERE PSARCH_ID=:1 AND PSARCH_BATCHNUM=:2'
+            INTO V_EXP_CNT
+            USING BATCH_REC.PSARCH_ID, BATCH_REC.PSARCH_BATCHNUM;
+
+          EXECUTE IMMEDIATE
+            'DELETE FROM '||V_TBL_KEY||
+            ' WHERE PSARCH_ID=:1 AND PSARCH_BATCHNUM=:2'
+            USING BATCH_REC.PSARCH_ID, BATCH_REC.PSARCH_BATCHNUM;
+
+          V_DEL_CNT := SQL%ROWCOUNT;
+
+          EXECUTE IMMEDIATE
+            'SELECT COUNT(*) FROM '||V_TBL_KEY||
+            ' WHERE PSARCH_ID=:1 AND PSARCH_BATCHNUM=:2'
+            INTO V_POST_CNT
+            USING BATCH_REC.PSARCH_ID, BATCH_REC.PSARCH_BATCHNUM;
+
+          IF V_EXP_CNT = V_DEL_CNT AND V_POST_CNT = 0 THEN
+            V_TPL_ACTUAL_TOTAL := V_TPL_ACTUAL_TOTAL + V_DEL_CNT;
+          ELSE
+            ROLLBACK TO SAVEPOINT ONE_BATCH;
+            RAISE_APPLICATION_ERROR(-20020,
+              'Local Validation failed for '||V_TBL_KEY||
+              ' Batch '||BATCH_REC.PSARCH_BATCHNUM||
+              ' (PSARCH_ID='||BATCH_REC.PSARCH_ID||')');
+          END IF;
+        END LOOP; -- batches for this table
+      END IF; -- this key belongs to current template
+      K := V_EXPECTED_LOG.NEXT(K);
+    END LOOP; -- all keys/tables for this template
+
+    /* B4) Single summary & validation per Template */
+    IF V_TPL_ACTUAL_TOTAL = V_TPL_EXPECTED_TOTAL THEN
+      DBMS_OUTPUT.PUT_LINE(
+        'TEMPLATE '||V_TPL_KEY||': Deleted '||V_TPL_ACTUAL_TOTAL||
+        ' rows; Expected from log='||V_TPL_EXPECTED_TOTAL||'. OK.'
+      );
+      V_TOTAL_ROWS := V_TOTAL_ROWS + V_TPL_ACTUAL_TOTAL;
+    ELSE
+      RAISE_APPLICATION_ERROR(-20031,
+        'EXPORT/DELETE MISMATCH for PSARCH_ID='||V_TPL_KEY||
+        ' Expected='||V_TPL_EXPECTED_TOTAL||
+        ' Deleted='||V_TPL_ACTUAL_TOTAL);
+    END IF;
+
+    /* Next template */
+    V_TPL_KEY := V_TPL_SET.NEXT(V_TPL_KEY);
+  END LOOP;
+END;
+
+  /* -------------------------------------------------------------------- */
+  /* BLOCK 8: FINAL COMMIT / ROLLBACK                                     */
+  /* -------------------------------------------------------------------- */
+  DBMS_OUTPUT.PUT_LINE(
+    'SUMMARY: Total rows processed='||V_TOTAL_ROWS||' (TEST MODE: ROLLED BACK)'
+  );
+  ROLLBACK;  -- TEST MODE
+  -- ; -- PRODUCTION MODE
+
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('MAIN ERROR: '||SQLERRM);
+    DBMS_OUTPUT.PUT_LINE(DBMS_UTILITY.FORMAT_ERROR_BACKTRACE);
+    RAISE;
+END;
+/

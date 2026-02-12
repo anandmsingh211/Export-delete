@@ -1,0 +1,32 @@
+Elapsed: 00:00:00.00
+old   4:   V_TARGET_DB   VARCHAR2(30) := '&P_TARGET_DB';
+new   4:   V_TARGET_DB   VARCHAR2(30) := 'FSSNDX';
+old   7:   V_START_TS    TIMESTAMP := TO_TIMESTAMP('&P_START_DATE', 'MM/DD/YYYY');
+new   7:   V_START_TS    TIMESTAMP := TO_TIMESTAMP('05/01/2023', 'MM/DD/YYYY');
+old   8:   V_END_TS      TIMESTAMP := TO_TIMESTAMP('&P_END_DATE',   'MM/DD/YYYY') + INTERVAL '1' DAY;
+new   8:   V_END_TS      TIMESTAMP := TO_TIMESTAMP('03/01/2024',   'MM/DD/YYYY') + INTERVAL '1' DAY;
+old  28:   -- Safe capture of user-supplied clause (&6) allowing embedded single quotes.
+new  28:   -- Safe capture of user-supplied clause (IN (''APPYMTXX'', ''AP_PYMNT'', ''ARPEND'', ''GL_LEDXX'')) allowing embedded single quotes.
+old  31:   V_TPL_CLAUSE  VARCHAR2(4000) := q'[&P_TEMPLATE_CLAUSE]';
+new  31:   V_TPL_CLAUSE  VARCHAR2(4000) := q'[IN ('APPYMTXX', 'AP_PYMNT', 'ARPEND', 'GL_LEDXX')]';
+old  86:        WHERE directory_name = UPPER('&P_LOG_DIR');
+new  86:        WHERE directory_name = UPPER('DATAMIN_LOG_DIR');
+old  91:          WHERE directory_name = UPPER('&P_LOG_DIR');
+new  91:          WHERE directory_name = UPPER('DATAMIN_LOG_DIR');
+old  97:     UTL_FILE.FGETATTR(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'),
+new  97:     UTL_FILE.FGETATTR(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'),
+old 101:         'Log file not found: '||'&P_LOG_DIR'||'/'||'&P_LOG_FILE');
+new 101:         'Log file not found: '||'DATAMIN_LOG_DIR'||'/'||'DataMinExports_FSLOG_20251211_230319.out');
+old 104:     F_LOG := UTL_FILE.FOPEN(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), 'R', 32767);
+new 104:     F_LOG := UTL_FILE.FOPEN(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), 'R', 32767);
+Enter value for validation: EXIT;
+old 280:     /* B4) Single summary & validation per Template */
+new 280:     /* B4) Single summary EXIT; per Template */
+Filter Applied: PSARCH_ID IN ('APPYMTXX', 'AP_PYMNT', 'ARPEND', 'GL_LEDXX')
+LOG DIR PATH=/backup/exa_ps/dba/PS_ARCHIVAL/LOG
+TEMPLATE APPYMTXX: Deleted 1692195 rows; Expected from log=1692195. OK.
+TEMPLATE AP_PYMNT: Deleted 0 rows; Expected from log=0. OK.
+TEMPLATE ARPEND: Deleted 33730826 rows; Expected from log=33730826. OK.
+TEMPLATE GL_LEDXX: Deleted 3889350 rows; Expected from log=3889350. OK.
+SUMMARY: Total rows processed=39312371 (TEST MODE: ROLLED BACK)
+Elapsed: 01:06:47.65
