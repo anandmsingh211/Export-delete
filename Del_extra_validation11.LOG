@@ -1,0 +1,28 @@
+Elapsed: 00:00:00.00
+old   4:   V_TARGET_DB  VARCHAR2(30) := '&P_TARGET_DB';
+new   4:   V_TARGET_DB  VARCHAR2(30) := 'FSSNDX';
+old   6:   V_START_TS   TIMESTAMP := TO_TIMESTAMP(REPLACE('&P_START_DATE','/','-'), 'YYYY-MM-DD');
+new   6:   V_START_TS   TIMESTAMP := TO_TIMESTAMP(REPLACE('05/01/2023','/','-'), 'YYYY-MM-DD');
+old   7:   V_END_TS     TIMESTAMP := TO_TIMESTAMP(REPLACE('&P_END_DATE',  '/','-'), 'YYYY-MM-DD') + INTERVAL '1' DAY;
+new   7:   V_END_TS     TIMESTAMP := TO_TIMESTAMP(REPLACE('03/01/2024',  '/','-'), 'YYYY-MM-DD') + INTERVAL '1' DAY;
+old  47:   DBMS_OUTPUT.PUT_LINE('Filter Applied: PSARCH_ID ' || '&P_TEMPLATE_CLAUSE');
+new  47:   DBMS_OUTPUT.PUT_LINE('Filter Applied: PSARCH_ID ' || 'IN (');
+old  67:       WHERE  directory_name = UPPER('&P_LOG_DIR');
+new  67:       WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old  72:         WHERE  directory_name = UPPER('&P_LOG_DIR');
+new  72:         WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old  77:     UTL_FILE.FGETATTR(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+new  77:     UTL_FILE.FGETATTR(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+old  79:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'&P_LOG_DIR'||'/'||'&P_LOG_FILE');
+new  79:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'DATAMIN_LOG_DIR'||'/'||'DataMinExports_FSLOG_20251211_230319.out');
+old  82:     F_LOG := UTL_FILE.FOPEN(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), 'R', 32767);
+new  82:     F_LOG := UTL_FILE.FOPEN(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), 'R', 32767);
+old 151:         EXECUTE IMMEDIATE 'SELECT 1 FROM DUAL WHERE :1 ' || '&P_TEMPLATE_CLAUSE'
+new 151:         EXECUTE IMMEDIATE 'SELECT 1 FROM DUAL WHERE :1 ' || 'IN ('
+DECLARE
+*
+ERROR at line 1:
+ORA-01830: date format picture ends before converting entire input string
+ORA-06512: at line 6
+
+
