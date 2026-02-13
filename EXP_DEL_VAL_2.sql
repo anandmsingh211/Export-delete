@@ -1,6 +1,6 @@
 /* --------------------[ SQL*PLUS SESSION SETUP ]-------------------- */
 SET SERVEROUTPUT ON SIZE UNLIMITED
-SPOOL /backup/exa_ps/dba/PS_ARCHIVAL/LOG/EXP_DEL_VAL_2.LOG
+SPOOL /backup/exa_ps/dba/PS_ARCHIVAL/LOG/EXP_DEL_VAL_1.LOG
 SET ECHO OFF
 SET AUTOCOMMIT OFF
 SET FEEDBACK OFF
@@ -19,7 +19,7 @@ WHENEVER OSERROR EXIT FAILURE ROLLBACK
 WHENEVER SQLERROR EXIT FAILURE ROLLBACK
 
 -- **********************************************************************
--- SQL Script File Name: EXP_DEL_VAL_2.sql
+-- SQL Script File Name: EXP_DEL_VAL_1.sql
 -- **********************************************************************
 -- 
 -- Description:
@@ -82,7 +82,8 @@ BEGIN
     RAISE_APPLICATION_ERROR(-20002, 'Invalid date range');
   END IF;
 
-  DBMS_OUTPUT.PUT_LINE('Filter Applied: PSARCH_ID ' || '&P_TEMPLATE_CLAUSE');
+  -- FIX 1: Use q'[]' to handle quotes in the display message
+  DBMS_OUTPUT.PUT_LINE('Filter Applied: PSARCH_ID ' || q'[&P_TEMPLATE_CLAUSE]');
 
   /* -------------------------------------------------------------------- */
   /* BLOCK 6: LOG FILE PARSING (Loads EVERYTHING from Log)                */
@@ -150,7 +151,6 @@ BEGIN
 
       IF V_CUR_TEMPLATE IS NOT NULL AND V_TBL IS NOT NULL AND V_ROWS IS NOT NULL THEN
         V_KEY := MK_KEY(V_CUR_TEMPLATE, V_TBL);
-        -- Aggregation logic in case Log splits entries (unlikely but safe)
         IF V_EXPECTED_LOG.EXISTS(V_KEY) THEN
             V_EXPECTED_LOG(V_KEY) := V_EXPECTED_LOG(V_KEY) + V_ROWS;
         ELSE
@@ -186,7 +186,8 @@ BEGIN
 
       -- B. USER FILTER CHECK
       BEGIN
-        EXECUTE IMMEDIATE 'SELECT 1 FROM DUAL WHERE :1 ' || '&P_TEMPLATE_CLAUSE'
+        -- FIX 2: Use q'[]' to wrap the whole string, preventing quote conflicts
+        EXECUTE IMMEDIATE q'[SELECT 1 FROM DUAL WHERE :1 &P_TEMPLATE_CLAUSE]'
         INTO V_IS_IN_SCOPE
         USING V_TPL_KEY;
       EXCEPTION WHEN NO_DATA_FOUND THEN
@@ -202,7 +203,7 @@ BEGIN
       V_ACTUAL_TOTAL := 0;
       V_BATCH_MSGS.DELETE;
 
-      -- C. Find Batches (Summing logic starts here)
+      -- C. Find Batches (Summing logic)
       FOR BATCH_REC IN (
         SELECT DISTINCT B.PSARCH_BATCHNUM, B.PSARCH_ID
         FROM   PSARCHBATCH B
@@ -231,7 +232,6 @@ BEGIN
           INTO V_POST_CNT USING BATCH_REC.PSARCH_ID, BATCH_REC.PSARCH_BATCHNUM;
 
           IF V_EXP_CNT = V_DEL_CNT AND V_POST_CNT = 0 THEN
-             -- Accumulate the total count here
              V_ACTUAL_TOTAL := V_ACTUAL_TOTAL + V_DEL_CNT;
           ELSE
              ROLLBACK TO SAVEPOINT ONE_BATCH;
@@ -242,7 +242,7 @@ BEGIN
 
       -- E. TOTAL VALIDATION (Compare Summed Batches vs Single Log Entry)
       IF V_ACTUAL_TOTAL = V_EXPECTED_TOTAL THEN
-         -- PRINT THE EXACT REQUESTED SUMMARY MESSAGE
+         -- Print consolidated summary
          DBMS_OUTPUT.PUT_LINE(V_ACTUAL_TOTAL || ' count deleted from ' || V_PURE_TBL || ' record of ' || V_TPL_KEY || ' template.');
          V_TOTAL_ROWS := V_TOTAL_ROWS + V_ACTUAL_TOTAL;
       ELSE
