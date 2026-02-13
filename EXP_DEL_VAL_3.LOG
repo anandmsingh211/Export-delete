@@ -1,0 +1,54 @@
+Elapsed: 00:00:00.00
+old   4:   V_TARGET_DB  VARCHAR2(30) := '&P_TARGET_DB';
+new   4:   V_TARGET_DB  VARCHAR2(30) := 'FSSNDX';
+old   6:   V_START_TS   TIMESTAMP := TO_TIMESTAMP('&P_START_DATE', 'MM/DD/YYYY');
+new   6:   V_START_TS   TIMESTAMP := TO_TIMESTAMP('05/01/2023', 'MM/DD/YYYY');
+old   7:   V_END_TS     TIMESTAMP := TO_TIMESTAMP('&P_END_DATE',   'MM/DD/YYYY') + INTERVAL '1' DAY;
+new   7:   V_END_TS     TIMESTAMP := TO_TIMESTAMP('03/01/2024',   'MM/DD/YYYY') + INTERVAL '1' DAY;
+old  50:   DBMS_OUTPUT.PUT_LINE('Filter Applied: PSARCH_ID ' || q'[&P_TEMPLATE_CLAUSE]');
+new  50:   DBMS_OUTPUT.PUT_LINE('Filter Applied: PSARCH_ID ' || q'[IN ('APPYMTXX', 'AP_PYMNT', 'GL_LEDXX')]');
+old  70:       WHERE  directory_name = UPPER('&P_LOG_DIR');
+new  70:       WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old  75:         WHERE  directory_name = UPPER('&P_LOG_DIR');
+new  75:         WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old  80:     UTL_FILE.FGETATTR(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+new  80:     UTL_FILE.FGETATTR(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+old  82:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'&P_LOG_DIR'||'/'||'&P_LOG_FILE');
+new  82:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'DATAMIN_LOG_DIR'||'/'||'DataMinExports_FSLOG_20251211_230319.out');
+old  85:     F_LOG := UTL_FILE.FOPEN(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), 'R', 32767);
+new  85:     F_LOG := UTL_FILE.FOPEN(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), 'R', 32767);
+old 154:         EXECUTE IMMEDIATE q'[SELECT 1 FROM DUAL WHERE :1 &P_TEMPLATE_CLAUSE]'
+new 154:         EXECUTE IMMEDIATE q'[SELECT 1 FROM DUAL WHERE :1 IN ('APPYMTXX', 'AP_PYMNT', 'GL_LEDXX')]'
+Filter Applied: PSARCH_ID IN ('APPYMTXX', 'AP_PYMNT', 'GL_LEDXX')
+LOG DIR PATH=/backup/exa_ps/dba/PS_ARCHIVAL/LOG
+442649 count deleted from AP_ARC_PYM_AD_H record of APPYMTXX template.
+403197 count deleted from AP_ARC_PYM_RC_H record of APPYMTXX template.
+402580 count deleted from AP_ARC_PYM_TB_H record of APPYMTXX template.
+0 count deleted from AP_SUPPRES_H_XX record of APPYMTXX template.
+402580 count deleted from PAYMNT_TBL_H_XX record of APPYMTXX template.
+26515 count deleted from PYMNT_ADVC_H_XX record of APPYMTXX template.
+14674 count deleted from WTH_TRXTBL_H_XX record of APPYMTXX template.
+0 count deleted from AP_ARC_PYM_AD_H record of AP_PYMNT template.
+0 count deleted from AP_ARC_PYM_RC_H record of AP_PYMNT template.
+0 count deleted from AP_ARC_PYM_TB_H record of AP_PYMNT template.
+0 count deleted from AP_SUPPRES_H_XX record of AP_PYMNT template.
+0 count deleted from PAYMNT_TBL_H_XX record of AP_PYMNT template.
+0 count deleted from PYMNT_ADVC_H_XX record of AP_PYMNT template.
+0 count deleted from WTH_TRXTBL_H_XX record of AP_PYMNT template.
+3889350 count deleted from LEDGER_H record of GL_LEDXX template.
+SUMMARY: Total rows processed=5581545 (TEST MODE: ROLLED BACK)
+Starting maintenance for table: AP_ARC_PYM_AD_H
+Table moved successfully: AP_ARC_PYM_AD_H
+Starting maintenance for table: AP_ARC_PYM_RC_H
+Table moved successfully: AP_ARC_PYM_RC_H
+Starting maintenance for table: AP_ARC_PYM_TB_H
+Table moved successfully: AP_ARC_PYM_TB_H
+Starting maintenance for table: LEDGER_H
+Table moved successfully: LEDGER_H
+Starting maintenance for table: PAYMNT_TBL_H_XX
+Table moved successfully: PAYMNT_TBL_H_XX
+Starting maintenance for table: PYMNT_ADVC_H_XX
+Table moved successfully: PYMNT_ADVC_H_XX
+Starting maintenance for table: WTH_TRXTBL_H_XX
+Table moved successfully: WTH_TRXTBL_H_XX
+Elapsed: 00:06:23.82
