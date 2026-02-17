@@ -1,6 +1,6 @@
 #!/bin/ksh
 #################################################################################
-# Description: Wrapper script to execute EXP_DEL_VAL_1.sql
+# Description: Wrapper script to execute export_delete_final1.sql
 # Changes:
 #   - Uses "IS NOT NULL" for the "All Templates" option (no embedded quotes).
 #   - Properly builds IN ('A','B',...) list and uppercases template IDs.
@@ -99,14 +99,14 @@ DB_SERVICE=$ORACLE_DB
 PL_CONNECT_STRING="$DB_USERNAME/$DB_PASSWORD@$DB_SERVICE"
 
 echo "Starting Deletion Script..."
-echo "tail -f EXP_DEL_VAL_1.LOG"
+echo "tail -f export_delete_final1.LOG"
 
 # IMPORTANT: escape single quotes for SQL*Plus substitution inside quoted PL/SQL strings
 # '  ->  ''
 CLAUSE_TO_SQLPLUS=$(printf "%s" "$TEMPLATEVAR" | sed "s/'/''/g")
 
 sqlplus -s "$PL_CONNECT_STRING" <<EOF
-@EXP_DEL_VAL_1.sql "$ORACLE_DB" "$FROM_DATE" "$TO_DATE" "$LOG_DIR_OBJ" "$LOG_FILE_NAME" "$CLAUSE_TO_SQLPLUS"
+@export_delete_final1.sql "$ORACLE_DB" "$FROM_DATE" "$TO_DATE" "$LOG_DIR_OBJ" "$LOG_FILE_NAME" "$CLAUSE_TO_SQLPLUS"
 EXIT;
 EOF
 
