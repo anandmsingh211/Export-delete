@@ -51,9 +51,9 @@ do
   read -r DELETE_ALL
 done
 
+
 if [ "$DELETE_ALL" = 1 ]; then
-  # Matches everything; safe (no embedded quotes)
-  TEMPLATEVAR="IS NOT NULL"
+  TEMPLATEVAR="__ALL__"   # sentinel
 else
   SEQNO=1
   TEMPLATEVAR=""

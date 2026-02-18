@@ -1,0 +1,24 @@
+old   4:   V_TARGET_DB  VARCHAR2(30) := '&P_TARGET_DB';
+new   4:   V_TARGET_DB  VARCHAR2(30) := 'FSSNDX';
+old   6:   V_START_TS   TIMESTAMP := TO_TIMESTAMP('&P_START_DATE', 'MM/DD/YYYY');
+new   6:   V_START_TS   TIMESTAMP := TO_TIMESTAMP('05/01/2023', 'MM/DD/YYYY');
+old   7:   V_END_TS     TIMESTAMP := TO_TIMESTAMP('&P_END_DATE',   'MM/DD/YYYY') + INTERVAL '1' DAY;
+new   7:   V_END_TS     TIMESTAMP := TO_TIMESTAMP('03/01/2024',   'MM/DD/YYYY') + INTERVAL '1' DAY;
+old  50:   DBMS_OUTPUT.PUT_LINE('Templates selected ' || q'[&tmpl_clause]');
+new  50:   DBMS_OUTPUT.PUT_LINE('Templates selected ' || q'[IS NOT NULL]');
+old  70:       WHERE  directory_name = UPPER('&P_LOG_DIR');
+new  70:       WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old  75:         WHERE  directory_name = UPPER('&P_LOG_DIR');
+new  75:         WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old  80:     UTL_FILE.FGETATTR(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+new  80:     UTL_FILE.FGETATTR(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+old  82:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'&P_LOG_DIR'||'/'||'&P_LOG_FILE');
+new  82:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'DATAMIN_LOG_DIR'||'/'||'DataMinExports_FSLOG_20251211_230319.out');
+old  85:     F_LOG := UTL_FILE.FOPEN(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), 'R', 32767);
+new  85:     F_LOG := UTL_FILE.FOPEN(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), 'R', 32767);
+old 154:         EXECUTE IMMEDIATE q'[SELECT 1 FROM DUAL WHERE :1 &tmpl_clause]'
+new 154:         EXECUTE IMMEDIATE q'[SELECT 1 FROM DUAL WHERE :1 IS NOT NULL]'
+ERROR:
+ORA-01741: illegal zero-length identifier
+
+

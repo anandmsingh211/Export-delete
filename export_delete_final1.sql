@@ -37,6 +37,15 @@ DEFINE P_END_DATE   = '&3'   -- MM/DD/YYYY
 DEFINE P_LOG_DIR    = '&4'
 DEFINE P_LOG_FILE   = '&5'
 DEFINE P_TEMPLATE_CLAUSE = '&6' 
+----------------------------------------------------------------------
+
+
+column tmpl_clause new_value tmpl_clause noprint
+select case
+         when '&P_TEMPLATE_CLAUSE' = '__ALL__' then 'IS NOT NULL'
+         else '&P_TEMPLATE_CLAUSE'  -- already full clause e.g., IN ('A','B')
+       end as tmpl_clause
+  from dual;
 
 
 /* ---------[ Dynamic SPOOL name based ONLY on input params ]--------- */
@@ -46,7 +55,7 @@ COLUMN G_ENDDATE   NEW_VALUE G_ENDDATE
 SELECT REPLACE('&P_START_DATE','/','') AS G_STARTDATE FROM DUAL;
 SELECT REPLACE('&P_END_DATE','/','')   AS G_ENDDATE   FROM DUAL;
 
-SPOOL /backup/exa_ps/dba/PS_ARCHIVAL/LOG/export_delete_final1&P_TARGET_DB._&G_STARTDATE._&G_ENDDATE..LOG
+SPOOL /backup/exa_ps/dba/PS_ARCHIVAL/LOG/EXPORT_DELETE_&P_TARGET_DB._&G_STARTDATE._&G_ENDDATE..LOG
 
 
 /* --------------------[ MAIN LOGIC BLOCK ]-------------------- */
@@ -99,7 +108,7 @@ BEGIN
   END IF;
 
   -- FIX 1: Use q'[]' to handle quotes in the display message
-  DBMS_OUTPUT.PUT_LINE('Templates selected ' || q'[&P_TEMPLATE_CLAUSE]');
+  DBMS_OUTPUT.PUT_LINE('Templates selected ' || q'[&tmpl_clause]');
 
   /* -------------------------------------------------------------------- */
   /* BLOCK 6: LOG FILE PARSING (Loads EVERYTHING from Log)                */
@@ -203,7 +212,7 @@ BEGIN
       -- B. USER FILTER CHECK
       BEGIN
         -- FIX 2: Use q'[]' to wrap the whole string, preventing quote conflicts
-        EXECUTE IMMEDIATE q'[SELECT 1 FROM DUAL WHERE :1 &P_TEMPLATE_CLAUSE]'
+        EXECUTE IMMEDIATE q'[SELECT 1 FROM DUAL WHERE :1 &tmpl_clause]'
         INTO V_IS_IN_SCOPE
         USING V_TPL_KEY;
       EXCEPTION WHEN NO_DATA_FOUND THEN
@@ -262,7 +271,7 @@ BEGIN
       -- E. TOTAL VALIDATION (Compare Summed Batches vs Single Log Entry)
       IF V_ACTUAL_TOTAL = V_EXPECTED_TOTAL THEN
          -- Print consolidated summary
-         DBMS_OUTPUT.PUT_LINE(V_ACTUAL_TOTAL || '|rows deleted from |' || V_PURE_TBL || '| record of |' || V_TPL_KEY || '| template.');
+         DBMS_OUTPUT.PUT_LINE(V_ACTUAL_TOTAL || '|rows deleted from |' || V_TBL_KEY || '| record of |' || V_TPL_KEY || '| template.');
          V_TOTAL_ROWS := V_TOTAL_ROWS + V_ACTUAL_TOTAL;
 
          -- NEW: Record all tables that are selected
