@@ -1,4 +1,6 @@
-/* --------------------[ SQL*PLUS SESSION SETUP ]-------------------- */
+/* -------------------------------------------------------------------- */
+/* BLOCK 1: SESSION CONFIGURATION & SETUP                               */
+/* -------------------------------------------------------------------- */
 -- Enable DBMS_OUTPUT and tune SQL*Plus client behavior for clean logs and timing.
 SET SERVEROUTPUT ON SIZE UNLIMITED   -- Print all DBMS_OUTPUT without truncation
 SET ECHO OFF                         -- Don't echo commands
@@ -37,7 +39,9 @@ WHENEVER SQLERROR EXIT FAILURE ROLLBACK
 --   - DDL (MOVE/REBUILD) COMMITs regardless (Oracle behavior).
 -- **********************************************************************
 
-/* --------------------[ PARAMETERS ]-------------------- */
+/* -------------------------------------------------------------------- */
+/* BLOCK 2: PARAMETER DEFINITIONS & PROCESSING                          */
+/* -------------------------------------------------------------------- */
 -- Usage (SQL*Plus):  @export_delete_final1.sql <TARGET_DB> <START> <END> <LOG_DIR> <LOG_FILE> <TEMPLATE_CLAUSE>
 -- Example TEMPLATE_CLAUSE inputs:
 --   '__ALL__'                → means "no filter", i.e., all templates
@@ -61,7 +65,9 @@ SELECT CASE
        END AS tmpl_clause
   FROM dual;
 
- /* ---------[ Dynamic SPOOL name based ONLY on input params ]--------- */
+/* -------------------------------------------------------------------- */
+/* BLOCK 3: SPOOL FILE CONFIGURATION                                    */
+/* -------------------------------------------------------------------- */
 -- Useful for deterministic logging: SPOOL file depends only on inputs.
 COLUMN G_STARTDATE NEW_VALUE G_STARTDATE
 COLUMN G_ENDDATE   NEW_VALUE G_ENDDATE
@@ -73,7 +79,9 @@ SELECT REPLACE('&P_END_DATE','/','')   AS G_ENDDATE   FROM DUAL;
 -- Central log file for the entire run; adjust directory if needed.
 SPOOL /backup/exa_ps/dba/PS_ARCHIVAL/LOG/EXPORT_DELETE_&P_TARGET_DB._&G_STARTDATE._&G_ENDDATE..LOG
 
-/* --------------------[ MAIN LOGIC BLOCK ]-------------------- */
+/* -------------------------------------------------------------------- */
+/* BLOCK 4: MAIN DECLARATION & VARIABLE INITIALIZATION                  */
+/* -------------------------------------------------------------------- */
 DECLARE
   /* 1) CONTEXT VARIABLES */
   V_CURRENT_DB VARCHAR2(30);                     -- DB we are connected to
@@ -115,7 +123,7 @@ DECLARE
 
 BEGIN
   /* -------------------------------------------------------------------- */
-  /* BLOCK 5: DATABASE AND INPUT SAFETY CHECKS                            */
+  /* BLOCK 5: DATABASE CONTEXT AND INPUT SAFETY CHECKS                    */
   /* -------------------------------------------------------------------- */
   -- Ensure we are connected to the intended DB.
   SELECT SYS_CONTEXT('USERENV','DB_NAME') INTO V_CURRENT_DB FROM DUAL;
@@ -132,7 +140,7 @@ BEGIN
   DBMS_OUTPUT.PUT_LINE('Templates selected ' || q'[&tmpl_clause]');
 
   /* -------------------------------------------------------------------- */
-  /* BLOCK 6: LOG FILE PARSING (Loads EVERYTHING from Log)                */
+  /* BLOCK 6: LOG FILE PARSING (LOADS EXPECTED COUNTS)                    */
   /* -------------------------------------------------------------------- */
   -- Reads the Data Pump log via UTL_FILE, extracts:
   --   - Current Template (lines: "Beginning export of Template : <TEMPLATE>")
@@ -246,6 +254,9 @@ BEGIN
     K := V_EXPECTED_LOG.FIRST;
     
     WHILE K IS NOT NULL LOOP
+      /* ---------------------------------------------------------------- */
+      /* BLOCK 7.1: FILTER APPLICATION & INITIALIZATION                   */
+      /* ---------------------------------------------------------------- */
       -- A. Parse Key → TEMPLATE and full table name.
       V_TPL_KEY := SUBSTR(K, 1, INSTR(K, '|') - 1);
       V_TBL_KEY := SUBSTR(K, INSTR(K, '|') + 1);
@@ -284,6 +295,9 @@ BEGIN
       V_ACTUAL_TOTAL := 0;                    -- will sum deletions across batches
       V_BATCH_MSGS.DELETE;
 
+      /* ---------------------------------------------------------------- */
+      /* BLOCK 7.2: BATCH IDENTIFICATION (METADATA LOOKUP)                */
+      /* ---------------------------------------------------------------- */
       -- C. Find Batches for this Template & Record (PeopleSoft archive metadata).
       --   PSARCHBATCH: contains batch-level info with PSARCH_DTTM timestamp.
       --   PSARCHTEMPOBJ: links template (PSARCH_ID) to objects
@@ -300,6 +314,9 @@ BEGIN
         ORDER BY B.PSARCH_BATCHNUM
       )
       LOOP
+        /* -------------------------------------------------------------- */
+        /* BLOCK 7.3: ATOMIC BATCH EXECUTION (DELETE & VALIDATION)        */
+        /* -------------------------------------------------------------- */
         -- D. Execute Delete (Iterative Summation per batch)
         -- Use a SAVEPOINT so we can roll back this one batch if validation fails.
         BEGIN
@@ -331,6 +348,9 @@ BEGIN
         END;
       END LOOP;
 
+      /* ---------------------------------------------------------------- */
+      /* BLOCK 7.4: FINAL RECONCILIATION & SUMMARY                        */
+      /* ---------------------------------------------------------------- */
       -- E. TOTAL VALIDATION (Compare Summed Batches vs Single Log Entry)
       -- If mismatch, we treat as critical and abort.
       IF V_ACTUAL_TOTAL = V_EXPECTED_TOTAL THEN
@@ -354,7 +374,7 @@ BEGIN
   END;
 
   /* -------------------------------------------------------------------- */
-  /* BLOCK 8: FINAL COMMIT / ROLLBACK                                     */
+  /* BLOCK 8: FINAL TRANSACTION MODE (COMMIT/ROLLBACK)                    */
   /* -------------------------------------------------------------------- */
   -- Summary is printed; then we *ROLLBACK* the DML (TEST MODE).
   -- For PROD, replace ROLLBACK with COMMIT. Note: DDL below is auto-commit anyway.
@@ -362,8 +382,9 @@ BEGIN
   ROLLBACK; -- TEST MODE
   -- ; -- PRODUCTION MODE
 
-------------------------------------------------------------------------------
--- BLOCK 9
+/* -------------------------------------------------------------------- */
+/* BLOCK 9: POST-DELETE MAINTENANCE (MOVE & REBUILD)                    */
+/* -------------------------------------------------------------------- */
 -- POST-DELETE TABLE MOVE + INDEX REBUILD (ONLY TABLES WITH DELETES)
 -- Drives from V_DELETED_TABLES (built during the delete loop)
 -- NOTE: DDL (MOVE/REBUILD) commits and will NOT roll back, even in TEST MODE.
@@ -388,7 +409,9 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('------------------------------------------------------------------------------------------------------------');
     DBMS_OUTPUT.PUT_LINE('Starting maintenance for table: ' || SEG_TNAME);
 
-    ------------------------------------------------------------------
+    /* ---------------------------------------------------------------- */
+    /* BLOCK 9.1: PRE-MAINTENANCE SIZE SNAPSHOT                         */
+    /* ---------------------------------------------------------------- */
     -- SIZE SNAPSHOT: BEFORE
     -- Uses DBA_SEGMENTS; SUM(BYTES) to handle partitions/subsegments.
     -- Restricts to TABLE segments owned by SYSADM.
@@ -407,7 +430,9 @@ BEGIN
 
     DBMS_OUTPUT.PUT_LINE('Size before Shrink of '|| SEG_TNAME|| ' : '  || TO_CHAR(ROUND(PRE_MB,2)) || ' MB');
 
-    ------------------------------------------------------------------
+    /* ---------------------------------------------------------------- */
+    /* BLOCK 9.2: TABLE MOVE (SEGMENT COMPACTION)                       */
+    /* ---------------------------------------------------------------- */
     -- TABLE MOVE (compacts segment and can reclaim space)
     -- - Enable row movement temporarily (required for ALTER TABLE ... MOVE).
     -- - Move in parallel (tune degree as needed).
@@ -423,7 +448,9 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('  WARNING: Table move failed for ' || SEG_TNAME || ' — ' || SQLERRM);
     END;
 
-    ------------------------------------------------------------------
+    /* ---------------------------------------------------------------- */
+    /* BLOCK 9.3: INDEX REBUILD                                         */
+    /* ---------------------------------------------------------------- */
     -- INDEX REBUILD LOOP FOR THIS TABLE
     -- Rebuild all indexes belonging to this table (owner SYSADM).
     -- Use ONLINE where possible to reduce blocking; reset PARALLEL afterward.
@@ -445,7 +472,9 @@ BEGIN
       END;
     END LOOP;
 
-    ------------------------------------------------------------------
+    /* ---------------------------------------------------------------- */
+    /* BLOCK 9.4: POST-MAINTENANCE SIZE SNAPSHOT                        */
+    /* ---------------------------------------------------------------- */
     -- SIZE SNAPSHOT: AFTER
     ------------------------------------------------------------------
     BEGIN
@@ -468,6 +497,9 @@ BEGIN
   END LOOP;
 END;
 
+/* -------------------------------------------------------------------- */
+/* BLOCK 10: GLOBAL EXCEPTION HANDLING                                  */
+/* -------------------------------------------------------------------- */
 -- Top-level exception handler: prints error and stack, then re-raises to honor WHENEVER SQLERROR.
 EXCEPTION
   WHEN OTHERS THEN
