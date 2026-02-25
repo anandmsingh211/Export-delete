@@ -65,18 +65,18 @@ else
   do
     # Normalize to upper to match PS keys
     TEMPLATEVARIN=$(printf "%s" "$TEMPLATEOPTION" | tr '[:lower:]' '[:upper:]')
-    # Append as quoted literal
-    TEMPLATEVAR="${TEMPLATEVAR}'${TEMPLATEVARIN}', "
+    # Append with NO spaces
+    TEMPLATEVAR="${TEMPLATEVAR}'${TEMPLATEVARIN}',"
     SEQNO=$(expr $SEQNO + 1)
     echo "Enter Template $SEQNO Name Or Press 0 (Done)"
     read -r TEMPLATEOPTION
   done
 
-  # Finalize IN (...) list
+  # Finalize list
   if [ $SEQNO -ne 1 ]; then
-    # Remove trailing comma+space
-    TEMPLATEVAR=$(printf "%s" "$TEMPLATEVAR" | sed 's/, $//')
-    TEMPLATEVAR="IN ($TEMPLATEVAR)"
+    # Remove trailing comma
+    TEMPLATEVAR=$(printf "%s" "$TEMPLATEVAR" | sed 's/,$//')
+    # Notice we NO LONGER wrap it in IN () here!
   else
     echo "No templates selected. Exiting."
     exit 1

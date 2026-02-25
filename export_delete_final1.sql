@@ -251,7 +251,7 @@ BEGIN
       V_TBL_KEY := SUBSTR(K, INSTR(K, '|') + 1);
       V_PURE_TBL := SUBSTR(V_TBL_KEY, 4);  -- strip 'PS_' prefix for PeopleSoft metadata joins
 
-      -- B. USER FILTER CHECK:
+     -- B. USER FILTER CHECK:
       -- Apply the caller-provided template filter safely via dynamic SQL.
       DECLARE
         V_DYN_SQL VARCHAR2(2000);
@@ -259,7 +259,8 @@ BEGIN
         IF V_USER_FILTER = '__ALL__' THEN
           V_DYN_SQL := 'SELECT 1 FROM DUAL WHERE :1 IS NOT NULL';
         ELSE
-          V_DYN_SQL := 'SELECT 1 FROM DUAL WHERE :1 ' || V_USER_FILTER;
+          -- We add the IN () wrapper safely inside PL/SQL
+          V_DYN_SQL := 'SELECT 1 FROM DUAL WHERE :1 IN (' || V_USER_FILTER || ')';
         END IF;
 
         EXECUTE IMMEDIATE V_DYN_SQL INTO V_IS_IN_SCOPE USING V_TPL_KEY;
