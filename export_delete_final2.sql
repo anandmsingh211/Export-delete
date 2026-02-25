@@ -75,8 +75,11 @@ DECLARE
   V_START_TS   TIMESTAMP := TO_TIMESTAMP('&P_START_DATE', 'MM/DD/YYYY');
   V_END_TS     TIMESTAMP := TO_TIMESTAMP('&P_END_DATE',   'MM/DD/YYYY') + INTERVAL '1' DAY;
 
-  -- Store the raw user input for the template clause safely.
-  V_USER_FILTER VARCHAR2(4000) := q'[&P_TEMPLATE_CLAUSE]';
+  -- Store the raw user input safely, then strip all single quotes and spaces
+  -- so that "'T1','T2'" becomes purely "T1,T2". This ensures matching works 
+  -- regardless of how SQL*Plus parses the command line parameters.
+  V_USER_FILTER  VARCHAR2(4000) := q'[&P_TEMPLATE_CLAUSE]';
+  V_CLEAN_FILTER VARCHAR2(4000) := REPLACE(REPLACE(q'[&P_TEMPLATE_CLAUSE]', '''', ''), ' ', '');
 
   /* 2) RECONCILIATION MAPS */
   -- Map key = 'TEMPLATE|TABLE', value = expected rows from Data Pump log.
@@ -122,7 +125,8 @@ BEGIN
   END IF;
 
   -- Display the effective template filter.
-  DBMS_OUTPUT.PUT_LINE('Templates selected: ' || V_USER_FILTER);
+  DBMS_OUTPUT.PUT_LINE('Templates selected (Raw): ' || V_USER_FILTER);
+  DBMS_OUTPUT.PUT_LINE('Templates executing (Sanitized): ' || V_CLEAN_FILTER);
 
   /* -------------------------------------------------------------------- */
   /* BLOCK 6: LOG FILE PARSING (LOADS EXPECTED COUNTS)                    */
@@ -249,11 +253,11 @@ BEGIN
       V_PURE_TBL := SUBSTR(V_TBL_KEY, 4);
 
       -- B. USER FILTER CHECK: 
-      -- We use a safe PL/SQL string search (INSTR) instead of Dynamic SQL.
-      -- This completely eliminates ORA-00920 errors caused by missing operators.
-      IF TRIM(V_USER_FILTER) = '__ALL__' THEN
+      -- We check against the sanitized V_CLEAN_FILTER.
+      -- Wrapping both sides in commas prevents partial-word false positives.
+      IF V_CLEAN_FILTER = '__ALL__' THEN
         V_IS_IN_SCOPE := 1;
-      ELSIF INSTR(V_USER_FILTER, '''' || V_TPL_KEY || '''') > 0 THEN
+      ELSIF INSTR(',' || V_CLEAN_FILTER || ',', ',' || V_TPL_KEY || ',') > 0 THEN
         V_IS_IN_SCOPE := 1;
       ELSE
         V_IS_IN_SCOPE := 0;
@@ -296,20 +300,28 @@ BEGIN
         /* -------------------------------------------------------------- */
         /* BLOCK 7.3: ATOMIC BATCH EXECUTION (DELETE AND VALIDATION)      */
         /* -------------------------------------------------------------- */
+        -- D. Execute Delete (Iterative Summation per batch)
+        -- Use a SAVEPOINT so we can roll back this one batch if validation fails.
         BEGIN
           SAVEPOINT ONE_BATCH;
           
+          -- Pre-delete count for this batch.
           EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM '||V_TBL_KEY||' WHERE PSARCH_ID=:1 AND PSARCH_BATCHNUM=:2'
           INTO V_EXP_CNT USING BATCH_REC.PSARCH_ID, BATCH_REC.PSARCH_BATCHNUM;
 
+          -- Perform the delete for exactly this batch.
           EXECUTE IMMEDIATE 'DELETE FROM '||V_TBL_KEY||' WHERE PSARCH_ID=:1 AND PSARCH_BATCHNUM=:2'
           USING BATCH_REC.PSARCH_ID, BATCH_REC.PSARCH_BATCHNUM;
           
           V_DEL_CNT := SQL%ROWCOUNT;
 
+          -- Post-delete validation: the same criteria should now return 0 rows.
           EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM '||V_TBL_KEY||' WHERE PSARCH_ID=:1 AND PSARCH_BATCHNUM=:2'
           INTO V_POST_CNT USING BATCH_REC.PSARCH_ID, BATCH_REC.PSARCH_BATCHNUM;
 
+          -- Strict local validation: 
+          --   - Pre count must equal deleted count
+          --   - Post count must be zero
           IF V_EXP_CNT = V_DEL_CNT AND V_POST_CNT = 0 THEN
              V_ACTUAL_TOTAL := V_ACTUAL_TOTAL + V_DEL_CNT;
           ELSE
@@ -322,6 +334,8 @@ BEGIN
       /* ---------------------------------------------------------------- */
       /* BLOCK 7.4: FINAL RECONCILIATION AND SUMMARY                      */
       /* ---------------------------------------------------------------- */
+      -- E. TOTAL VALIDATION (Compare Summed Batches vs Single Log Entry)
+      -- If mismatch, we treat as critical and abort.
       IF V_ACTUAL_TOTAL = V_EXPECTED_TOTAL THEN
          DBMS_OUTPUT.PUT_LINE(V_ACTUAL_TOTAL || '|rows deleted from |' || V_TBL_KEY || '| record of |' || V_TPL_KEY || '| template.');
          V_TOTAL_ROWS := V_TOTAL_ROWS + V_ACTUAL_TOTAL;
@@ -334,6 +348,7 @@ BEGIN
            ' Deleted='||V_ACTUAL_TOTAL);
       END IF;
 
+      -- Move to next key in the expected map.
       K := V_EXPECTED_LOG.NEXT(K);
     END LOOP;
   END;
@@ -341,6 +356,8 @@ BEGIN
   /* -------------------------------------------------------------------- */
   /* BLOCK 8: FINAL TRANSACTION MODE (COMMIT/ROLLBACK)                    */
   /* -------------------------------------------------------------------- */
+  -- Summary is printed; then we *ROLLBACK* the DML (TEST MODE).
+  -- For PROD, replace ROLLBACK with COMMIT. Note: DDL below is auto-commit anyway.
   DBMS_OUTPUT.PUT_LINE('SUMMARY: Total rows processed='||V_TOTAL_ROWS||' (TEST MODE: ROLLED BACK)');
   ROLLBACK; -- TEST MODE
   -- ; -- PRODUCTION MODE
@@ -348,6 +365,11 @@ BEGIN
 /* -------------------------------------------------------------------- */
 /* BLOCK 9: POST-DELETE MAINTENANCE (MOVE AND REBUILD)                  */
 /* -------------------------------------------------------------------- */
+-- POST-DELETE TABLE MOVE AND INDEX REBUILD (ONLY TABLES WITH DELETES)
+-- Drives from V_DELETED_TABLES (built during the delete loop)
+-- NOTE: DDL (MOVE/REBUILD) commits and will NOT roll back, even in TEST MODE.
+-- Added: Size snapshot (MB) before and after maintenance per table
+------------------------------------------------------------------------------
 DECLARE
   TBL_KEY   VARCHAR2(128);
   TBL       VARCHAR2(128);
@@ -370,6 +392,10 @@ BEGIN
     /* ---------------------------------------------------------------- */
     /* BLOCK 9.1: PRE-MAINTENANCE SIZE SNAPSHOT                         */
     /* ---------------------------------------------------------------- */
+    -- SIZE SNAPSHOT: BEFORE
+    -- Uses DBA_SEGMENTS; SUM(BYTES) to handle partitions/subsegments.
+    -- Restricts to TABLE segments owned by SYSADM.
+    ------------------------------------------------------------------
     BEGIN
       SELECT NVL(SUM(BYTES),0)/1024/1024
       INTO   PRE_MB
@@ -387,6 +413,11 @@ BEGIN
     /* ---------------------------------------------------------------- */
     /* BLOCK 9.2: TABLE MOVE (SEGMENT COMPACTION)                       */
     /* ---------------------------------------------------------------- */
+    -- TABLE MOVE (compacts segment and can reclaim space)
+    -- - Enable row movement temporarily (required for ALTER TABLE ... MOVE).
+    -- - Move in parallel (tune degree as needed).
+    -- - Disable row movement afterward to restore default semantics.
+    ------------------------------------------------------------------
     BEGIN
       EXECUTE IMMEDIATE 'ALTER TABLE SYSADM.' || SEG_TNAME || ' ENABLE ROW MOVEMENT';
       EXECUTE IMMEDIATE 'ALTER TABLE SYSADM.' || SEG_TNAME || ' MOVE PARALLEL 4';
@@ -400,6 +431,10 @@ BEGIN
     /* ---------------------------------------------------------------- */
     /* BLOCK 9.3: INDEX REBUILD                                         */
     /* ---------------------------------------------------------------- */
+    -- INDEX REBUILD LOOP FOR THIS TABLE
+    -- Rebuild all indexes belonging to this table (owner SYSADM).
+    -- Use ONLINE where possible to reduce blocking; reset PARALLEL afterward.
+    ------------------------------------------------------------------
     FOR IDX IN (
       SELECT INDEX_NAME
       FROM   DBA_INDEXES
@@ -420,6 +455,8 @@ BEGIN
     /* ---------------------------------------------------------------- */
     /* BLOCK 9.4: POST-MAINTENANCE SIZE SNAPSHOT                        */
     /* ---------------------------------------------------------------- */
+    -- SIZE SNAPSHOT: AFTER
+    ------------------------------------------------------------------
     BEGIN
       SELECT NVL(SUM(BYTES),0)/1024/1024
       INTO   POST_MB
@@ -435,6 +472,7 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('Size after Shrink of '|| SEG_TNAME|| ' : ' || TO_CHAR(ROUND(POST_MB,2)) || ' MB');
     DBMS_OUTPUT.PUT_LINE('  Delta (MB)      : ' || TO_CHAR(ROUND(POST_MB - PRE_MB,2)));
 
+    -- Next table in the set.
     TBL_KEY := V_DELETED_TABLES.NEXT(TBL_KEY);
   END LOOP;
 END;
@@ -442,6 +480,7 @@ END;
 /* -------------------------------------------------------------------- */
 /* BLOCK 10: GLOBAL EXCEPTION HANDLING                                  */
 /* -------------------------------------------------------------------- */
+-- Top-level exception handler: prints error and stack, then re-raises to honor WHENEVER SQLERROR.
 EXCEPTION
   WHEN OTHERS THEN
     DBMS_OUTPUT.PUT_LINE('MAIN ERROR: '||SQLERRM);
