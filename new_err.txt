@@ -1,0 +1,44 @@
+tail -f export_delete_final1.LOG
+
+SP2-0158: unknown SET option "--"
+
+SP2-0158: unknown SET option "--"
+
+SP2-0158: unknown SET option "--"
+
+SP2-0158: unknown SET option "--"
+
+Usage: SET FEEDBACK {n | ON | OFF | ONLY} [SQL_ID]
+
+SP2-0158: unknown SET option "--"
+
+SP2-0158: unknown SET option "--"
+
+SP2-0158: unknown SET option "--"
+
+SP2-0158: unknown SET option "--"
+
+SP2-0158: unknown SET option "--"
+
+Enter value for substitution: SP2-0158: unknown SET option "--"
+ 
+Session altered.
+ 
+Elapsed: 00:00:00.00
+
+old   2:          WHEN '&P_TEMPLATE_CLAUSE' = '__ALL__' THEN 'IS NOT NULL'
+
+new   2:          WHEN 'IN ('GL_LEDXX')' = '__ALL__' THEN 'IS NOT NULL'
+
+old   3:          ELSE '&P_TEMPLATE_CLAUSE'  -- already full clause
+
+new   3:          ELSE 'IN ('GL_LEDXX')'  -- already full clause
+
+         WHEN 'IN ('GL_LEDXX')' = '__ALL__' THEN 'IS NOT NULL'
+
+                    *
+
+ERROR at line 2:
+
+ORA-00920: invalid relational operator
+ 
