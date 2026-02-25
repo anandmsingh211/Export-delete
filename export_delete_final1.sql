@@ -1,17 +1,16 @@
 /* -------------------------------------------------------------------- */
 /* BLOCK 1: SESSION CONFIGURATION & SETUP                               */
 /* -------------------------------------------------------------------- */
--- Enable DBMS_OUTPUT and tune SQL*Plus client behavior for clean logs and timing.
-SET SERVEROUTPUT ON SIZE UNLIMITED   -- Print all DBMS_OUTPUT without truncation
-SET ECHO OFF                         -- Don't echo commands
-SET AUTOCOMMIT OFF                   -- Control commits explicitly
-SET FEEDBACK OFF                     -- Suppress "X rows selected" messages
-SET TIME ON                          -- Show time in SQL*Plus prompt
-SET TIMING ON                        -- Show timing per command
-SET TRIMSPOOL ON                     -- Trim trailing spaces in spooled output
-SET PAGESIZE 0                       -- No page headers/footers in spooled output
-SET LINESIZE 32767                   -- Max width for long lines
-SET DEFINE ON                        -- Enable & substitution variables
+SET SERVEROUTPUT ON SIZE UNLIMITED
+SET ECHO OFF
+SET AUTOCOMMIT OFF
+SET FEEDBACK OFF
+SET TIME ON
+SET TIMING ON
+SET TRIMSPOOL ON
+SET PAGESIZE 0
+SET LINESIZE 32767
+SET DEFINE ON
 TTITLE OFF
 BTITLE OFF
 
@@ -60,8 +59,8 @@ DEFINE P_TEMPLATE_CLAUSE = '&6'
 -- Else, we trust the user-provided full clause (e.g., IN ('A','B')).
 COLUMN tmpl_clause NEW_VALUE tmpl_clause NOPRINT
 SELECT CASE
-         WHEN '&P_TEMPLATE_CLAUSE' = '__ALL__' THEN 'IS NOT NULL'
-         ELSE '&P_TEMPLATE_CLAUSE'  -- already full clause
+         WHEN q'[&P_TEMPLATE_CLAUSE]' = '__ALL__' THEN 'IS NOT NULL'
+         ELSE q'[&P_TEMPLATE_CLAUSE]'
        END AS tmpl_clause
   FROM dual;
 
@@ -169,7 +168,6 @@ BEGIN
         FROM   DBA_DIRECTORIES
         WHERE  directory_name = UPPER('&P_LOG_DIR');
     END;
-    --DBMS_OUTPUT.PUT_LINE('LOG DIR PATH='||V_DIR_PATH);
 
     -- Check if file exists before opening; raises -20012 if not found.
     UTL_FILE.FGETATTR(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
