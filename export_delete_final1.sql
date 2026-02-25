@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------- */
-/* BLOCK 1: SESSION CONFIGURATION & SETUP                               */
+/* BLOCK 1: SESSION CONFIGURATION AND SETUP                             */
 /* -------------------------------------------------------------------- */
 SET SERVEROUTPUT ON SIZE UNLIMITED
 SET ECHO OFF
@@ -26,10 +26,10 @@ WHENEVER SQLERROR EXIT FAILURE ROLLBACK
 -- **********************************************************************
 -- Purpose / Flow:
 --   1) Parse Data Pump Log to extract expected row counts per Template+Table.
---   2) Sum actual deletes across all batches that match the template & date window.
+--   2) Sum actual deletes across all batches that match the template and date window.
 --   3) Reconcile (expected from log vs. actual deleted rows).
 --   4) Print summary if they match; error out if they don't.
---   5) Perform post-delete maintenance (TABLE MOVE + INDEX REBUILD) ONLY for
+--   5) Perform post-delete maintenance (TABLE MOVE and INDEX REBUILD) ONLY for
 --      tables that had deletes in this run (tracked in an in-memory set).
 -- Notes:
 --   - The delete loop is guarded by before/after counts per-batch; it rolls back
@@ -39,13 +39,13 @@ WHENEVER SQLERROR EXIT FAILURE ROLLBACK
 -- **********************************************************************
 
 /* -------------------------------------------------------------------- */
-/* BLOCK 2: PARAMETER DEFINITIONS & PROCESSING                          */
+/* BLOCK 2: PARAMETER DEFINITIONS AND PROCESSING                        */
 /* -------------------------------------------------------------------- */
 -- Usage (SQL*Plus):  @export_delete_final1.sql <TARGET_DB> <START> <END> <LOG_DIR> <LOG_FILE> <TEMPLATE_CLAUSE>
 -- Example TEMPLATE_CLAUSE inputs:
---   '__ALL__'                → means "no filter", i.e., all templates
---   "IN ('TEMPLATE_A','B')"  → explicit IN list
---   "= 'SOME_TEMPLATE'"      → equality
+--   '__ALL__'                -> means "no filter", i.e., all templates
+--   "IN ('TEMPLATE_A','B')"  -> explicit IN list
+--   "= 'SOME_TEMPLATE'"      -> equality
 DEFINE P_TARGET_DB = '&1'
 DEFINE P_START_DATE = '&2'   -- MM/DD/YYYY
 DEFINE P_END_DATE   = '&3'   -- MM/DD/YYYY
@@ -53,16 +53,6 @@ DEFINE P_LOG_DIR    = '&4'   -- Oracle DIRECTORY object name
 DEFINE P_LOG_FILE   = '&5'   -- File name within that DIRECTORY
 DEFINE P_TEMPLATE_CLAUSE = '&6' 
 ----------------------------------------------------------------------
-
--- Build a reusable clause for filtering template IDs.
--- If user passes __ALL__, we expand to a tautology (IS NOT NULL).
--- Else, we trust the user-provided full clause (e.g., IN ('A','B')).
-COLUMN tmpl_clause NEW_VALUE tmpl_clause NOPRINT
-SELECT CASE
-         WHEN q'[&P_TEMPLATE_CLAUSE]' = '__ALL__' THEN 'IS NOT NULL'
-         ELSE q'[&P_TEMPLATE_CLAUSE]'
-       END AS tmpl_clause
-  FROM dual;
 
 /* -------------------------------------------------------------------- */
 /* BLOCK 3: SPOOL FILE CONFIGURATION                                    */
@@ -79,7 +69,7 @@ SELECT REPLACE('&P_END_DATE','/','')   AS G_ENDDATE   FROM DUAL;
 SPOOL /backup/exa_ps/dba/PS_ARCHIVAL/LOG/EXPORT_DELETE_&P_TARGET_DB._&G_STARTDATE._&G_ENDDATE..LOG
 
 /* -------------------------------------------------------------------- */
-/* BLOCK 4: MAIN DECLARATION & VARIABLE INITIALIZATION                  */
+/* BLOCK 4: MAIN DECLARATION AND VARIABLE INITIALIZATION                */
 /* -------------------------------------------------------------------- */
 DECLARE
   /* 1) CONTEXT VARIABLES */
@@ -89,6 +79,9 @@ DECLARE
   -- Convert input dates to timestamps; end date is exclusive (add +1 day).
   V_START_TS   TIMESTAMP := TO_TIMESTAMP('&P_START_DATE', 'MM/DD/YYYY');
   V_END_TS     TIMESTAMP := TO_TIMESTAMP('&P_END_DATE',   'MM/DD/YYYY') + INTERVAL '1' DAY;
+
+  -- Store the raw user input for the template clause safely.
+  V_USER_FILTER VARCHAR2(4000) := q'[&P_TEMPLATE_CLAUSE]';
 
   /* 2) RECONCILIATION MAPS */
   -- Map key = 'TEMPLATE|TABLE', value = expected rows from Data Pump log.
@@ -108,8 +101,6 @@ DECLARE
   V_TOTAL_ROWS    PLS_INTEGER := 0;    -- global deleted row count (for summary)
   V_CUR_TEMPLATE  VARCHAR2(64);        -- template currently parsed from log file
   V_LINES_READ    PLS_INTEGER := 0;    -- number of log lines read
-  V_TPL_FOUND     PLS_INTEGER := 0;    -- reserved (unused)
-  V_EXPORT_LINES  PLS_INTEGER := 0;    -- reserved (unused)
   
   -- Validation helper used with dynamic template filter.
   V_IS_IN_SCOPE   NUMBER;
@@ -135,8 +126,8 @@ BEGIN
     RAISE_APPLICATION_ERROR(-20002, 'Invalid date range');
   END IF;
 
-  -- Display the effective template filter safely (q'[]' avoids quote conflicts).
-  DBMS_OUTPUT.PUT_LINE('Templates selected ' || q'[&tmpl_clause]');
+  -- Display the effective template filter.
+  DBMS_OUTPUT.PUT_LINE('Templates selected: ' || V_USER_FILTER);
 
   /* -------------------------------------------------------------------- */
   /* BLOCK 6: LOG FILE PARSING (LOADS EXPECTED COUNTS)                    */
@@ -228,7 +219,7 @@ BEGIN
   /* -------------------------------------------------------------------- */
   -- Iterate over each (Template|Table) pair extracted from the log,
   -- filter by the user-provided template clause, then:
-  --   1) Find PeopleSoft Archive batches for that Template & record (table)
+  --   1) Find PeopleSoft Archive batches for that Template and record (table)
   --      within the given datetime window [start, end).
   --   2) For each batch: validate expected vs. deleted rows via pre/post counts.
   --   3) On perfect reconciliation, add to grand totals and mark the table
@@ -245,7 +236,7 @@ BEGIN
     V_DEL_CNT  PLS_INTEGER;     -- rows deleted by the DELETE statement
     V_POST_CNT PLS_INTEGER;     -- post-delete rowcount (should be 0)
 
-    -- NEW: Track last printed template name
+    -- Track last printed template name
     V_LAST_TPL_PRINTED VARCHAR2(64) := NULL;
     
   BEGIN
@@ -253,20 +244,25 @@ BEGIN
     
     WHILE K IS NOT NULL LOOP
       /* ---------------------------------------------------------------- */
-      /* BLOCK 7.1: FILTER APPLICATION & INITIALIZATION                   */
+      /* BLOCK 7.1: FILTER APPLICATION AND INITIALIZATION                 */
       /* ---------------------------------------------------------------- */
-      -- A. Parse Key → TEMPLATE and full table name.
+      -- A. Parse Key -> TEMPLATE and full table name.
       V_TPL_KEY := SUBSTR(K, 1, INSTR(K, '|') - 1);
       V_TBL_KEY := SUBSTR(K, INSTR(K, '|') + 1);
       V_PURE_TBL := SUBSTR(V_TBL_KEY, 4);  -- strip 'PS_' prefix for PeopleSoft metadata joins
 
       -- B. USER FILTER CHECK:
       -- Apply the caller-provided template filter safely via dynamic SQL.
-      -- We evaluate a predicate like ":1 IN ('A','B')" or ":1 = 'X'" over DUAL.
+      DECLARE
+        V_DYN_SQL VARCHAR2(2000);
       BEGIN
-        EXECUTE IMMEDIATE q'[SELECT 1 FROM DUAL WHERE :1 &tmpl_clause]'
-        INTO V_IS_IN_SCOPE
-        USING V_TPL_KEY;-- binds template as :1
+        IF V_USER_FILTER = '__ALL__' THEN
+          V_DYN_SQL := 'SELECT 1 FROM DUAL WHERE :1 IS NOT NULL';
+        ELSE
+          V_DYN_SQL := 'SELECT 1 FROM DUAL WHERE :1 ' || V_USER_FILTER;
+        END IF;
+
+        EXECUTE IMMEDIATE V_DYN_SQL INTO V_IS_IN_SCOPE USING V_TPL_KEY;
 
       EXCEPTION 
         WHEN NO_DATA_FOUND THEN
@@ -296,7 +292,7 @@ BEGIN
       /* ---------------------------------------------------------------- */
       /* BLOCK 7.2: BATCH IDENTIFICATION (METADATA LOOKUP)                */
       /* ---------------------------------------------------------------- */
-      -- C. Find Batches for this Template & Record (PeopleSoft archive metadata).
+      -- C. Find Batches for this Template and Record (PeopleSoft archive metadata).
       --   PSARCHBATCH: contains batch-level info with PSARCH_DTTM timestamp.
       --   PSARCHTEMPOBJ: links template (PSARCH_ID) to objects
       --   PSARCHOBJREC: defines record/table names (HIST_RECNAME stores PS_* without owner)
@@ -313,7 +309,7 @@ BEGIN
       )
       LOOP
         /* -------------------------------------------------------------- */
-        /* BLOCK 7.3: ATOMIC BATCH EXECUTION (DELETE & VALIDATION)        */
+        /* BLOCK 7.3: ATOMIC BATCH EXECUTION (DELETE AND VALIDATION)      */
         /* -------------------------------------------------------------- */
         -- D. Execute Delete (Iterative Summation per batch)
         -- Use a SAVEPOINT so we can roll back this one batch if validation fails.
@@ -347,7 +343,7 @@ BEGIN
       END LOOP;
 
       /* ---------------------------------------------------------------- */
-      /* BLOCK 7.4: FINAL RECONCILIATION & SUMMARY                        */
+      /* BLOCK 7.4: FINAL RECONCILIATION AND SUMMARY                      */
       /* ---------------------------------------------------------------- */
       -- E. TOTAL VALIDATION (Compare Summed Batches vs Single Log Entry)
       -- If mismatch, we treat as critical and abort.
@@ -381,9 +377,9 @@ BEGIN
   -- ; -- PRODUCTION MODE
 
 /* -------------------------------------------------------------------- */
-/* BLOCK 9: POST-DELETE MAINTENANCE (MOVE & REBUILD)                    */
+/* BLOCK 9: POST-DELETE MAINTENANCE (MOVE AND REBUILD)                  */
 /* -------------------------------------------------------------------- */
--- POST-DELETE TABLE MOVE + INDEX REBUILD (ONLY TABLES WITH DELETES)
+-- POST-DELETE TABLE MOVE AND INDEX REBUILD (ONLY TABLES WITH DELETES)
 -- Drives from V_DELETED_TABLES (built during the delete loop)
 -- NOTE: DDL (MOVE/REBUILD) commits and will NOT roll back, even in TEST MODE.
 -- Added: Size snapshot (MB) before and after maintenance per table
@@ -443,7 +439,7 @@ BEGIN
       DBMS_OUTPUT.PUT_LINE('  Table shrink successful: ' || SEG_TNAME);
     EXCEPTION
       WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('  WARNING: Table move failed for ' || SEG_TNAME || ' — ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('  WARNING: Table move failed for ' || SEG_TNAME || ' - ' || SQLERRM);
     END;
 
     /* ---------------------------------------------------------------- */
@@ -466,7 +462,7 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('  Rebuilt index: ' || IDX.INDEX_NAME);
       EXCEPTION
         WHEN OTHERS THEN
-          DBMS_OUTPUT.PUT_LINE('  WARNING: Failed rebuilding index ' || IDX.INDEX_NAME || ' — ' || SQLERRM);
+          DBMS_OUTPUT.PUT_LINE('  WARNING: Failed rebuilding index ' || IDX.INDEX_NAME || ' - ' || SQLERRM);
       END;
     END LOOP;
 
