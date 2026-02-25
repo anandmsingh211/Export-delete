@@ -1,6 +1,6 @@
 #!/bin/ksh
 #################################################################################
-# Description: Wrapper script to execute export_delete_final2.sql
+# Description: Wrapper script to execute export_delete_final1.sql
 # Changes:
 #   - Uses "IS NOT NULL" for the "All Templates" option (no embedded quotes).
 #   - Properly builds IN ('A','B',...) list and uppercases template IDs.
@@ -42,17 +42,21 @@ echo "2) No  (Specific Templates)"
 echo "Enter Selection:"
 read -r DELETE_ALL
 
-while [ "$DELETE_ALL" != 1 -a "$DELETE_ALL" != 2 ];
+# Clean the input in case of carriage returns
+DELETE_ALL=$(printf "%s" "$DELETE_ALL" | tr -d '[:space:]')
+
+while [ "$DELETE_ALL" != "1" ] && [ "$DELETE_ALL" != "2" ];
 do
   echo "Invalid Selection."
   echo "1) Yes (All Templates)"
   echo "2) No  (Specific Templates)"
   echo "Enter Selection:"
   read -r DELETE_ALL
+  DELETE_ALL=$(printf "%s" "$DELETE_ALL" | tr -d '[:space:]')
 done
 
 
-if [ "$DELETE_ALL" = 1 ]; then
+if [ "$DELETE_ALL" = "1" ]; then
   TEMPLATEVAR="__ALL__"   # sentinel
 else
   SEQNO=1
@@ -60,23 +64,30 @@ else
   echo " "
   echo "Enter Template $SEQNO Name Or Press 0 (Done)"
   read -r TEMPLATEOPTION
+  
+  # Aggressively strip spaces and hidden carriage returns
+  TEMPLATEOPTION=$(printf "%s" "$TEMPLATEOPTION" | tr -d '[:space:]' | tr -d '\r')
 
-  while [ "$TEMPLATEOPTION" != 0 ];
+  while [ "$TEMPLATEOPTION" != "0" ];
   do
-    # Normalize to upper to match PS keys
-    TEMPLATEVARIN=$(printf "%s" "$TEMPLATEOPTION" | tr '[:lower:]' '[:upper:]')
-    # Append with NO spaces
-    TEMPLATEVAR="${TEMPLATEVAR}'${TEMPLATEVARIN}',"
-    SEQNO=$(expr $SEQNO + 1)
+    if [ -n "$TEMPLATEOPTION" ]; then
+      # Normalize to upper to match PS keys
+      TEMPLATEVARIN=$(printf "%s" "$TEMPLATEOPTION" | tr '[:lower:]' '[:upper:]')
+      # Append with single quotes and a comma
+      TEMPLATEVAR="${TEMPLATEVAR}'${TEMPLATEVARIN}',"
+      SEQNO=$(expr $SEQNO + 1)
+    fi
+
     echo "Enter Template $SEQNO Name Or Press 0 (Done)"
     read -r TEMPLATEOPTION
+    # Aggressively strip spaces and hidden carriage returns
+    TEMPLATEOPTION=$(printf "%s" "$TEMPLATEOPTION" | tr -d '[:space:]' | tr -d '\r')
   done
 
-  # Finalize list
+  # Finalize IN (...) list
   if [ $SEQNO -ne 1 ]; then
-    # Remove trailing comma
-    TEMPLATEVAR=$(printf "%s" "$TEMPLATEVAR" | sed 's/,$//')
-    # Notice we NO LONGER wrap it in IN () here!
+    # Native shell string manipulation to remove the trailing comma (no sed required)
+    TEMPLATEVAR="${TEMPLATEVAR%,}"
   else
     echo "No templates selected. Exiting."
     exit 1
@@ -99,13 +110,14 @@ DB_SERVICE=$ORACLE_DB
 PL_CONNECT_STRING="$DB_USERNAME/$DB_PASSWORD@$DB_SERVICE"
 
 echo "Starting Deletion Script..."
-echo "tail -f export_delete_final2.LOG"
+echo "tail -f export_delete_final1.LOG"
 
-# No escaping needed; export_delete_final2.sql uses Oracle q'[]' quoting
+# The variable is mapped strictly to prevent expansion loss
 CLAUSE_TO_SQLPLUS="$TEMPLATEVAR"
 
+# Double quotes around $CLAUSE_TO_SQLPLUS force SQL*Plus to see it as exactly one parameter
 sqlplus -s "$PL_CONNECT_STRING" <<EOF
-@export_delete_final2.sql "$ORACLE_DB" "$FROM_DATE" "$TO_DATE" "$LOG_DIR_OBJ" "$LOG_FILE_NAME" "$CLAUSE_TO_SQLPLUS"
+@export_delete_final1.sql "$ORACLE_DB" "$FROM_DATE" "$TO_DATE" "$LOG_DIR_OBJ" "$LOG_FILE_NAME" "$CLAUSE_TO_SQLPLUS"
 EXIT;
 EOF
 
