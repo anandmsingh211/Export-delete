@@ -1,0 +1,30 @@
+old   7:   V_TARGET_DB  VARCHAR2(30) := '&P_TARGET_DB';   -- DB expected by operator
+new   7:   V_TARGET_DB  VARCHAR2(30) := 'FSSNDX';   -- DB expected by operator
+old  11:   V_START_TS   TIMESTAMP := TO_TIMESTAMP('&P_START_DATE', 'MM/DD/YYYY');
+new  11:   V_START_TS   TIMESTAMP := TO_TIMESTAMP('05/01/2023', 'MM/DD/YYYY');
+old  13:   V_END_TS     TIMESTAMP := TO_TIMESTAMP('&P_END_DATE',   'MM/DD/YYYY') + INTERVAL '1' DAY;
+new  13:   V_END_TS     TIMESTAMP := TO_TIMESTAMP('03/01/2024',   'MM/DD/YYYY') + INTERVAL '1' DAY;
+old  17:   V_USER_FILTER VARCHAR2(4000) := q'[&P_TEMPLATE_CLAUSE]';
+new  17:   V_USER_FILTER VARCHAR2(4000) := q'[IN (]';
+old 139:       WHERE  directory_name = UPPER('&P_LOG_DIR');
+new 139:       WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old 149:         WHERE  directory_name = UPPER('&P_LOG_DIR');
+new 149:         WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old 155:     UTL_FILE.FGETATTR(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+new 155:     UTL_FILE.FGETATTR(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+old 159:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'&P_LOG_DIR'||'/'||'&P_LOG_FILE');
+new 159:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'DATAMIN_LOG_DIR'||'/'||'DataMinExports_FSLOG_20251211_230319.out');
+old 165:     F_LOG := UTL_FILE.FOPEN(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), 'R', 32767);
+new 165:     F_LOG := UTL_FILE.FOPEN(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), 'R', 32767);
+Templates selected: IN (
+MAIN ERROR: ORA-20012: Log file not found: DATAMIN_LOG_DIR/DataMinExports_FSLOG_20251211_230319.out
+ORA-06512: at line 159
+
+DECLARE
+*
+ERROR at line 1:
+ORA-20012: Log file not found: DATAMIN_LOG_DIR/DataMinExports_FSLOG_20251211_230319.out
+ORA-06512: at line 757
+ORA-06512: at line 159
+
+
