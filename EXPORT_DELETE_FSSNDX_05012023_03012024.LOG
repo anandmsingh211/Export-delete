@@ -4,24 +4,24 @@ old  11:   V_START_TS   TIMESTAMP := TO_TIMESTAMP('&P_START_DATE', 'MM/DD/YYYY')
 new  11:   V_START_TS   TIMESTAMP := TO_TIMESTAMP('05/01/2023', 'MM/DD/YYYY');
 old  13:   V_END_TS     TIMESTAMP := TO_TIMESTAMP('&P_END_DATE',   'MM/DD/YYYY') + INTERVAL '1' DAY;
 new  13:   V_END_TS     TIMESTAMP := TO_TIMESTAMP('03/01/2024',   'MM/DD/YYYY') + INTERVAL '1' DAY;
-Enter value for tmpl_clause: 
-old  91:   DBMS_OUTPUT.PUT_LINE('Templates selected ' || q'[&tmpl_clause]');
-new  91:   DBMS_OUTPUT.PUT_LINE('Templates selected ' || q'[]');
-old 139:       WHERE  directory_name = UPPER('&P_LOG_DIR');
-new 139:       WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
-old 149:         WHERE  directory_name = UPPER('&P_LOG_DIR');
-new 149:         WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
-old 155:     UTL_FILE.FGETATTR(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
-new 155:     UTL_FILE.FGETATTR(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
-old 159:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'&P_LOG_DIR'||'/'||'&P_LOG_FILE');
-new 159:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'DATAMIN_LOG_DIR'||'/'||'DataMinExports_FSLOG_20251211_230319.out');
-old 165:     F_LOG := UTL_FILE.FOPEN(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), 'R', 32767);
-new 165:     F_LOG := UTL_FILE.FOPEN(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), 'R', 32767);
-Enter value for record: EXIT;
-old 257:   --   1) Find PeopleSoft Archive batches for that Template & record (table)
-new 257:   --   1) Find PeopleSoft Archive batches for that Template EXIT; (table)
-Enter value for initialization: 
-old 299:       /* BLOCK 7.1: FILTER APPLICATION & INITIALIZATION                   */
-new 299:       /* BLOCK 7.1: FILTER APPLICATION                    */
-Enter value for tmpl_clause: 
-SP2-0546: User requested Interrupt or EOF detected.
+old  21:   V_USER_FILTER  VARCHAR2(4000) := q'[&P_TEMPLATE_CLAUSE]';
+new  21:   V_USER_FILTER  VARCHAR2(4000) := q'[]';
+old  23:   V_CLEAN_FILTER VARCHAR2(4000) := REPLACE(REPLACE(q'[&P_TEMPLATE_CLAUSE]', '''', ''), ' ', '');
+new  23:   V_CLEAN_FILTER VARCHAR2(4000) := REPLACE(REPLACE(q'[]', '''', ''), ' ', '');
+old 145:       WHERE  directory_name = UPPER('&P_LOG_DIR');
+new 145:       WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old 157:           WHERE  directory_name = UPPER('&P_LOG_DIR');
+new 157:           WHERE  directory_name = UPPER('DATAMIN_LOG_DIR');
+old 163:             RAISE_APPLICATION_ERROR(-20011, 'Oracle Directory Object not found or inaccessible: ' || UPPER('&P_LOG_DIR'));
+new 163:             RAISE_APPLICATION_ERROR(-20011, 'Oracle Directory Object not found or inaccessible: ' || UPPER('DATAMIN_LOG_DIR'));
+old 171:     UTL_FILE.FGETATTR(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+new 171:     UTL_FILE.FGETATTR(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), V_EXISTS, V_FILE_LEN, V_BLKSIZE);
+old 175:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'&P_LOG_DIR'||'/'||'&P_LOG_FILE');
+new 175:       RAISE_APPLICATION_ERROR(-20012, 'Log file not found: '||'DATAMIN_LOG_DIR'||'/'||'DataMinExports_FSLOG_20251211_230319.out');
+old 181:     F_LOG := UTL_FILE.FOPEN(UPPER('&P_LOG_DIR'), TRIM('&P_LOG_FILE'), 'R', 32767);
+new 181:     F_LOG := UTL_FILE.FOPEN(UPPER('DATAMIN_LOG_DIR'), TRIM('DataMinExports_FSLOG_20251211_230319.out'), 'R', 32767);
+Templates selected (Raw):
+Templates executing (Sanitized):
+SUMMARY: Total rows processed=0 (TEST MODE: ROLLED BACK)
+Maintenance skipped: no tables had deletes in this run.
+Elapsed: 00:00:00.21
